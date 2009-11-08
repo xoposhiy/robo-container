@@ -1,0 +1,5 @@
+#summary Quick start
+
+= Примеры использования RoboContainer =
+
+TODO
