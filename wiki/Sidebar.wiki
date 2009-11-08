@@ -1,5 +1,5 @@
   * [QuickStart Коротко о главном]
-  * [DIContainers Что такое DI container?]
+  * [DIContainers DI container — это...]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
   * [Generics Поддержка generics]
