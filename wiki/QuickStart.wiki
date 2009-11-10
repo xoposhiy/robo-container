@@ -5,7 +5,9 @@
 == 2 минутное введение в !RoboContainer==
 Рассмотрим простой пример "Сборка робота".
 
-<wiki:comment>[FirstSample</wiki:comment>{{{
+<wiki:comment>[FirstSample</wiki:comment>
+{{{
+
 public interface IDistanceSensor
 {
 	// ...
@@ -33,7 +35,9 @@ public class Robot : IRobot
 var container = new Container();
 IRobot robot = container.Get<IRobot>();
 Assert.IsInstanceOf<Robot>(robot);
-Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);}}}<wiki:comment />
+Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
+}}}
+<wiki:comment />
 
 Тут контейнер самостоятельно догадывается о том, что в качестве `IRobot` нужно создать `Robot`, 
 а для этого в конструктор класса `Robot` передать реализацию `IDistanceSensor`.
@@ -46,7 +50,9 @@ Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);}}}<wiki:comment />
 
 Однако если у запрашиваемого интерфейса есть несколько реализаций, то контейнеру нужна подсказка:
 
-<wiki:comment>[Weapons</wiki:comment>{{{
+<wiki:comment>[Weapons</wiki:comment>
+{{{
+
 public interface IMainWeapon
 {
 	// ...
@@ -62,21 +68,31 @@ public class LaserWeapon : IMainWeapon
 
 var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
 IMainWeapon weapon = container.Get<IMainWeapon>();
-Assert.IsInstanceOf<RocketWeapon>(weapon);}}}<wiki:comment />
+Assert.IsInstanceOf<RocketWeapon>(weapon);
+}}}
+<wiki:comment />
 
 По умолчанию при запросе одного интерфейса несколько раз, контейнер возвращает ссылки на один и тот же объект:
 
-<wiki:comment>[SingletoneWeapon</wiki:comment>{{{
+<wiki:comment>[SingletoneWeapon</wiki:comment>
+{{{
+
 var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
 IMainWeapon weapon1 = container.Get<IMainWeapon>();
 IMainWeapon weapon2 = container.Get<IMainWeapon>();
-Assert.AreSame(weapon1, weapon2);}}}<wiki:comment />
+Assert.AreSame(weapon1, weapon2);
+}}}
+<wiki:comment />
 
 Такое поведение контейнера можно изменить с помощью дополнительного конфигурирования:
 
-<wiki:comment>[TransientWeapon</wiki:comment>{{{
+<wiki:comment>[TransientWeapon</wiki:comment>
+{{{
+
 var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>().SetScope(InstanceLifetime.PerRequest));
 IMainWeapon weapon1 = container.Get<IMainWeapon>();
 IMainWeapon weapon2 = container.Get<IMainWeapon>();
-Assert.AreNotSame(weapon1, weapon2); // NOT Same}}}<wiki:comment />
+Assert.AreNotSame(weapon1, weapon2); // NOT Same
+}}}
+<wiki:comment />
 
