@@ -28,7 +28,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 			string result = processor.Replace(new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}});
 			Console.WriteLine(result);
 			Assert.AreEqual(
-				"asdasd <wiki:comment>[key1</wiki:comment>{{{value1}}}<wiki:comment /> sdfsdf<wiki:comment>[key2</wiki:comment>{{{value2}}}<wiki:comment />", 
+				"asdasd <wiki:comment>[key1</wiki:comment>\r\n{{{\r\nvalue1\r\n}}}\r\n<wiki:comment /> sdfsdf<wiki:comment>[key2</wiki:comment>\r\n{{{\r\nvalue2\r\n}}}\r\n<wiki:comment />", 
 				result);
 		}
 
@@ -134,7 +134,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 				string sampleName = ReadNameUntil("</wiki:comment>");
 
 				if (!samplesDictionary.ContainsKey(sampleName)) throw new Exception("Несуществующий sample " + sampleName);
-				var text = "{{{" + samplesDictionary[sampleName] + "}}}";
+				var text = "\r\n{{{\r\n" + samplesDictionary[sampleName] + "\r\n}}}\r\n";
 				ReplaceUntil("<wiki:comment />", text);
 			}
 			result.Append(input.Substring(lastReplacedTextEndIndex));
