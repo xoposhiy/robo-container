@@ -1,8 +1,13 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboContainer", "DIContainer\RoboContainer.csproj", "{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboContainer", "RoboContainer\RoboContainer.csproj", "{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboContainer.Tests", "DIContainer.Tests\RoboContainer.Tests.csproj", "{75FB4AD8-34C6-45DC-8408-22FECA516630}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboContainer.Tests", "RoboContainer.Tests\RoboContainer.Tests.csproj", "{75FB4AD8-34C6-45DC-8408-22FECA516630}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{981825CD-8AF7-4999-83B4-6478F6721E4D}"
+	ProjectSection(SolutionItems) = preProject
+		..\wiki\QuickStart.wiki = ..\wiki\QuickStart.wiki
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

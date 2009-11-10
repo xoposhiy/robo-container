@@ -59,10 +59,14 @@
     <Compile Include="Parts\Parts_Test.cs" />
     <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />
     <Compile Include="PluginConfiguration\PluginConfiguration_Test.cs" />
+    <Compile Include="SamplesForWiki\IncludeSamplesIntoWikiPages_Test.cs" />
+    <Compile Include="SamplesForWiki\QuickStart\QuickStart_Tests.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="TestingExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DIContainer\RoboContainer.csproj">
+    <ProjectReference Include="..\RoboContainer\RoboContainer.csproj">
       <Project>{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}</Project>
       <Name>RoboContainer</Name>
     </ProjectReference>

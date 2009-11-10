@@ -2,4 +2,81 @@
 
 = Примеры использования !RoboContainer =
 
-TODO
+== 2 минутное введение в !RoboContainer==
+Рассмотрим простой пример "Сборка робота".
+
+<wiki:comment>[FirstSample</wiki:comment>{{{
+public interface IDistanceSensor
+{
+	// ...
+}
+public class OpticalSensor : IDistanceSensor
+{
+	// ...
+}
+public interface IRobot
+{
+	IDistanceSensor DistanceSensor { get; set; }
+	// ...
+}
+public class Robot : IRobot
+{
+	public IDistanceSensor DistanceSensor { get; set; }
+	
+	public Robot(IDistanceSensor distanceSensor)
+	{
+		DistanceSensor = distanceSensor;
+	}
+	// ...
+}
+
+var container = new Container();
+IRobot robot = container.Get<IRobot>();
+Assert.IsInstanceOf<Robot>(robot);
+Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);}}}<wiki:comment />
+
+Тут контейнер самостоятельно догадывается о том, что в качестве `IRobot` нужно создать `Robot`, 
+а для этого в конструктор класса `Robot` передать реализацию `IDistanceSensor`.
+
+А для этого, в свою очередь, контейнер догадывается, что в качестве реализации `IDistanceSensor` 
+нужно создать экземпляр класса `OpticalSensor`.
+
+В этом примере контейнеру повезло — был всего один класс, реализующий интерфейс `IDistanceSensor` 
+и только один, реализующий `IRobot`, поэтому контейнеру не составило труда догадаться, что нужно сделать.
+
+Однако если у запрашиваемого интерфейса есть несколько реализаций, то контейнеру нужна подсказка:
+
+<wiki:comment>[Weapons</wiki:comment>{{{
+public interface IMainWeapon
+{
+	// ...
+}
+public class RocketWeapon : IMainWeapon
+{
+	// ...
+}
+public class LaserWeapon : IMainWeapon
+{
+	// ...
+}
+
+var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
+IMainWeapon weapon = container.Get<IMainWeapon>();
+Assert.IsInstanceOf<RocketWeapon>(weapon);}}}<wiki:comment />
+
+По умолчанию при запросе одного интерфейса несколько раз, контейнер возвращает ссылки на один и тот же объект:
+
+<wiki:comment>[SingletoneWeapon</wiki:comment>{{{
+var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
+IMainWeapon weapon1 = container.Get<IMainWeapon>();
+IMainWeapon weapon2 = container.Get<IMainWeapon>();
+Assert.AreSame(weapon1, weapon2);}}}<wiki:comment />
+
+Такое поведение контейнера можно изменить с помощью дополнительного конфигурирования:
+
+<wiki:comment>[TransientWeapon</wiki:comment>{{{
+var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>().SetScope(InstanceLifetime.PerRequest));
+IMainWeapon weapon1 = container.Get<IMainWeapon>();
+IMainWeapon weapon2 = container.Get<IMainWeapon>();
+Assert.AreNotSame(weapon1, weapon2); // NOT Same}}}<wiki:comment />
+
