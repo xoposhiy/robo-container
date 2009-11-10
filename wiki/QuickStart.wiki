@@ -37,7 +37,7 @@ IRobot robot = container.Get<IRobot>();
 Assert.IsInstanceOf<Robot>(robot);
 Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 }}}
-<wiki:comment />
+<wiki:comment></wiki:comment>
 
 Тут контейнер самостоятельно догадывается о том, что в качестве `IRobot` нужно создать `Robot`, 
 а для этого в конструктор класса `Robot` передать реализацию `IDistanceSensor`.
@@ -70,7 +70,7 @@ var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<Rocket
 IMainWeapon weapon = container.Get<IMainWeapon>();
 Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
-<wiki:comment />
+<wiki:comment></wiki:comment>
 
 По умолчанию при запросе одного интерфейса несколько раз, контейнер возвращает ссылки на один и тот же объект:
 
@@ -82,7 +82,7 @@ IMainWeapon weapon1 = container.Get<IMainWeapon>();
 IMainWeapon weapon2 = container.Get<IMainWeapon>();
 Assert.AreSame(weapon1, weapon2);
 }}}
-<wiki:comment />
+<wiki:comment></wiki:comment>
 
 Такое поведение контейнера можно изменить с помощью дополнительного конфигурирования:
 
@@ -94,5 +94,5 @@ IMainWeapon weapon1 = container.Get<IMainWeapon>();
 IMainWeapon weapon2 = container.Get<IMainWeapon>();
 Assert.AreNotSame(weapon1, weapon2); // NOT Same
 }}}
-<wiki:comment />
+<wiki:comment></wiki:comment>
 

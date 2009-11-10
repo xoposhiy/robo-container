@@ -23,12 +23,12 @@ namespace RoboContainer.Tests.SamplesForWiki
 		[Test]
 		public void Test_PageProcessor()
 		{
-			var processor = 
-				new PageProcessor("asdasd <wiki:comment>[key1</wiki:comment> hello <wiki:comment /> sdfsdf<wiki:comment>[key2</wiki:comment><wiki:comment />");
+			var processor =
+				new PageProcessor("asdasd <wiki:comment>[key1</wiki:comment> hello <wiki:comment></wiki:comment> sdfsdf<wiki:comment>[key2</wiki:comment><wiki:comment></wiki:comment>");
 			string result = processor.Replace(new Dictionary<string, string> {{"key1", "value1"}, {"key2", "value2"}});
 			Console.WriteLine(result);
 			Assert.AreEqual(
-				"asdasd <wiki:comment>[key1</wiki:comment>\r\n{{{\r\nvalue1\r\n}}}\r\n<wiki:comment /> sdfsdf<wiki:comment>[key2</wiki:comment>\r\n{{{\r\nvalue2\r\n}}}\r\n<wiki:comment />", 
+				"asdasd <wiki:comment>[key1</wiki:comment>\r\n{{{\r\nvalue1\r\n}}}\r\n<wiki:comment></wiki:comment> sdfsdf<wiki:comment>[key2</wiki:comment>\r\n{{{\r\nvalue2\r\n}}}\r\n<wiki:comment></wiki:comment>", 
 				result);
 		}
 
@@ -135,7 +135,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 
 				if (!samplesDictionary.ContainsKey(sampleName)) throw new Exception("Несуществующий sample " + sampleName);
 				var text = "\r\n{{{\r\n" + samplesDictionary[sampleName] + "\r\n}}}\r\n";
-				ReplaceUntil("<wiki:comment />", text);
+				ReplaceUntil("<wiki:comment></wiki:comment>", text);
 			}
 			result.Append(input.Substring(lastReplacedTextEndIndex));
 			return result.ToString();
