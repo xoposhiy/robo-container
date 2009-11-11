@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using RoboContainer;
 
 namespace RoboContainer.Impl
 {
@@ -49,6 +48,16 @@ namespace RoboContainer.Impl
 			return new PluggableConfigurator<TPluggable>(this);
 		}
 
+		public IPluggableConfigurator EnrichWith(Action<object> enrichPluggable)
+		{
+			return EnrichWith(
+				(pluggable, container) =>
+					{
+						enrichPluggable(pluggable);
+						return pluggable;
+					});
+		}
+
 		public static PluggableConfigurator FromAttributes(Type pluggableType)
 		{
 			var pluggableConfigurator = new PluggableConfigurator(pluggableType);
@@ -88,10 +97,20 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> EnrichWith(EnrichPluggableDelegate<TPluggable> enrichPluggable)
+		public IPluggableConfigurator<TPluggable> InitializeWith(EnrichPluggableDelegate<TPluggable> enrichPluggable)
 		{
-			pluggableConfigurator.EnrichWith((pluggable, container) => enrichPluggable((TPluggable)pluggable, container));
+			pluggableConfigurator.EnrichWith((pluggable, container) => enrichPluggable((TPluggable) pluggable, container));
 			return this;
+		}
+
+		public IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> enrichPluggable)
+		{
+			return InitializeWith(
+				(pluggable, container) =>
+					{
+						enrichPluggable(pluggable);
+						return pluggable;
+					});
 		}
 	}
 }

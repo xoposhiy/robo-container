@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RoboContainer;
 
 namespace RoboContainer.Impl
 {
@@ -71,6 +70,16 @@ namespace RoboContainer.Impl
 		{
 			EnrichPluggable = enrichPluggable;
 			return this;
+		}
+
+		public IPluginConfigurator EnrichWith(Action<object> enrichPlugin)
+		{
+			return EnrichWith(
+				(pluggable, container) =>
+					{
+						enrichPlugin(pluggable);
+						return pluggable;
+					});
 		}
 
 		public IPluginConfigurator<TPlugin> TypedConfigurator<TPlugin>()
@@ -265,6 +274,16 @@ namespace RoboContainer.Impl
 		{
 			realConfigurator.EnrichWith((plugin, container) => enrichPluggable((TPlugin) plugin, container));
 			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> EnrichWith(Action<TPlugin> enrichPlugin)
+		{
+			return EnrichWith(
+				(pluggable, container) =>
+					{
+						enrichPlugin(pluggable);
+						return pluggable;
+					});
 		}
 	}
 }
