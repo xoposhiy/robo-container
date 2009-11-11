@@ -6,6 +6,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 	[TestFixture]
 	public class QuickStart_Tests
 	{
+		#region FirstSample
 		//[FirstSample
 		public interface IDistanceSensor
 		{
@@ -37,6 +38,19 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 
 		//]
 
+		[Test]
+		public void AssembleRobot()
+		{
+			//[FirstSample
+			var container = new Container();
+			var robot = container.Get<IRobot>();
+			Assert.IsInstanceOf<Robot>(robot);
+			Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
+			//]
+		}
+		#endregion
+
+		#region Weapons
 		//[Weapons
 		public interface IMainWeapon
 		{
@@ -55,17 +69,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			// ...
 		}
-
-		[Test]
-		public void AssembleRobot()
-		{
-			//[FirstSample
-			var container = new Container();
-			var robot = container.Get<IRobot>();
-			Assert.IsInstanceOf<Robot>(robot);
-			Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
-			//]
-		}
+		//]
 
 		[Test]
 		public void ConfigureWeapon()
@@ -76,8 +80,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			Assert.IsInstanceOf<RocketWeapon>(weapon);
 			//]
 		}
-
-		//]
+		#endregion
 
 		[Test]
 		public void PerRequestWeapon()

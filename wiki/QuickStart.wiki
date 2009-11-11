@@ -30,6 +30,11 @@ public class Robot : IRobot
 	public IDistanceSensor DistanceSensor { get; set; }
 	// ...
 }
+
+var container = new Container();
+var robot = container.Get<IRobot>();
+Assert.IsInstanceOf<Robot>(robot);
+Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 }}}
 <wiki:comment></wiki:comment>
 
@@ -60,14 +65,6 @@ public class LaserWeapon : IMainWeapon
 {
 	// ...
 }
-[Test]
-public void AssembleRobot()
-{
-	//[FirstSample
-	var container = new Container();
-	var robot = container.Get<IRobot>();
-	Assert.IsInstanceOf<Robot>(robot);
-	Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 
 var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
 var weapon = container.Get<IMainWeapon>();
