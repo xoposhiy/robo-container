@@ -23,19 +23,13 @@ public interface IRobot
 }
 public class Robot : IRobot
 {
-	public IDistanceSensor DistanceSensor { get; set; }
-	
 	public Robot(IDistanceSensor distanceSensor)
 	{
 		DistanceSensor = distanceSensor;
 	}
+	public IDistanceSensor DistanceSensor { get; set; }
 	// ...
 }
-
-var container = new Container();
-IRobot robot = container.Get<IRobot>();
-Assert.IsInstanceOf<Robot>(robot);
-Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 }}}
 <wiki:comment></wiki:comment>
 
@@ -60,14 +54,23 @@ public interface IMainWeapon
 public class RocketWeapon : IMainWeapon
 {
 	// ...
+
 }
 public class LaserWeapon : IMainWeapon
 {
 	// ...
 }
+[Test]
+public void AssembleRobot()
+{
+	//[FirstSample
+	var container = new Container();
+	var robot = container.Get<IRobot>();
+	Assert.IsInstanceOf<Robot>(robot);
+	Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 
 var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
-IMainWeapon weapon = container.Get<IMainWeapon>();
+var weapon = container.Get<IMainWeapon>();
 Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
 <wiki:comment></wiki:comment>
@@ -77,9 +80,11 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 <wiki:comment>[SingletoneWeapon</wiki:comment>
 {{{
 
-var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
-IMainWeapon weapon1 = container.Get<IMainWeapon>();
-IMainWeapon weapon2 = container.Get<IMainWeapon>();
+var container = new Container(
+	c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>()
+	);
+var weapon1 = container.Get<IMainWeapon>();
+var weapon2 = container.Get<IMainWeapon>();
 Assert.AreSame(weapon1, weapon2);
 }}}
 <wiki:comment></wiki:comment>
@@ -89,10 +94,52 @@ Assert.AreSame(weapon1, weapon2);
 <wiki:comment>[TransientWeapon</wiki:comment>
 {{{
 
-var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>().SetScope(InstanceLifetime.PerRequest));
-IMainWeapon weapon1 = container.Get<IMainWeapon>();
-IMainWeapon weapon2 = container.Get<IMainWeapon>();
+var container = new Container(
+	c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>()
+	     	.SetScope(InstanceLifetime.PerRequest)
+	);
+var weapon1 = container.Get<IMainWeapon>();
+var weapon2 = container.Get<IMainWeapon>();
 Assert.AreNotSame(weapon1, weapon2); // NOT Same
 }}}
 <wiki:comment></wiki:comment>
 
+Возможно ракетное оружие надо как-то по особому инициализировать перед началом использования. API конфигурирования позволяет сделать и это:
+
+<wiki:comment>[PrepareRocketWeapon</wiki:comment>
+{{{
+
+var container = new Container(
+	c =>
+		{
+			c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>();
+			c.ForPluggable<RocketWeapon>().InitializeWith(
+				rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
+		}
+	);
+var weapon = (RocketWeapon) container.Get<IMainWeapon>();
+Assert.AreEqual("big rocket", weapon.LoadedMissile);
+}}}
+<wiki:comment></wiki:comment>
+
+API конфигурации позволяет и более хитро снаряжать роботов. 
+В следующем примере контейнер создает по очереди ракетное и лазерное оружие.
+
+<wiki:comment>[DifferentWeapons</wiki:comment>
+{{{
+
+var weaponIndex = 0;
+var container = new Container(
+	c => 
+		c.ForPlugin<IMainWeapon>().SetScope(InstanceLifetime.PerRequest)
+		.CreatePluggableBy(
+	     	(aContainer, pluginType) =>
+	     	weaponIndex++ % 2 == 0 ? (IMainWeapon) new LaserWeapon() : new RocketWeapon())
+			);
+Assert.IsInstanceOf<LaserWeapon>(container.Get<IMainWeapon>());
+Assert.IsInstanceOf<RocketWeapon>(container.Get<IMainWeapon>());
+Assert.IsInstanceOf<LaserWeapon>(container.Get<IMainWeapon>());
+}}}
+<wiki:comment></wiki:comment>
+
+И под конец, важно ещё раз вспомнить 

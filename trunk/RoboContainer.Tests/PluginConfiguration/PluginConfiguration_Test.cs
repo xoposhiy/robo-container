@@ -63,7 +63,7 @@ namespace DIContainer.Tests.PluginConfiguration
 									return e;
 								});
 						c.ForPluggable<Enrichable>()
-							.EnrichWith(
+							.InitializeWith(
 							(e, cont) =>
 								{
 									e.EnrichedByPlugguble = true;

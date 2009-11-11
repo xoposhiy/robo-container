@@ -14,6 +14,7 @@ namespace RoboContainer
 		IPluginConfigurator SetScope(InstanceLifetime lifetime);
 		IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate createPluggable);
 		IPluginConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable);
+		IPluginConfigurator EnrichWith(Action<object> enrichPlugin);
 		IPluginConfigurator<TPlugin> TypedConfigurator<TPlugin>();
 	}
 
@@ -26,5 +27,6 @@ namespace RoboContainer
 		IPluginConfigurator<TPlugin> SetScope(InstanceLifetime lifetime);
 		IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
 		IPluginConfigurator<TPlugin> EnrichWith(EnrichPluggableDelegate<TPlugin> enrichPluggable);
+		IPluginConfigurator<TPlugin> EnrichWith(Action<TPlugin> enrichPlugin);
 	}
 }

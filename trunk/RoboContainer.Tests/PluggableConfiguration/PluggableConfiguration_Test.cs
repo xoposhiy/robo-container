@@ -13,7 +13,7 @@ namespace DIContainer.Tests.PluggableConfiguration
 			var container = new Container(
 				c =>
 				c.ForPluggable<WantToBeEnriched>()
-					.EnrichWith(
+					.InitializeWith(
 					(o, cont) =>
 						{
 							o.Container = cont;
