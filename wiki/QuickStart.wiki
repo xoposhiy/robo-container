@@ -64,7 +64,9 @@ public class LaserWeapon : IWeapon
 	// ...
 }
 
-var container = new Container(c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>());
+var container = new Container(
+	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>() // <-- явное конфигурирование
+	);
 IWeapon weapon = container.Get<IWeapon>();
 Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
@@ -91,11 +93,11 @@ Assert.AreSame(weapon1, weapon2);
 
 var container = new Container(
 	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
-	     	.SetScope(InstanceLifetime.PerRequest)
+	     	.SetScope(InstanceLifetime.PerRequest) // <-- конфигурирование
 	);
 var weapon1 = container.Get<IWeapon>();
 var weapon2 = container.Get<IWeapon>();
-Assert.AreNotSame(weapon1, weapon2); // NOT Same
+Assert.AreNotSame(weapon1, weapon2); // <-- результат
 }}}
 <wiki:comment></wiki:comment>
 
