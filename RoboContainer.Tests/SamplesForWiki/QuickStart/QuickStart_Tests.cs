@@ -1,5 +1,5 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System.Linq;
 
 namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 {
@@ -7,6 +7,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 	public class QuickStart_Tests
 	{
 		#region FirstSample
+
 		//[FirstSample
 		public interface IDistanceSensor
 		{
@@ -43,21 +44,25 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[FirstSample
 			var container = new Container();
-			var robot = container.Get<IRobot>();
+
+			IRobot robot = container.Get<IRobot>(); // <-- Контейнер в действии!
+
 			Assert.IsInstanceOf<Robot>(robot);
 			Assert.IsInstanceOf<OpticalSensor>(robot.DistanceSensor);
 			//]
 		}
+
 		#endregion
 
 		#region Weapons
+
 		//[Weapons
-		public interface IMainWeapon
+		public interface IWeapon
 		{
 			// ...
 		}
 
-		public class RocketWeapon : IMainWeapon
+		public class RocketWeapon : IWeapon
 		{
 			// ...
 			//]
@@ -65,21 +70,23 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//[Weapons
 		}
 
-		public class LaserWeapon : IMainWeapon
+		public class LaserWeapon : IWeapon
 		{
 			// ...
 		}
+
 		//]
 
 		[Test]
 		public void ConfigureWeapon()
 		{
 			//[Weapons
-			var container = new Container(c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>());
-			var weapon = container.Get<IMainWeapon>();
+			var container = new Container(c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>());
+			IWeapon weapon = container.Get<IWeapon>();
 			Assert.IsInstanceOf<RocketWeapon>(weapon);
 			//]
 		}
+
 		#endregion
 
 		[Test]
@@ -87,11 +94,11 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[TransientWeapon
 			var container = new Container(
-				c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>()
+				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
 				     	.SetScope(InstanceLifetime.PerRequest)
 				);
-			var weapon1 = container.Get<IMainWeapon>();
-			var weapon2 = container.Get<IMainWeapon>();
+			var weapon1 = container.Get<IWeapon>();
+			var weapon2 = container.Get<IWeapon>();
 			Assert.AreNotSame(weapon1, weapon2); // NOT Same
 			//]
 		}
@@ -103,12 +110,12 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>();
+						c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>();
 						c.ForPluggable<RocketWeapon>().InitializeWith(
 							rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
 					}
 				);
-			var weapon = (RocketWeapon) container.Get<IMainWeapon>();
+			var weapon = (RocketWeapon) container.Get<IWeapon>();
 			Assert.AreEqual("big rocket", weapon.LoadedMissile);
 			//]
 		}
@@ -120,15 +127,15 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//[DifferentWeapons
 			var weaponIndex = 0;
 			var container = new Container(
-				c => 
-					c.ForPlugin<IMainWeapon>().SetScope(InstanceLifetime.PerRequest)
+				c =>
+				c.ForPlugin<IWeapon>().SetScope(InstanceLifetime.PerRequest)
 					.CreatePluggableBy(
-				     	(aContainer, pluginType) =>
-				     	weaponIndex++ % 2 == 0 ? (IMainWeapon) new LaserWeapon() : new RocketWeapon())
-						);
-			Assert.IsInstanceOf<LaserWeapon>(container.Get<IMainWeapon>());
-			Assert.IsInstanceOf<RocketWeapon>(container.Get<IMainWeapon>());
-			Assert.IsInstanceOf<LaserWeapon>(container.Get<IMainWeapon>());
+					(aContainer, pluginType) =>
+					weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
+				);
+			Assert.IsInstanceOf<LaserWeapon>(container.Get<IWeapon>());
+			Assert.IsInstanceOf<RocketWeapon>(container.Get<IWeapon>());
+			Assert.IsInstanceOf<LaserWeapon>(container.Get<IWeapon>());
 			//]
 		}
 
@@ -137,12 +144,82 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[SingletoneWeapon
 			var container = new Container(
-				c => c.ForPlugin<IMainWeapon>().PluggableIs<RocketWeapon>()
+				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
 				);
-			var weapon1 = container.Get<IMainWeapon>();
-			var weapon2 = container.Get<IMainWeapon>();
+			var weapon1 = container.Get<IWeapon>();
+			var weapon2 = container.Get<IWeapon>();
 			Assert.AreSame(weapon1, weapon2);
 			//]
 		}
+
+		#region QS_FinalSample
+
+		//[QS_FinalSample
+		public class ComboWeapon : IWeapon
+		{
+			public ComboWeapon(LaserWeapon laser, RocketWeapon rocket)
+			{
+				Laser = laser;
+				Rocket = rocket;
+			}
+
+			public LaserWeapon Laser { get; private set; }
+			public RocketWeapon Rocket { get; private set; }
+			
+		}
+
+		public class BigBattleShip : IBattleShip
+		{
+			public BigBattleShip(IWeapon[] weapons)
+			{
+				Weapons = weapons;
+			}
+
+			public IWeapon[] Weapons { get; private set;}
+		}
+
+		public interface IBattleShip
+		{
+			IWeapon[] Weapons { get; }
+		}
+		//]
+
+		[Test]
+		public void FinalSample()
+		{
+			//[QS_FinalSample
+			var container = new Container(
+				c =>
+					{
+						c.ForPluggable<RocketWeapon>().InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
+						c.ForPlugin<IBattleShip>().PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
+					}
+				);
+			
+			var ship = container.Get<IBattleShip>();
+			var anotherShip = container.Get<IBattleShip>();
+
+			// Действие InstanceLifetime.PerRequest
+			Assert.AreNotSame(ship, anotherShip);
+
+			// Инжектирование массива зависимостей
+			Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is LaserWeapon));
+			Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is RocketWeapon));
+			Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is ComboWeapon));
+
+			// Действие InitializeWith
+			var shipsRocketWeapon = ship.Weapons.OfType<RocketWeapon>().Single();
+			Assert.AreEqual("big rocket", shipsRocketWeapon.LoadedMissile);
+
+			// Инжектирование зависимостей на несколько уровней в глубь
+			var shipsComboWeapon = ship.Weapons.OfType<ComboWeapon>().Single();
+			Assert.AreSame(container.Get<LaserWeapon>(), shipsComboWeapon.Laser);
+			Assert.AreSame(container.Get<RocketWeapon>(), shipsComboWeapon.Rocket);
+			//]
+		}
+		//]
+
+		#endregion
 	}
+
 }

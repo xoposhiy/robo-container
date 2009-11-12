@@ -69,7 +69,7 @@ namespace RoboContainer.Impl
 
 		public void AddPart(Type pluginType, object pluggable)
 		{
-			if(pluginConfigs.ContainsKey(pluginType) && pluginConfigs[pluginType].CreatePluggable != null) 
+			if (pluginConfigs.ContainsKey(pluginType) && pluginConfigs[pluginType].CreatePluggable != null)
 				throw new ContainerException("Many parts for one plugin is not supported yet");
 			ForPlugin(pluginType).CreatePluggableBy((c, pluginType_not_used) => pluggable);
 			AddPartsExportedBy(pluggable);
@@ -92,14 +92,15 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<Type> GetScannableTypes()
 		{
-			if (!assemblies.Any()) ScanCallingAssembly();
+			if (!assemblies.Any())
+				ScanCallingAssembly();
 			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
 		}
 
 		private void AddPartsExportedBy(object pluggable)
 		{
 			var exportableProperties = pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>());
-			foreach(var prop in exportableProperties)
+			foreach (var prop in exportableProperties)
 			{
 				AddPart(
 					prop.GetAttribute<ExportedPartAttribute>().AsPlugin ?? prop.PropertyType,
@@ -160,6 +161,11 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
+		}
+
+		public bool HasAssemblies()
+		{
+			return assemblies.Any();
 		}
 	}
 }
