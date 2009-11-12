@@ -157,24 +157,26 @@ public class ComboWeapon : IWeapon
 	public RocketWeapon Rocket { get; private set; }
 	
 }
+public interface IBattleShip
+{
+	IWeapon[] Weapons { get; }
+}
 public class BigBattleShip : IBattleShip
 {
 	public BigBattleShip(IWeapon[] weapons)
 	{
 		Weapons = weapons;
 	}
-	public IWeapon[] Weapons { get; private set;}
-}
-public interface IBattleShip
-{
-	IWeapon[] Weapons { get; }
+	public IWeapon[] Weapons { get; private set; }
 }
 
 var container = new Container(
 	c =>
 		{
-			c.ForPluggable<RocketWeapon>().InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
-			c.ForPlugin<IBattleShip>().PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
+			c.ForPluggable<RocketWeapon>()
+				.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
+			c.ForPlugin<IBattleShip>()
+				.PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
 		}
 	);
 

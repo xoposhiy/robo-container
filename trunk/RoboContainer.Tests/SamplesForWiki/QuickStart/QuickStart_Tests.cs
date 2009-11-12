@@ -170,6 +170,11 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			
 		}
 
+		public interface IBattleShip
+		{
+			IWeapon[] Weapons { get; }
+		}
+
 		public class BigBattleShip : IBattleShip
 		{
 			public BigBattleShip(IWeapon[] weapons)
@@ -177,13 +182,9 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				Weapons = weapons;
 			}
 
-			public IWeapon[] Weapons { get; private set;}
+			public IWeapon[] Weapons { get; private set; }
 		}
 
-		public interface IBattleShip
-		{
-			IWeapon[] Weapons { get; }
-		}
 		//]
 
 		[Test]
@@ -193,8 +194,10 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var container = new Container(
 				c =>
 					{
-						c.ForPluggable<RocketWeapon>().InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
-						c.ForPlugin<IBattleShip>().PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
+						c.ForPluggable<RocketWeapon>()
+							.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
+						c.ForPlugin<IBattleShip>()
+							.PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
 					}
 				);
 			
