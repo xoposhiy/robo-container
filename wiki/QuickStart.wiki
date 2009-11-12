@@ -1,8 +1,7 @@
-#summary Quick start
+#summary Пятиминутное введение в RoboContainer
 
-= Примеры использования !RoboContainer =
+= Пятиминутное введение в !RoboContainer =
 
-== Пятиминутное введение в !RoboContainer==
 Рассмотрим простой пример "Сборка робота".
 
 <wiki:comment>[FirstSample</wiki:comment>
