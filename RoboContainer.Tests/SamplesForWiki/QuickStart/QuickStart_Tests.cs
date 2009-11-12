@@ -81,7 +81,9 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		public void ConfigureWeapon()
 		{
 			//[Weapons
-			var container = new Container(c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>());
+			var container = new Container(
+				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>() // <-- явное конфигурирование
+				);
 			IWeapon weapon = container.Get<IWeapon>();
 			Assert.IsInstanceOf<RocketWeapon>(weapon);
 			//]
@@ -95,11 +97,11 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//[TransientWeapon
 			var container = new Container(
 				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
-				     	.SetScope(InstanceLifetime.PerRequest)
+				     	.SetScope(InstanceLifetime.PerRequest) // <-- конфигурирование
 				);
 			var weapon1 = container.Get<IWeapon>();
 			var weapon2 = container.Get<IWeapon>();
-			Assert.AreNotSame(weapon1, weapon2); // NOT Same
+			Assert.AreNotSame(weapon1, weapon2); // <-- результат
 			//]
 		}
 
