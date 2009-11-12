@@ -57,6 +57,7 @@
     <Compile Include="Generics\TestClasses.cs" />
     <Compile Include="Laziness\Lazy_Test.cs" />
     <Compile Include="Parts\Parts_Test.cs" />
+    <Compile Include="Performance\Performance_Tests.cs" />
     <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />
     <Compile Include="PluginConfiguration\PluginConfiguration_Test.cs" />
     <Compile Include="SamplesForWiki\IncludeSamplesIntoWikiPages_Test.cs" />

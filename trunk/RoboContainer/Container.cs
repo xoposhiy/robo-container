@@ -10,15 +10,17 @@ namespace RoboContainer
 		private readonly ContainerConfiguration configuration;
 
 		public Container()
-			: this(c => c.ScanCallingAssembly())
+			: this(c => { })
 		{
 		}
 
 		public Container(Action<IContainerConfigurator> configure)
 		{
 			configuration = new ContainerConfiguration();
-			configuration.ForPlugin(typeof(Lazy<>)).PluggableIs(typeof(Lazy<>));
+			configuration.ForPlugin(typeof(Lazy<>)).PluggableIs(typeof(Lazy<>)).SetScope(InstanceLifetime.PerRequest);
 			configure(configuration);
+			if (!configuration.HasAssemblies())
+				configuration.ScanLoadedAssemblies();
 		}
 
 		public Container(ContainerConfiguration configuration)
