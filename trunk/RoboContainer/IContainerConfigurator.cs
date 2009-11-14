@@ -23,9 +23,8 @@ namespace RoboContainer
 		IPluginConfigurator ForPlugin(Type pluginType);
 
 		void AddPart(Type pluginType, object pluggable);
-		void AddParts(Type pluginType, params object[] pluggable);
 
 		void AddPart<TPluginType>(TPluginType pluggable);
-		void AddParts<TPluginType>(params TPluginType[] pluggable);
+		void AddParts(params object[] pluggable);
 	}
 }

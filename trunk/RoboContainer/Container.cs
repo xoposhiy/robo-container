@@ -7,7 +7,7 @@ namespace RoboContainer
 {
 	public class Container : IContainer
 	{
-		private readonly ContainerConfiguration configuration;
+		private readonly IContainerConfiguration configuration;
 
 		public Container()
 			: this(c => { })
@@ -15,17 +15,16 @@ namespace RoboContainer
 		}
 
 		public Container(Action<IContainerConfigurator> configure)
+			: this(CreateConfiguration(configure))
 		{
-			configuration = new ContainerConfiguration();
-			configuration.ForPlugin(typeof(Lazy<>)).PluggableIs(typeof(Lazy<>)).SetScope(InstanceLifetime.PerRequest);
-			configure(configuration);
-			if (!configuration.HasAssemblies())
-				configuration.ScanLoadedAssemblies();
 		}
 
-		public Container(ContainerConfiguration configuration)
+		public Container(IContainerConfiguration configuration)
 		{
 			this.configuration = configuration;
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).PluggableIs(typeof(Lazy<>)).SetScope(InstanceLifetime.PerRequest);
+			if(!configuration.HasAssemblies())
+				configuration.Configurator.ScanCallingAssembly();
 		}
 
 		public TPlugin Get<TPlugin>()
@@ -40,7 +39,7 @@ namespace RoboContainer
 
 		public object Get(Type pluginType)
 		{
-			var items = GetAll(pluginType);
+			IEnumerable<object> items = GetAll(pluginType);
 			if (!items.Any()) throw new ContainerException("Plugguble for {0} not found", pluginType.Name);
 			if (items.Count() > 1)
 				throw new ContainerException(
@@ -58,20 +57,6 @@ namespace RoboContainer
 			return GetConfiguredPluggables(pluginType).Select(c => c.GetFactory().GetOrCreate(this, pluginType)).ToArray();
 		}
 
-		private static bool IsCollection(Type pluginType, out Type elementType)
-		{
-			elementType = null;
-			if(pluginType.IsArray && pluginType.GetArrayRank() == 1)
-				elementType = pluginType.GetElementType();
-			else
-			{
-				var typeArgs = pluginType.GetGenericArguments();
-				if(pluginType.IsGenericType && typeArgs.Length == 1 && pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
-					elementType = typeArgs.Single();
-			}
-			return elementType != null;
-		}
-
 		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>()
 		{
 			return GetPluggableTypesFor(typeof (TPlugin));
@@ -80,6 +65,34 @@ namespace RoboContainer
 		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType)
 		{
 			return GetConfiguredPluggables(pluginType).Select(c => c.PluggableType).Where(t => t != null);
+		}
+
+		public IContainer With(Action<IContainerConfigurator> configure)
+		{
+			var childConfiguration = new ScopedConfiguration(configuration);
+			configure(childConfiguration.Configurator);
+			return new Container(childConfiguration);
+		}
+
+		private static IContainerConfiguration CreateConfiguration(Action<IContainerConfigurator> configure)
+		{
+			var configuration = new ContainerConfiguration();
+			configure(configuration.Configurator);
+			return configuration;
+		}
+
+		private static bool IsCollection(Type pluginType, out Type elementType)
+		{
+			elementType = null;
+			if (pluginType.IsArray && pluginType.GetArrayRank() == 1)
+				elementType = pluginType.GetElementType();
+			else
+			{
+				Type[] typeArgs = pluginType.GetGenericArguments();
+				if (pluginType.IsGenericType && typeArgs.Length == 1 && pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
+					elementType = typeArgs.Single();
+			}
+			return elementType != null;
 		}
 
 		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType)

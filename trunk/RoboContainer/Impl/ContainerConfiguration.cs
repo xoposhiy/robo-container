@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using RoboContainer;
 
 namespace RoboContainer.Impl
 {
-	public class ContainerConfiguration : IContainerConfigurator
+	public class ContainerConfiguration : IContainerConfiguration
 	{
 		private readonly List<Assembly> assemblies = new List<Assembly>();
 
@@ -16,124 +14,62 @@ namespace RoboContainer.Impl
 
 		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
 
-		public void ScanAssemblies(params Assembly[] assembliesToScan)
-		{
-			ScanAssemblies((IEnumerable<Assembly>) assembliesToScan);
-		}
-
 		public void ScanAssemblies(IEnumerable<Assembly> assembliesToScan)
 		{
 			assemblies.AddRange(assembliesToScan);
 		}
 
-		public void ScanCallingAssembly()
+		public virtual IEnumerable<Type> GetScannableTypes()
 		{
-			ScanAssemblies(GetTheCallingAssembly());
+			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
 		}
 
-		public void ScanLoadedAssemblies()
-		{
-			ScanLoadedAssemblies(assembly => true);
-		}
-
-		public void ScanLoadedAssemblies(Func<Assembly, bool> shouldScan)
-		{
-			ScanAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(shouldScan).ToArray());
-		}
-
-		public void ScanTypesWith(ScannerDelegate scanner)
-		{
-			foreach (Type type in GetScannableTypes())
-				scanner(this, type);
-		}
-
-		public IPluggableConfigurator ForPluggable(Type pluggableType)
-		{
-			return GetPluggableConfigurator(pluggableType);
-		}
-
-		public IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>()
-		{
-			return ForPluggable(typeof (TPluggable)).TypedConfigurator<TPluggable>();
-		}
-
-		public IPluginConfigurator<TPlugin> ForPlugin<TPlugin>()
-		{
-			return ForPlugin(typeof (TPlugin)).TypedConfigurator<TPlugin>();
-		}
-
-		public IPluginConfigurator ForPlugin(Type pluginType)
+		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
 		{
 			return pluginConfigs.GetOrCreate(pluginType, () => new PluginConfigurator(this, pluginType));
 		}
 
-		public void AddPart(Type pluginType, object pluggable)
-		{
-			if (pluginConfigs.ContainsKey(pluginType) && pluginConfigs[pluginType].CreatePluggable != null)
-				throw new ContainerException("Many parts for one plugin is not supported yet");
-			ForPlugin(pluginType).CreatePluggableBy((c, pluginType_not_used) => pluggable);
-			AddPartsExportedBy(pluggable);
-		}
-
-		public void AddParts(Type pluginType, params object[] pluggables)
-		{
-			foreach (object pluggable in pluggables) AddPart(pluggable);
-		}
-
-		public void AddPart<TPluginType>(TPluginType pluggable)
-		{
-			AddPart(typeof (TPluginType), pluggable);
-		}
-
-		public void AddParts<TPluginType>(params TPluginType[] pluggables)
-		{
-			foreach (TPluginType pluggable in pluggables) AddPart(pluggable);
-		}
-
-		public IEnumerable<Type> GetScannableTypes()
-		{
-			if (!assemblies.Any())
-				ScanCallingAssembly();
-			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
-		}
-
-		private void AddPartsExportedBy(object pluggable)
-		{
-			var exportableProperties = pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>());
-			foreach (var prop in exportableProperties)
-			{
-				AddPart(
-					prop.GetAttribute<ExportedPartAttribute>().AsPlugin ?? prop.PropertyType,
-					prop.GetValue(pluggable, null));
-			}
-		}
-
 		// use
-		public IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
+		public virtual bool HasConfiguredPluggable(Type pluggableType)
+		{
+			return pluggableConfigs.ContainsKey(pluggableType);
+		}
+
+		public virtual IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
 		{
 			return pluginConfigs.GetOrCreate(pluginType, () => GetPluginConfiguratorWithoutCache(pluginType));
 		}
 
-		// use
-		public IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
+		public virtual bool HasConfiguredPlugin(Type pluginType)
 		{
-			return GetPluggableConfigurator(pluggableType);
+			return pluginConfigs.ContainsKey(pluginType);
+		}
+
+		// use
+		public virtual IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
+		{
+			return GetPluggableConfigurator_Internal(pluggableType);
+		}
+
+		public virtual bool HasAssemblies()
+		{
+			return assemblies.Any();
+		}
+
+		public IContainerConfigurator Configurator
+		{
+			get { return new ContainerConfigurator(this); }
 		}
 
 		// config & use
-		private PluggableConfigurator GetPluggableConfigurator(Type pluggableType)
+		public virtual IPluggableConfigurator GetPluggableConfigurator(Type pluggableType)
 		{
-			return pluggableConfigs.GetOrCreate(pluggableType, () => PluggableConfigurator.FromAttributes(pluggableType));
+			return GetPluggableConfigurator_Internal(pluggableType);
 		}
 
-		private static Assembly GetTheCallingAssembly()
+		private PluggableConfigurator GetPluggableConfigurator_Internal(Type pluggableType)
 		{
-			Assembly thisAssembly = Assembly.GetExecutingAssembly();
-			StackFrame[] frames = new StackTrace(false).GetFrames() ?? new StackFrame[0];
-			return
-				frames
-					.Select(f => f.GetMethod().DeclaringType.Assembly)
-					.First(a => a != thisAssembly);
+			return pluggableConfigs.GetOrCreate(pluggableType, () => PluggableConfigurator.FromAttributes(pluggableType));
 		}
 
 		private PluginConfigurator GetPluginConfiguratorWithoutCache(Type pluginType)
@@ -161,11 +97,6 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
-		}
-
-		public bool HasAssemblies()
-		{
-			return assemblies.Any();
 		}
 	}
 }

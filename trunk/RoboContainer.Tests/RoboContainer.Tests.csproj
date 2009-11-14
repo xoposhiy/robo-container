@@ -65,6 +65,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="TestingExtensions.cs" />
+    <Compile Include="With\With_Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RoboContainer\RoboContainer.csproj">

@@ -6,7 +6,7 @@ namespace RoboContainer.Impl
 {
 	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin
 	{
-		private readonly ContainerConfiguration configuration;
+		private readonly IContainerConfiguration configuration;
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private IConfiguredPluggable createdPluggable;
