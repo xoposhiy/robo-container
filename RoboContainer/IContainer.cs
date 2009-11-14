@@ -11,5 +11,6 @@ namespace RoboContainer
 		IEnumerable<object> GetAll(Type pluginType);
 		IEnumerable<Type> GetPluggableTypesFor<TPlugin>();
 		IEnumerable<Type> GetPluggableTypesFor(Type pluginType);
+		IContainer With(Action<IContainerConfigurator> configure);
 	}
 }

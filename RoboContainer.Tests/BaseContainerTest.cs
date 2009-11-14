@@ -8,14 +8,14 @@ namespace DIContainer.Tests
 		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.ForPlugin(pluginType).PluggableIs(pluggableType);
+			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
 			return containerConfiguration;
 		}
 
 		public static ContainerConfiguration ConfigureAndCheckThat(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.ForPlugin(pluginType).PluggableIs(pluggableType);
+			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
 			containerConfiguration.CheckThat(pluginType, pluggableType);
 			return containerConfiguration;
 		}

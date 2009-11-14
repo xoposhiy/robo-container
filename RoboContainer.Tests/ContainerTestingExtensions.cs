@@ -8,12 +8,11 @@ namespace DIContainer.Tests
 {
 	public static class ContainerTestingExtensions
 	{
-
 		public static ContainerConfiguration Configure(
 			this ContainerConfiguration configuration, Type pluginType,
 			Type pluggableType)
 		{
-			configuration.ForPlugin(pluginType).PluggableIs(pluggableType);
+			configuration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
 			return configuration;
 		}
 

@@ -51,10 +51,12 @@
     <Compile Include="IEnrichablePluggable.cs" />
     <Compile Include="IgnoredPluggableAttribute.cs" />
     <Compile Include="Impl\ByPluginConfiguredPluggable.cs" />
+    <Compile Include="Impl\ContainerConfigurator.cs" />
     <Compile Include="Impl\DeveloperMistake.cs" />
     <Compile Include="Impl\GenericTypes.cs" />
     <Compile Include="Impl\IConfiguredPluggable.cs" />
     <Compile Include="Impl\IConfiguredPlugin.cs" />
+    <Compile Include="Impl\IContainerConfiguration.cs" />
     <Compile Include="Impl\InstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
     <Compile Include="ContainerConstructorAttribute.cs" />
@@ -65,6 +67,7 @@
     <Compile Include="Impl\IInstanceFactory.cs" />
     <Compile Include="Impl\PluggableConfigurator.cs" />
     <Compile Include="Impl\PluginConfigurator.cs" />
+    <Compile Include="Impl\ScopedConfiguration.cs" />
     <Compile Include="Impl\TypeExtensions.cs" />
     <Compile Include="InstanceLifetime.cs" />
     <Compile Include="IPluggableConfigurator.cs" />
