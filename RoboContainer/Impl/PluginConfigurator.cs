@@ -11,6 +11,7 @@ namespace RoboContainer.Impl
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
+		private readonly List<IContractRequirement> contracts = new List<IContractRequirement>();
 
 		public PluginConfigurator(ContainerConfiguration configuration, Type pluginType)
 		{
@@ -82,6 +83,12 @@ namespace RoboContainer.Impl
 					});
 		}
 
+		public IPluginConfigurator RequireContracts(params string[] requiredContracts)
+		{
+			contracts.AddRange(requiredContracts.Select(c => (IContractRequirement)new NamedRequirement(c)));
+			return this;
+		}
+
 		public IPluginConfigurator<TPlugin> TypedConfigurator<TPlugin>()
 		{
 			return new PluginConfigurator<TPlugin>(this);
@@ -124,7 +131,8 @@ namespace RoboContainer.Impl
 				configuration.GetScannableTypes()
 					.Where(t => !IsIgnored(t))
 					.Select(t => TryGetConfiguredPluggable(t))
-					.Where(t => t != null)
+					.Where(pluggable => pluggable != null)
+					.Where(p => contracts.All(req => p.Contracts.Any(c => c.Satisfy(req))))
 					.ToArray();
 		}
 
@@ -168,60 +176,6 @@ namespace RoboContainer.Impl
 				result.ExplicitlySetPluggable =
 					GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(genericDefinition.ExplicitlySetPluggable, pluginType);
 			return result;
-		}
-	}
-
-	internal class ByDelegatePluggable : IConfiguredPluggable
-	{
-		private readonly CreatePluggableDelegate createPluggable;
-		private readonly PluginConfigurator pluginConfigurator;
-
-		public ByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate createPluggable)
-		{
-			this.pluginConfigurator = pluginConfigurator;
-			this.createPluggable = createPluggable;
-		}
-
-		public Type PluggableType
-		{
-			get { return null; }
-		}
-
-		public bool Ignored
-		{
-			get { return false; }
-		}
-
-		public InstanceLifetime Scope
-		{
-			get { return pluginConfigurator.Scope; }
-		}
-
-		public EnrichPluggableDelegate EnrichPluggable
-		{
-			get { return pluginConfigurator.EnrichPluggable; }
-		}
-
-		public IInstanceFactory GetFactory()
-		{
-			return new DelegateInstanceFactory(Scope, EnrichPluggable, createPluggable);
-		}
-	}
-
-	internal class DelegateInstanceFactory : BaseInstanceFactory
-	{
-		private readonly CreatePluggableDelegate createPluggable;
-
-		public DelegateInstanceFactory(InstanceLifetime scope, EnrichPluggableDelegate enrichPluggable,
-		                               CreatePluggableDelegate createPluggable)
-			: base(null, scope, enrichPluggable)
-		{
-			this.createPluggable = createPluggable;
-		}
-
-		protected override object CreatePluggable(Container container, Type typeToCreate)
-		{
-			return createPluggable(container, typeToCreate);
 		}
 	}
 
@@ -284,6 +238,12 @@ namespace RoboContainer.Impl
 						enrichPlugin(pluggable);
 						return pluggable;
 					});
+		}
+
+		public IPluginConfigurator<TPlugin> RequireContracts(params string[] requiredContracts)
+		{
+			realConfigurator.RequireContracts(requiredContracts);
+			return this;
 		}
 	}
 }

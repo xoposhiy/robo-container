@@ -1,5 +1,5 @@
 ﻿using System;
-using RoboContainer;
+using System.Collections.Generic;
 
 namespace RoboContainer.Impl
 {
@@ -53,9 +53,14 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = CreateFactory());
 		}
 
+		public IEnumerable<IDeclaredContract> Contracts
+		{
+			get { return configuredPluggable.Contracts; }
+		}
+
 		private IInstanceFactory CreateFactory()
 		{
-			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.EnrichPluggable != null)
+			if (pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.EnrichPluggable != null)
 				return new InstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

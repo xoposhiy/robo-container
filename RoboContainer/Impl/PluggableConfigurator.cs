@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoboContainer.Impl
@@ -6,11 +7,14 @@ namespace RoboContainer.Impl
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
 		private IInstanceFactory factory;
+		private readonly List<IDeclaredContract> contracts = new List<IDeclaredContract>();
 
 		private PluggableConfigurator(Type pluggableType)
 		{
 			PluggableType = pluggableType;
 		}
+
+		public IEnumerable<IDeclaredContract> Contracts { get { return contracts; }}
 
 		public Type PluggableType { get; private set; }
 
@@ -56,6 +60,12 @@ namespace RoboContainer.Impl
 						enrichPluggable(pluggable);
 						return pluggable;
 					});
+		}
+
+		public IPluggableConfigurator DeclareContracts(params string[] declaredContracts)
+		{
+			contracts.AddRange(declaredContracts.Select(c => (IDeclaredContract)new NamedContract(c)));
+			return this;
 		}
 
 		public static PluggableConfigurator FromAttributes(Type pluggableType)
@@ -111,6 +121,12 @@ namespace RoboContainer.Impl
 						enrichPluggable(pluggable);
 						return pluggable;
 					});
+		}
+
+		public IPluggableConfigurator<TPluggable> DeclareContracts(params string[] contracts)
+		{
+			pluggableConfigurator.DeclareContracts(contracts);
+			return this;
 		}
 	}
 }
