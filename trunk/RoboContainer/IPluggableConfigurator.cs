@@ -12,6 +12,7 @@ namespace RoboContainer
 		IPluggableConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable);
 		IPluggableConfigurator<TPluggable> TypedConfigurator<TPluggable>();
 		IPluggableConfigurator EnrichWith(Action<object> enrichPluggable);
+		IPluggableConfigurator DeclareContracts(params string[] contracts);
 	}
 
 	public interface IPluggableConfigurator<TPluggable>
@@ -20,5 +21,6 @@ namespace RoboContainer
 		IPluggableConfigurator<TPluggable> Ignore();
 		IPluggableConfigurator<TPluggable> InitializeWith(EnrichPluggableDelegate<TPluggable> enrichPluggable);
 		IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> enrichPluggable);
+		IPluggableConfigurator<TPluggable> DeclareContracts(params string[] contracts);
 	}
 }

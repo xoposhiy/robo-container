@@ -53,6 +53,7 @@
     <Compile Include="BaseContainerTest.cs" />
     <Compile Include="CommonFunctionality\Container_Test.cs" />
     <Compile Include="ContainerTestingExtensions.cs" />
+    <Compile Include="Contracts\Contracts_Test.cs" />
     <Compile Include="Generics\Generics_Test.cs" />
     <Compile Include="Generics\TestClasses.cs" />
     <Compile Include="Laziness\Lazy_Test.cs" />

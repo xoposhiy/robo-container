@@ -15,6 +15,7 @@ namespace RoboContainer
 		IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate createPluggable);
 		IPluginConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable);
 		IPluginConfigurator EnrichWith(Action<object> enrichPlugin);
+		IPluginConfigurator RequireContracts(params string[] requiredContracts);
 		IPluginConfigurator<TPlugin> TypedConfigurator<TPlugin>();
 	}
 
@@ -28,5 +29,6 @@ namespace RoboContainer
 		IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
 		IPluginConfigurator<TPlugin> EnrichWith(EnrichPluggableDelegate<TPlugin> enrichPluggable);
 		IPluginConfigurator<TPlugin> EnrichWith(Action<TPlugin> enrichPlugin);
+		IPluginConfigurator<TPlugin> RequireContracts(params string[] requiredContracts);
 	}
 }
