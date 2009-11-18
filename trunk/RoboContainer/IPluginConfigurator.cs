@@ -5,30 +5,28 @@ namespace RoboContainer
 	public delegate object CreatePluggableDelegate(Container container, Type pluginType);
 	public delegate TPlugin CreatePluggableDelegate<TPlugin>(Container container, Type pluginType);
 
-	public interface IPluginConfigurator
+	public interface IGenericPluginConfigurator<TPC>
 	{
-		IPluginConfigurator Ignore<TPluggable>();
-		IPluginConfigurator Ignore(params Type[] pluggableTypes);
-		IPluginConfigurator PluggableIs<TPluggable>();
-		IPluginConfigurator PluggableIs(Type pluggableType);
-		IPluginConfigurator SetScope(InstanceLifetime lifetime);
+		TPC Ignore<TPluggable>();
+		TPC Ignore(params Type[] pluggableTypes);
+		TPC PluggableIs<TPluggable>();
+		TPC PluggableIs(Type pluggableType);
+		TPC SetScope(InstanceLifetime lifetime);
+		TPC RequireContracts(params string[] requiredContracts);
+	}
+	
+	public interface IPluginConfigurator : IGenericPluginConfigurator<IPluginConfigurator>
+	{
 		IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate createPluggable);
-		IPluginConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable);
-		IPluginConfigurator EnrichWith(Action<object> enrichPlugin);
-		IPluginConfigurator RequireContracts(params string[] requiredContracts);
+		IPluginConfigurator InitializeWith(InitializePluggableDelegate initializePluggable);
+		IPluginConfigurator InitializeWith(Action<object> initializePlugin);
 		IPluginConfigurator<TPlugin> TypedConfigurator<TPlugin>();
 	}
 
-	public interface IPluginConfigurator<TPlugin>
+	public interface IPluginConfigurator<TPlugin> : IGenericPluginConfigurator<IPluginConfigurator<TPlugin>>
 	{
-		IPluginConfigurator<TPlugin> Ignore<TPluggable>();
-		IPluginConfigurator<TPlugin> Ignore(params Type[] pluggableTypes);
-		IPluginConfigurator<TPlugin> PluggableIs<TPluggable>();
-		IPluginConfigurator<TPlugin> PluggableIs(Type pluggableType);
-		IPluginConfigurator<TPlugin> SetScope(InstanceLifetime lifetime);
 		IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
-		IPluginConfigurator<TPlugin> EnrichWith(EnrichPluggableDelegate<TPlugin> enrichPluggable);
-		IPluginConfigurator<TPlugin> EnrichWith(Action<TPlugin> enrichPlugin);
-		IPluginConfigurator<TPlugin> RequireContracts(params string[] requiredContracts);
+		IPluginConfigurator<TPlugin> InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);
+		IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin);
 	}
 }

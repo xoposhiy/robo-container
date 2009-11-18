@@ -1,18 +1,19 @@
 ﻿using System;
-using RoboContainer;
+using System.Linq;
+using System.Reflection;
 
 namespace RoboContainer.Impl
 {
-	abstract class BaseInstanceFactory : IInstanceFactory
+	internal abstract class BaseInstanceFactory : IInstanceFactory
 	{
+		private readonly InitializePluggableDelegate initializePluggable;
 		private readonly InstanceLifetime scope;
-		private readonly EnrichPluggableDelegate enrichPluggable;
 		private object o;
 
-		protected BaseInstanceFactory(Type pluggableType, InstanceLifetime scope, EnrichPluggableDelegate enrichPluggable)
+		protected BaseInstanceFactory(Type pluggableType, InstanceLifetime scope, InitializePluggableDelegate initializePluggable)
 		{
 			this.scope = scope;
-			this.enrichPluggable = enrichPluggable;
+			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 		}
 
@@ -20,30 +21,46 @@ namespace RoboContainer.Impl
 
 		public object GetOrCreate(Container container, Type typeToCreate)
 		{
-			return (o == null || scope == InstanceLifetime.PerRequest) ? (o = Construct(container, typeToCreate)) : o;
+			if (o == null || scope == InstanceLifetime.PerRequest)
+				container.LastConstructionLog.Constructed((o = Construct(container, typeToCreate)).GetType());
+			else
+				container.LastConstructionLog.Reused(o.GetType());
+			return o;
 		}
 
 		private object Construct(Container container, Type typeToCreate)
 		{
-			var constructed = CreatePluggable(container, typeToCreate);
-			var enrichablePluggable = constructed as IEnrichablePluggable;
-			if (enrichablePluggable != null) enrichablePluggable.Enrich(container);
-			return enrichPluggable != null ? enrichPluggable(constructed, container) : constructed;
+			object constructed = CreatePluggable(container, typeToCreate);
+			var initializablePluggable = constructed as IInitializablePluggable;
+			if (initializablePluggable != null) initializablePluggable.Initialize(container);
+			return initializePluggable != null ? initializePluggable(constructed, container) : constructed;
 		}
 
-		protected abstract object CreatePluggable(Container container, Type typeToCreate);
+		protected abstract object CreatePluggable(Container container, Type pluginToCreate);
 	}
 
 	internal class InstanceFactory : BaseInstanceFactory
 	{
+		private readonly IConfiguredPluggable configuration;
+
 		public InstanceFactory(IConfiguredPluggable configuration)
-			: base(configuration.PluggableType, configuration.Scope, configuration.EnrichPluggable)
+			: base(configuration.PluggableType, configuration.Scope, configuration.InitializePluggable)
 		{
+			this.configuration = configuration;
 		}
 
-		protected override object CreatePluggable(Container container, Type typeToCreate)
+		protected override object CreatePluggable(Container container, Type pluginToCreate)
 		{
-			return InstanceType.Construct(container);
+			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor();
+			object[] arguments =
+				constructorInfo.GetParameters()
+					.Select(
+					(p, i) =>
+					container.Get(
+						p.ParameterType,
+						configuration.Dependencies.ElementAt(i).Contracts.ToArray()
+						)).ToArray();
+			return constructorInfo.Invoke(arguments);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace RoboContainer
 {
-	public class Lazy<TPlugin> : IEnrichablePluggable
+	public class Lazy<TPlugin> : IInitializablePluggable
 	{
 		public static explicit operator TPlugin(Lazy<TPlugin> lazy)
 		{
@@ -14,7 +14,7 @@
 
 		private IContainer container;
 		
-		public void Enrich(IContainer aContainer)
+		public void Initialize(IContainer aContainer)
 		{
 			container = aContainer;
 		}

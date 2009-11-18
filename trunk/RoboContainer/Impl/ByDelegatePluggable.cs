@@ -29,19 +29,24 @@ namespace RoboContainer.Impl
 			get { return pluginConfigurator.Scope; }
 		}
 
-		public EnrichPluggableDelegate EnrichPluggable
+		public InitializePluggableDelegate InitializePluggable
 		{
-			get { return pluginConfigurator.EnrichPluggable; }
+			get { return pluginConfigurator.InitializePluggable; }
 		}
 
 		public IInstanceFactory GetFactory()
 		{
-			return new DelegateInstanceFactory(Scope, EnrichPluggable, createPluggable);
+			return new DelegateInstanceFactory(Scope, InitializePluggable, createPluggable);
 		}
 
 		public IEnumerable<IDeclaredContract> Contracts
 		{
 			get { yield break; }
+		}
+
+		public IEnumerable<IConfiguredDependency> Dependencies
+		{
+			get { throw new NotSupportedException(); }
 		}
 	}
 }

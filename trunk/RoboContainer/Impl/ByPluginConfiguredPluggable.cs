@@ -30,21 +30,21 @@ namespace RoboContainer.Impl
 			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Scope : configuredPluggable.Scope; }
 		}
 
-		public EnrichPluggableDelegate EnrichPluggable
+		public InitializePluggableDelegate InitializePluggable
 		{
 			get
 			{
 				return
-					pluginConfigurator.EnrichPluggable == null
+					pluginConfigurator.InitializePluggable == null
 						?
-							configuredPluggable.EnrichPluggable
+							configuredPluggable.InitializePluggable
 						:
-							configuredPluggable.EnrichPluggable == null
+							configuredPluggable.InitializePluggable == null
 								?
-									pluginConfigurator.EnrichPluggable
+									pluginConfigurator.InitializePluggable
 								:
 									(o, container) =>
-									pluginConfigurator.EnrichPluggable(configuredPluggable.EnrichPluggable(o, container), container);
+									pluginConfigurator.InitializePluggable(configuredPluggable.InitializePluggable(o, container), container);
 			}
 		}
 
@@ -58,9 +58,14 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Contracts; }
 		}
 
+		public IEnumerable<IConfiguredDependency> Dependencies
+		{
+			get { return configuredPluggable.Dependencies; }
+		}
+
 		private IInstanceFactory CreateFactory()
 		{
-			if (pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.EnrichPluggable != null)
+			if (pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
 				return new InstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

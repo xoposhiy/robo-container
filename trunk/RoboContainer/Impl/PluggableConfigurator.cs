@@ -1,20 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace RoboContainer.Impl
 {
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
-		private IInstanceFactory factory;
 		private readonly List<IDeclaredContract> contracts = new List<IDeclaredContract>();
+		private DependencyConfigurator[] dependencies;
+		private IInstanceFactory factory;
+		private ConstructorInfo injectableConstructor;
 
 		private PluggableConfigurator(Type pluggableType)
 		{
 			PluggableType = pluggableType;
 		}
 
-		public IEnumerable<IDeclaredContract> Contracts { get { return contracts; }}
+		protected DependencyConfigurator[] Dependencies
+		{
+			get { return dependencies ?? (dependencies = CreateDependencies()); }
+		}
+
+		private DependencyConfigurator[] CreateDependencies()
+		{
+			var dependencyConfigurators = new DependencyConfigurator[InjectableConstructor.GetParameters().Length];
+			for (int i = 0; i < dependencyConfigurators.Length; i++)
+				dependencyConfigurators[i] = new DependencyConfigurator();
+			return dependencyConfigurators;
+		}
+
+		protected ConstructorInfo InjectableConstructor
+		{
+			get { return injectableConstructor ?? (injectableConstructor = PluggableType.GetInjectableConstructor()); }
+		}
+
+		IEnumerable<IConfiguredDependency> IConfiguredPluggable.Dependencies
+		{
+			get { return Dependencies; }
+		}
+
+		public IEnumerable<IDeclaredContract> Contracts
+		{
+			get { return contracts; }
+		}
 
 		public Type PluggableType { get; private set; }
 
@@ -22,7 +51,7 @@ namespace RoboContainer.Impl
 
 		public InstanceLifetime Scope { get; private set; }
 
-		public EnrichPluggableDelegate EnrichPluggable { get; private set; }
+		public InitializePluggableDelegate InitializePluggable { get; private set; }
 
 		public IInstanceFactory GetFactory()
 		{
@@ -41,9 +70,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable)
+		public IDependencyConfigurator Dependency(string dependencyName)
 		{
-			EnrichPluggable = enrichPluggable;
+			int index = GetParameterIndex(dependencyName);
+			return Dependencies[index] ?? (Dependencies[index] = new DependencyConfigurator());
+		}
+
+		public IPluggableConfigurator InitializeWith(InitializePluggableDelegate initializePluggable)
+		{
+			InitializePluggable = initializePluggable;
 			return this;
 		}
 
@@ -52,20 +87,28 @@ namespace RoboContainer.Impl
 			return new PluggableConfigurator<TPluggable>(this);
 		}
 
-		public IPluggableConfigurator EnrichWith(Action<object> enrichPluggable)
+		public IPluggableConfigurator InitializeWith(Action<object> initializePluggable)
 		{
-			return EnrichWith(
+			return InitializeWith(
 				(pluggable, container) =>
 					{
-						enrichPluggable(pluggable);
+						initializePluggable(pluggable);
 						return pluggable;
 					});
 		}
 
 		public IPluggableConfigurator DeclareContracts(params string[] declaredContracts)
 		{
-			contracts.AddRange(declaredContracts.Select(c => (IDeclaredContract)new NamedContract(c)));
+			contracts.AddRange(declaredContracts.Select(c => (IDeclaredContract) new NamedContract(c)));
 			return this;
+		}
+
+		private int GetParameterIndex(string dependencyName)
+		{
+			ParameterInfo[] constructorParameters = InjectableConstructor.GetParameters();
+			for (int i = 0; i < constructorParameters.Length; i++)
+				if (constructorParameters[i].Name == dependencyName) return i;
+			throw new ContainerException("У конструктора типа {0} нет параметра с именем {1}", PluggableType, dependencyName);
 		}
 
 		public static PluggableConfigurator FromAttributes(Type pluggableType)
@@ -107,18 +150,23 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> InitializeWith(EnrichPluggableDelegate<TPluggable> enrichPluggable)
+		public IDependencyConfigurator Dependency(string dependencyName)
 		{
-			pluggableConfigurator.EnrichWith((pluggable, container) => enrichPluggable((TPluggable) pluggable, container));
+			return pluggableConfigurator.Dependency(dependencyName);
+		}
+
+		public IPluggableConfigurator<TPluggable> InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable)
+		{
+			pluggableConfigurator.InitializeWith((pluggable, container) => initializePluggable((TPluggable) pluggable, container));
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> enrichPluggable)
+		public IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> initializePluggable)
 		{
 			return InitializeWith(
 				(pluggable, container) =>
 					{
-						enrichPluggable(pluggable);
+						initializePluggable(pluggable);
 						return pluggable;
 					});
 		}

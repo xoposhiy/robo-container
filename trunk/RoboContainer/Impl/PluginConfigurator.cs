@@ -22,7 +22,7 @@ namespace RoboContainer.Impl
 		public Type PluginType { get; private set; }
 		public InstanceLifetime Scope { get; private set; }
 		public bool ScopeSpecified { get; private set; }
-		public EnrichPluggableDelegate EnrichPluggable { get; private set; }
+		public InitializePluggableDelegate InitializePluggable { get; private set; }
 		public CreatePluggableDelegate CreatePluggable { get; private set; }
 		public Type ExplicitlySetPluggable { get; private set; }
 
@@ -67,18 +67,18 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator EnrichWith(EnrichPluggableDelegate enrichPluggable)
+		public IPluginConfigurator InitializeWith(InitializePluggableDelegate initializePluggable)
 		{
-			EnrichPluggable = enrichPluggable;
+			InitializePluggable = initializePluggable;
 			return this;
 		}
 
-		public IPluginConfigurator EnrichWith(Action<object> enrichPlugin)
+		public IPluginConfigurator InitializeWith(Action<object> initializePlugin)
 		{
-			return EnrichWith(
+			return InitializeWith(
 				(pluggable, container) =>
 					{
-						enrichPlugin(pluggable);
+						initializePlugin(pluggable);
 						return pluggable;
 					});
 		}
@@ -149,7 +149,7 @@ namespace RoboContainer.Impl
 			if (pluggableType == null) return null;
 			if (pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			if (ScopeSpecified && Scope != configuredPluggable.Scope || EnrichPluggable != null)
+			if (ScopeSpecified && Scope != configuredPluggable.Scope || InitializePluggable != null)
 				return pluggableConfigs.GetOrCreate(pluggableType, () => new ByPluginConfiguredPluggable(this, configuredPluggable));
 			return configuredPluggable;
 		}
@@ -170,7 +170,7 @@ namespace RoboContainer.Impl
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
 			if (genericDefinition.ScopeSpecified)
 				result.SetScope(genericDefinition.Scope);
-			result.EnrichPluggable = genericDefinition.EnrichPluggable;
+			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.CreatePluggable = genericDefinition.CreatePluggable;
 			if (genericDefinition.ExplicitlySetPluggable != null)
 				result.ExplicitlySetPluggable =
@@ -224,18 +224,18 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> EnrichWith(EnrichPluggableDelegate<TPlugin> enrichPluggable)
+		public IPluginConfigurator<TPlugin> InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable)
 		{
-			realConfigurator.EnrichWith((plugin, container) => enrichPluggable((TPlugin) plugin, container));
+			realConfigurator.InitializeWith((plugin, container) => initializePluggable((TPlugin) plugin, container));
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> EnrichWith(Action<TPlugin> enrichPlugin)
+		public IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin)
 		{
-			return EnrichWith(
+			return InitializeWith(
 				(pluggable, container) =>
 					{
-						enrichPlugin(pluggable);
+						initializePlugin(pluggable);
 						return pluggable;
 					});
 		}

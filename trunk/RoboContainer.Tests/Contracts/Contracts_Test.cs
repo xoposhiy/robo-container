@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.Contracts
 {
@@ -6,7 +7,7 @@ namespace RoboContainer.Tests.Contracts
 	public class Contracts_Test
 	{
 		[Test]
-		public void Test()
+		public void Can_declare_contracts_for_plugin()
 		{
 			var container = new Container(
 				c =>
@@ -19,6 +20,39 @@ namespace RoboContainer.Tests.Contracts
 					}
 				);
 			Assert.IsInstanceOf<PluggableWithContracts4>(container.Get<IPluginWithContract>());
+		}
+
+		[Test]
+		public void Can_inject_dependency_with_declared_contract()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast");
+					c.ForPluggable<PluginWithDeclarecContract>().Dependency("plugin").RequireContract("fast");
+
+				});
+			var plugin = container.Get<PluginWithDeclarecContract>();
+			Assert.IsInstanceOf<PluggableWithContracts1>(plugin.Plugin);
+		}
+
+		[Test]
+		public void Can_get_pluggable_with_required_contracts()
+		{
+			var container = new Container(
+				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast"));
+			var plugin = container.Get<IPluginWithContract>(new NamedRequirement("fast"));
+			Assert.IsInstanceOf<PluggableWithContracts1>(plugin);
+		}
+	}
+
+	public class PluginWithDeclarecContract
+	{
+		public IPluginWithContract Plugin { get; set; }
+
+		public PluginWithDeclarecContract(IPluginWithContract plugin)
+		{
+			Plugin = plugin;
 		}
 	}
 
