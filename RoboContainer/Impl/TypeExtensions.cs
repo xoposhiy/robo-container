@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RoboContainer;
 
 namespace RoboContainer.Impl
 {
@@ -10,14 +9,14 @@ namespace RoboContainer.Impl
 	{
 		public static bool Constructable(this Type type)
 		{
-			return GetInjectableConstructors(type).Any();
+			return !type.IsAbstract && GetInjectableConstructors(type).Any();
 		}
 
 		public static TAttribute FindAttribute<TAttribute>(this MemberInfo memberInfo) where TAttribute : Attribute
 		{
 			return memberInfo.FindAttributes<TAttribute>().SingleOrDefault();
-
 		}
+
 		public static TAttribute GetAttribute<TAttribute>(this MemberInfo memberInfo) where TAttribute : Attribute
 		{
 			return memberInfo.FindAttributes<TAttribute>().Single();
@@ -25,7 +24,7 @@ namespace RoboContainer.Impl
 
 		public static TResult FindAttribute<TAttribute, TResult>(this MemberInfo memberInfo, Func<TAttribute, TResult> convertAttribute) where TAttribute : Attribute
 		{
-			var att = memberInfo.FindAttributes<TAttribute>().SingleOrDefault();
+			TAttribute att = memberInfo.FindAttributes<TAttribute>().SingleOrDefault();
 			return att == null ? default(TResult) : convertAttribute(att);
 		}
 
@@ -36,7 +35,7 @@ namespace RoboContainer.Impl
 
 		public static IEnumerable<TAttribute> FindAttributes<TAttribute>(this MemberInfo memberInfo) where TAttribute : Attribute
 		{
-			return memberInfo.GetCustomAttributes(typeof(TAttribute), false).Cast<TAttribute>();
+			return memberInfo.GetCustomAttributes(typeof (TAttribute), false).Cast<TAttribute>();
 		}
 
 		public static Type FindInterfaceOrBaseClass(this Type type, Type interfaceOrBaseClass)
@@ -78,25 +77,44 @@ namespace RoboContainer.Impl
 				|| (parameterType.IsArray && IsSimpleType(parameterType.GetElementType()));
 		}
 
-		private static object Construct(ConstructorInfo constructor, Container container)
-		{
-			object[] arguments = constructor.GetParameters().Select(p => container.Get(p.ParameterType)).ToArray();
-			return constructor.Invoke(arguments);
-		}
-
 		public static object Construct(this Type type, Container container)
 		{
-			var constructors = GetInjectableConstructors(type);
-			if (constructors.Count() == 1) return Construct(constructors.First(), container);
+			ConstructorInfo constructorInfo = GetInjectableConstructor(type);
+			object[] arguments = constructorInfo.GetParameters().Select(p => container.Get(p.ParameterType)).ToArray();
+			return constructorInfo.Invoke(arguments);
+		}
+
+		public static ConstructorInfo GetInjectableConstructor(this Type type)
+		{
+			IEnumerable<ConstructorInfo> constructors = GetInjectableConstructors(type);
 			if (constructors.Count() == 0) throw new ContainerException("Type {0} has no injectable constructors", type);
-			IEnumerable<ConstructorInfo> marked =
-				constructors.Where(c => c.GetCustomAttributes(typeof (ContainerConstructorAttribute), false).Any());
-			if (marked.Count() == 1) return Construct(marked.First(), container);
-			if (marked.Count() > 1)
-				throw new ContainerException("Type {0} has more than one injectable constructors marked with ContainerConstructorAttribute",
-				                             type);
-			throw new ContainerException(
-				"Type {0} has more than one injectable constructors but no one is marked with ContainerConstructorAttribute", type);
+			if (constructors.Count() > 1)
+			{
+				IEnumerable<ConstructorInfo> marked =
+					constructors.Where(c => c.GetCustomAttributes(typeof (ContainerConstructorAttribute), false).Any());
+				if (marked.Count() > 1)
+					throw new ContainerException(
+						"Type {0} has more than one injectable constructors marked with ContainerConstructorAttribute",
+						type);
+				if (marked.Count() == 0)
+					throw new ContainerException(
+						"Type {0} has more than one injectable constructors but no one is marked with ContainerConstructorAttribute", type);
+				return marked.First();
+			}
+			return constructors.First();
+		}
+
+		public static ConstructorInfo FindInjectableConstructor(this Type type)
+		{
+			IEnumerable<ConstructorInfo> constructors = GetInjectableConstructors(type);
+			if(constructors.Count() == 1) return constructors.Single();
+			if(constructors.Count() > 1)
+			{
+				IEnumerable<ConstructorInfo> marked =
+					constructors.Where(c => c.GetCustomAttributes(typeof(ContainerConstructorAttribute), false).Any());
+				if(marked.Count() == 1) return marked.Single();
+			}
+			return null;
 		}
 	}
 }

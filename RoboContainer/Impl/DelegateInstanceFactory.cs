@@ -6,16 +6,16 @@ namespace RoboContainer.Impl
 	{
 		private readonly CreatePluggableDelegate createPluggable;
 
-		public DelegateInstanceFactory(InstanceLifetime scope, EnrichPluggableDelegate enrichPluggable,
+		public DelegateInstanceFactory(InstanceLifetime scope, InitializePluggableDelegate initializePluggable,
 		                               CreatePluggableDelegate createPluggable)
-			: base(null, scope, enrichPluggable)
+			: base(null, scope, initializePluggable)
 		{
 			this.createPluggable = createPluggable;
 		}
 
-		protected override object CreatePluggable(Container container, Type typeToCreate)
+		protected override object CreatePluggable(Container container, Type pluginToCreate)
 		{
-			return createPluggable(container, typeToCreate);
+			return createPluggable(container, pluginToCreate);
 		}
 	}
 }

@@ -8,8 +8,9 @@ namespace RoboContainer.Impl
 		Type PluggableType { get; }
 		bool Ignored { get; }
 		InstanceLifetime Scope { get; }
-		EnrichPluggableDelegate EnrichPluggable { get; }
+		InitializePluggableDelegate InitializePluggable { get; }
 		IInstanceFactory GetFactory();
 		IEnumerable<IDeclaredContract> Contracts { get; }
+		IEnumerable<IConfiguredDependency> Dependencies { get; }
 	}
 }

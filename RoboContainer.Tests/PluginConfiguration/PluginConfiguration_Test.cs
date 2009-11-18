@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using RoboContainer;
 
@@ -10,79 +11,80 @@ namespace DIContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_create_pluggable_by_delegate()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().CreatePluggableBy((cont, pluginType) => new Foo0()));
+			var container = new Container(c => c.ForPlugin<IFoo>().CreatePluggableBy((cont, pluginType) => new Foo0(new Foo1())));
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>());
 		}
 
 		[Test]
-		public void can_create_pluggable_by_delegate_and_enrich()
+		public void can_create_pluggable_by_delegate_and_initialize()
 		{
 			var container = new Container(
 				c =>
-				c.ForPlugin<IEnrichable>()
-					.CreatePluggableBy((cont, pluginType) => new Enrichable())
-					.EnrichWith(
-					(enrichable, cont) =>
+				c.ForPlugin<IInitializable>()
+					.CreatePluggableBy((cont, pluginType) => new Initializable())
+					.InitializeWith(
+					(initializable, cont) =>
 						{
-							enrichable.EnrichedByPlugin = true;
-							return enrichable;
+							initializable.InitializedByPlugin = true;
+							return initializable;
 						}
 					));
-			Assert.IsTrue(container.Get<IEnrichable>().EnrichedByPlugin);
-			Assert.IsFalse(container.Get<Enrichable>().EnrichedByPlugin);
+			Assert.IsTrue(container.Get<IInitializable>().InitializedByPlugin);
+			Assert.IsFalse(container.Get<Initializable>().InitializedByPlugin);
 		}
 
 		[Test]
-		public void can_enrich_plugin()
+		public void can_initialize_plugin()
 		{
 			var container = new Container(
 				c =>
-				c.ForPlugin<IEnrichable>()
-					.EnrichWith(
+				c.ForPlugin<IInitializable>()
+					.InitializeWith(
 					(e, cont) =>
 						{
-							e.EnrichedByPlugin = true;
+							e.InitializedByPlugin = true;
 							return e;
 						}));
-			Assert.IsTrue(container.Get<IEnrichable>().EnrichedByPlugin);
-			Assert.IsFalse(container.Get<Enrichable>().EnrichedByPlugin);
+			Assert.IsTrue(container.Get<IInitializable>().InitializedByPlugin);
+			Assert.IsFalse(container.Get<Initializable>().InitializedByPlugin);
 		}
 
 		[Test]
-		public void can_enrich_plugin_and_pluggable()
+		public void can_initialize_plugin_and_pluggable()
 		{
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<IEnrichable>()
-							.EnrichWith(
-							(e, cont) =>
-								{
-									Assert.IsTrue(e.EnrichedByPlugguble);
-									e.EnrichedByPlugin = true;
-									return e;
-								});
-						c.ForPluggable<Enrichable>()
+						c.ForPlugin<IInitializable>()
 							.InitializeWith(
 							(e, cont) =>
 								{
-									e.EnrichedByPlugguble = true;
+									Assert.IsTrue(e.InitializedByPlugguble);
+									e.InitializedByPlugin = true;
+									return e;
+								});
+						c.ForPluggable<Initializable>()
+							.InitializeWith(
+							(e, cont) =>
+								{
+									e.InitializedByPlugguble = true;
 									return e;
 								});
 					});
-			var iEnrichable = container.Get<IEnrichable>();
-			Assert.IsTrue(iEnrichable.EnrichedByPlugguble);
-			Assert.IsTrue(iEnrichable.EnrichedByPlugin);
-			var enrichable = container.Get<Enrichable>();
-			Assert.IsTrue(enrichable.EnrichedByPlugguble);
-			Assert.IsFalse(enrichable.EnrichedByPlugin);
+			var iInitializable = container.Get<IInitializable>();
+			Assert.IsTrue(iInitializable.InitializedByPlugguble);
+			Assert.IsTrue(iInitializable.InitializedByPlugin);
+			var initializable = container.Get<Initializable>();
+			Assert.IsTrue(initializable.InitializedByPlugguble);
+			Assert.IsFalse(initializable.InitializedByPlugin);
 		}
 
 		[Test]
 		public void can_explicitly_set_pluggable_for_plugin()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().PluggableIs<Foo0>());
+			var container = new Container(c => c.ForPlugin<IFoo>().SetScope(InstanceLifetime.Singletone).PluggableIs<Foo0>().SetScope(InstanceLifetime.PerRequest));
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>());
+			Console.WriteLine(container.LastConstructionLog);
 		}
 
 		[Test]
@@ -103,18 +105,21 @@ namespace DIContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_make_singletone_per_plugin_interface()
 		{
+			bool initialized = false;
 			var container = new Container(
 				c =>
-					{
-						c.ForPlugin<IFirst>().SetScope(InstanceLifetime.Singletone);
-						c.ForPlugin<ISecond>().SetScope(InstanceLifetime.Singletone);
-						c.ForPluggable<FirstSecond>().SetScope(InstanceLifetime.PerRequest);
-					});
+				{
+					c.ForPluggable<FirstSecond>().InitializeWith(second => initialized = true);
+					c.ForPlugin<IFirst>().SetScope(InstanceLifetime.Singletone);
+					c.ForPlugin<ISecond>().SetScope(InstanceLifetime.Singletone);
+					c.ForPluggable<FirstSecond>().SetScope(InstanceLifetime.PerRequest);
+				});
 			Assert.AreSame(container.Get<IFirst>(), container.Get<IFirst>());
 			Assert.AreSame(container.Get<ISecond>(), container.Get<ISecond>());
 			Assert.AreNotSame(container.Get<IFirst>(), container.Get<ISecond>());
 			Assert.AreNotSame(container.Get<IFirst>(), container.Get<FirstSecond>());
 			Assert.AreNotSame(container.Get<ISecond>(), container.Get<FirstSecond>());
+			Assert.IsTrue(initialized);
 		}
 
 		[Test]
@@ -148,7 +153,7 @@ namespace DIContainer.Tests.PluginConfiguration
 		[Test]
 		public void pluggable_created_by_delegate_not_returned_by_GetPluggableTypes()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().CreatePluggableBy((cont, pluginType) => new Foo0()));
+			var container = new Container(c => c.ForPlugin<IFoo>().CreatePluggableBy((cont, pluginType) => new Foo0(new Foo1())));
 			Assert.AreEqual(null, container.GetPluggableTypesFor<IFoo>().SingleOrDefault());
 			Assert.AreEqual(0, container.GetPluggableTypesFor<IFoo>().Count());
 		}
@@ -221,16 +226,16 @@ namespace DIContainer.Tests.PluginConfiguration
 	{
 	}
 
-	public class Enrichable : IEnrichable
+	public class Initializable : IInitializable
 	{
-		public bool EnrichedByPlugin { get; set; }
-		public bool EnrichedByPlugguble { get; set; }
+		public bool InitializedByPlugin { get; set; }
+		public bool InitializedByPlugguble { get; set; }
 	}
 
-	public interface IEnrichable
+	public interface IInitializable
 	{
-		bool EnrichedByPlugin { get; set; }
-		bool EnrichedByPlugguble { get; set; }
+		bool InitializedByPlugin { get; set; }
+		bool InitializedByPlugguble { get; set; }
 	}
 
 	public class FirstSecond : IFirst, ISecond
@@ -259,6 +264,9 @@ namespace DIContainer.Tests.PluginConfiguration
 
 	public class Foo0 : IFoo
 	{
+		public Foo0(Foo1 foo)
+		{
+		}
 	}
 
 	public class Foo1 : IFoo

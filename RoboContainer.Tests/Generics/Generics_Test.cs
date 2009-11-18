@@ -40,23 +40,23 @@ namespace DIContainer.Tests.Generics
 
 	
 		[Test]
-		public void open_generic_configuration_saves_scope_and_enrichment()
+		public void open_generic_configuration_saves_scope_and_initialization()
 		{
-			int enriched = 0;
+			int initialized = 0;
 			var container =
 				new Container(
 					c =>
 					c.ForPlugin(typeof (IBaz_of_pair<,>)).SetScope(InstanceLifetime.PerRequest)
-						.EnrichWith(
+						.InitializeWith(
 						(pluggable, cont) =>
 							{
 								Console.WriteLine(new StackTrace(true).ToString());
-								enriched++;
+								initialized++;
 								return pluggable;
 							}
 						));
 			Assert.AreNotSame(container.Get<IBaz_of_pair<string, int>>(), container.Get<IBaz_of_pair<string, int>>());
-			Assert.AreEqual(2, enriched);
+			Assert.AreEqual(2, initialized);
 		}
 
 		[Test]

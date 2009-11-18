@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using System.Linq;
 
 namespace RoboContainer.Tests.SamplesForWiki.QuickStart
@@ -202,6 +203,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				);
 			
 			var ship = container.Get<IBattleShip>();
+			Console.WriteLine(container.LastConstructionLog);
 			var anotherShip = container.Get<IBattleShip>();
 
 			// Действие InstanceLifetime.PerRequest

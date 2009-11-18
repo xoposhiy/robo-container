@@ -8,11 +8,11 @@ namespace DIContainer.Tests.PluggableConfiguration
 	public class PluggableConfiguration_Test
 	{
 		[Test]
-		public void can_enrich_pluggable()
+		public void can_initialize_pluggable()
 		{
 			var container = new Container(
 				c =>
-				c.ForPluggable<WantToBeEnriched>()
+				c.ForPluggable<WantToBeInitialized>()
 					.InitializeWith(
 					(o, cont) =>
 						{
@@ -20,7 +20,7 @@ namespace DIContainer.Tests.PluggableConfiguration
 							return o;
 						}
 					));
-			Assert.AreSame(container.Get<WantToBeEnriched>().Container, container);
+			Assert.AreSame(container.Get<WantToBeInitialized>().Container, container);
 		}
 
 		[Test]
@@ -45,7 +45,7 @@ namespace DIContainer.Tests.PluggableConfiguration
 		}
 	}
 
-	public class WantToBeEnriched
+	public class WantToBeInitialized
 	{
 		public Container Container;
 	}

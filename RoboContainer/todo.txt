@@ -10,7 +10,7 @@
 
 Расширяемый InstanceLifetime scope
 
-Человечный EnrichWith
+Человечный Initialize
 
 IDisposable
 
