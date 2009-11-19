@@ -3,7 +3,7 @@ using System.Diagnostics;
 using NUnit.Framework;
 using RoboContainer.Core;
 
-namespace DIContainer.Tests.Generics
+namespace RoboContainer.Tests.Generics
 {
 	[TestFixture]
 	public class Generics_Test : BaseContainerTest

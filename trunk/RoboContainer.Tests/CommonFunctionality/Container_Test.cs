@@ -2,7 +2,7 @@
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
-namespace DIContainer.Tests.CommonFunctionality
+namespace RoboContainer.Tests.CommonFunctionality
 {
 	[TestFixture]
 	public class Container_Test

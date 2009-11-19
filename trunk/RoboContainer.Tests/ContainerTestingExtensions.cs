@@ -4,7 +4,7 @@ using System.Linq;
 using RoboContainer.Core;
 using RoboContainer.Impl;
 
-namespace DIContainer.Tests
+namespace RoboContainer.Tests
 {
 	public static class ContainerTestingExtensions
 	{

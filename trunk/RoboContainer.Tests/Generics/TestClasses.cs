@@ -1,5 +1,5 @@
 ﻿
-namespace DIContainer.Tests.Generics
+namespace RoboContainer.Tests.Generics
 {
 	// ReSharper disable UnusedTypeParameter
 

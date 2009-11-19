@@ -1,7 +1,7 @@
 ﻿using System;
 using RoboContainer.Impl;
 
-namespace DIContainer.Tests
+namespace RoboContainer.Tests
 {
 	public class BaseContainerTest
 	{

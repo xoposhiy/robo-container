@@ -3,7 +3,7 @@ using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
-namespace DIContainer.Tests.Parts
+namespace RoboContainer.Tests.Parts
 {
 	[TestFixture]
 	public class Parts_Test
