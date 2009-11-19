@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Impl
 {
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
-		private readonly List<IDeclaredContract> contracts = new List<IDeclaredContract>();
+		private readonly List<DeclaredContract> contracts = new List<DeclaredContract>();
 		private DependencyConfigurator[] dependencies;
 		private IInstanceFactory factory;
 		private ConstructorInfo injectableConstructor;
@@ -24,9 +25,10 @@ namespace RoboContainer.Impl
 
 		private DependencyConfigurator[] CreateDependencies()
 		{
-			var dependencyConfigurators = new DependencyConfigurator[InjectableConstructor.GetParameters().Length];
-			for (int i = 0; i < dependencyConfigurators.Length; i++)
-				dependencyConfigurators[i] = new DependencyConfigurator();
+			var parameterInfos = InjectableConstructor.GetParameters();
+			var dependencyConfigurators = new DependencyConfigurator[parameterInfos.Length];
+			for(int i = 0; i < dependencyConfigurators.Length; i++)
+				dependencyConfigurators[i] = DependencyConfigurator.FromAttributes(parameterInfos[i]);
 			return dependencyConfigurators;
 		}
 
@@ -40,7 +42,7 @@ namespace RoboContainer.Impl
 			get { return Dependencies; }
 		}
 
-		public IEnumerable<IDeclaredContract> Contracts
+		public IEnumerable<DeclaredContract> Contracts
 		{
 			get { return contracts; }
 		}
@@ -97,9 +99,9 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluggableConfigurator DeclareContracts(params string[] declaredContracts)
+		public IPluggableConfigurator DeclareContracts(params DeclaredContract[] declaredContracts)
 		{
-			contracts.AddRange(declaredContracts.Select(c => (IDeclaredContract) new NamedContract(c)));
+			contracts.AddRange(declaredContracts);
 			return this;
 		}
 
@@ -122,10 +124,12 @@ namespace RoboContainer.Impl
 		{
 			bool ignored = PluggableType.GetCustomAttributes(typeof (IgnoredPluggableAttribute), false).Length > 0;
 			if (ignored) Ignore();
-			var pluggableAttribute =
-				(PluggableAttribute) PluggableType.GetCustomAttributes(typeof (PluggableAttribute), false).SingleOrDefault();
-			if (pluggableAttribute == null) return;
-			SetScope(pluggableAttribute.Scope);
+			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
+			if (pluggableAttribute != null) SetScope(pluggableAttribute.Scope);
+			DeclareContracts(
+				PluggableType.FindAttributes<DeclareContract>()
+				.SelectMany(a => a.Contracts).Select(c => new NamedContract(c))
+				.ToArray());
 		}
 	}
 
@@ -171,7 +175,7 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluggableConfigurator<TPluggable> DeclareContracts(params string[] contracts)
+		public IPluggableConfigurator<TPluggable> DeclareContracts(params DeclaredContract[] contracts)
 		{
 			pluggableConfigurator.DeclareContracts(contracts);
 			return this;

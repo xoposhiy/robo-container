@@ -48,6 +48,8 @@
     <Compile Include="Container.cs" />
     <Compile Include="DontUsePluggableAttribute.cs" />
     <Compile Include="ExportedPartAttribute.cs" />
+    <Compile Include="ContractRequirement.cs" />
+    <Compile Include="DeclaredContract.cs" />
     <Compile Include="IInitializablePluggable.cs" />
     <Compile Include="IgnoredPluggableAttribute.cs" />
     <Compile Include="Impl\BaseDeclaredContract.cs" />
@@ -62,8 +64,6 @@
     <Compile Include="Impl\IConfiguredPluggable.cs" />
     <Compile Include="Impl\IConfiguredPlugin.cs" />
     <Compile Include="Impl\IContainerConfiguration.cs" />
-    <Compile Include="Impl\IContractRequirement.cs" />
-    <Compile Include="Impl\IDeclaredContract.cs" />
     <Compile Include="Impl\InstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
     <Compile Include="ContainerConstructorAttribute.cs" />
@@ -73,7 +73,6 @@
     <Compile Include="IContainerConfigurator.cs" />
     <Compile Include="Impl\IInstanceFactory.cs" />
     <Compile Include="Impl\NamedContract.cs" />
-    <Compile Include="Impl\NamedRequirement.cs" />
     <Compile Include="Impl\PluggableConfigurator.cs" />
     <Compile Include="Impl\PluginConfigurator.cs" />
     <Compile Include="Impl\ScopedConfiguration.cs" />
@@ -82,8 +81,10 @@
     <Compile Include="IPluggableConfigurator.cs" />
     <Compile Include="IPluginConfigurator.cs" />
     <Compile Include="Lazy.cs" />
+    <Compile Include="NamedRequirement.cs" />
     <Compile Include="PluggableAttribute.cs" />
     <Compile Include="PluginAttribute.cs" />
+    <Compile Include="RequireContract.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />

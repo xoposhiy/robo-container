@@ -34,12 +34,12 @@ namespace RoboContainer
 			get { return sessionLog; }
 		}
 
-		public TPlugin Get<TPlugin>(params IContractRequirement[] requiredContracts)
+		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			return (TPlugin) Get(typeof (TPlugin), requiredContracts);
 		}
 
-		public object Get(Type pluginType, params IContractRequirement[] requiredContracts)
+		public object Get(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
 			if (!items.Any()) throw new ContainerException("Plugguble for {0} not found", pluginType.Name);
@@ -51,7 +51,7 @@ namespace RoboContainer
 			return items.First();
 		}
 
-		public IEnumerable<object> GetAll(Type pluginType, params IContractRequirement[] requiredContracts)
+		public IEnumerable<object> GetAll(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			try
 			{
@@ -66,7 +66,7 @@ namespace RoboContainer
 			}
 		}
 
-		private IEnumerable<object> PlainGetAll(Type pluginType, IContractRequirement[] requiredContracts)
+		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
 			Type elementType;
 			if (IsCollection(pluginType, out elementType))
@@ -78,12 +78,12 @@ namespace RoboContainer
 			return pluggables;
 		}
 
-		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params IContractRequirement[] requiredContracts)
+		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			return GetPluggableTypesFor(typeof (TPlugin), requiredContracts);
 		}
 
-		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params IContractRequirement[] requiredContracts)
+		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
 		}
@@ -95,7 +95,7 @@ namespace RoboContainer
 			return new Container(childConfiguration);
 		}
 
-		public IEnumerable<TPlugin> GetAll<TPlugin>(params IContractRequirement[] requiredContracts)
+		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			return GetAll(typeof (TPlugin)).Cast<TPlugin>().ToArray();
 		}
@@ -121,7 +121,7 @@ namespace RoboContainer
 			return elementType != null;
 		}
 
-		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params IContractRequirement[] requiredContracts)
+		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			IConfiguredPluggable[] configuredPluggables = configuration.GetConfiguredPlugin(pluginType).GetPluggables().ToArray();
 			return configuredPluggables
@@ -190,11 +190,6 @@ namespace RoboContainer
 			return text.ToString();
 		}
 
-		private void FinishConstruction()
-		{
-			//Write("Finish construction");
-		}
-
 		private void Write(string message, params object[] args)
 		{
 			text.AppendFormat(ident + message, args).AppendLine();
@@ -215,7 +210,6 @@ namespace RoboContainer
 
 			public void Dispose()
 			{
-				parent.FinishConstruction();
 				parent.ident = ident;
 				parent.pluginType = pluginType;
 			}

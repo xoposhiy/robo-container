@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace RoboContainer.Impl
 {
 	public class DependencyConfigurator : IDependencyConfigurator, IConfiguredDependency
 	{
-		private readonly List<IContractRequirement> contracts = new List<IContractRequirement>();
+		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 
-		public IEnumerable<IContractRequirement> Contracts
+		public IEnumerable<ContractRequirement> Contracts
 		{
 			get { return contracts; }
 		}
 
 		public void RequireContract(params string[] requiredContracts)
 		{
-			contracts.AddRange(requiredContracts.Select(r => (IContractRequirement) new NamedRequirement(r)));
+			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement) new NamedRequirement(r)));
 		}
 
 		public void UseValue(object o)
@@ -31,6 +32,14 @@ namespace RoboContainer.Impl
 		public void UsePluggable<TPluggable>()
 		{
 			throw new NotImplementedException();
+		}
+
+		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
+		{
+			var config = new DependencyConfigurator();
+			var requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContract), false).Cast<RequireContract>();
+			config.RequireContract(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
+			return config;
 		}
 	}
 }

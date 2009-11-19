@@ -7,7 +7,7 @@ namespace RoboContainer
 
 	public interface IGenericPluggableConfigurator<TPC>
 	{
-		TPC DeclareContracts(params string[] contracts);
+		TPC DeclareContracts(params DeclaredContract[] contracts);
 		TPC SetScope(InstanceLifetime lifetime);
 		TPC Ignore();
 		IDependencyConfigurator Dependency(string dependencyName);

@@ -12,7 +12,7 @@ namespace RoboContainer
 		TPC PluggableIs<TPluggable>();
 		TPC PluggableIs(Type pluggableType);
 		TPC SetScope(InstanceLifetime lifetime);
-		TPC RequireContracts(params string[] requiredContracts);
+		TPC RequireContracts(params ContractRequirement[] requiredContracts);
 	}
 	
 	public interface IPluginConfigurator : IGenericPluginConfigurator<IPluginConfigurator>
