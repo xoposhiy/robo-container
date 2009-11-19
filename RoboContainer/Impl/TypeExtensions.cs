@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
@@ -107,12 +109,12 @@ namespace RoboContainer.Impl
 		public static ConstructorInfo FindInjectableConstructor(this Type type)
 		{
 			IEnumerable<ConstructorInfo> constructors = GetInjectableConstructors(type);
-			if(constructors.Count() == 1) return constructors.Single();
-			if(constructors.Count() > 1)
+			if (constructors.Count() == 1) return constructors.Single();
+			if (constructors.Count() > 1)
 			{
 				IEnumerable<ConstructorInfo> marked =
-					constructors.Where(c => c.GetCustomAttributes(typeof(ContainerConstructorAttribute), false).Any());
-				if(marked.Count() == 1) return marked.Single();
+					constructors.Where(c => c.GetCustomAttributes(typeof (ContainerConstructorAttribute), false).Any());
+				if (marked.Count() == 1) return marked.Single();
 			}
 			return null;
 		}

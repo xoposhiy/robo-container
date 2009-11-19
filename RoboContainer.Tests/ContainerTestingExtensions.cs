@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RoboContainer;
+using RoboContainer.Core;
 using RoboContainer.Impl;
 
 namespace DIContainer.Tests

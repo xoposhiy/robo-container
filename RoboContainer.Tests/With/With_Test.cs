@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RoboContainer.Core;
 
 namespace RoboContainer.Tests.With
 {

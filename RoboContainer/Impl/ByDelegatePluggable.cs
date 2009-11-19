@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
 	internal class ByDelegatePluggable : IConfiguredPluggable
 	{
-		private readonly CreatePluggableDelegate createPluggable;
+		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
 
-		public ByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate createPluggable)
+		public ByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.createPluggable = createPluggable;
@@ -29,7 +30,7 @@ namespace RoboContainer.Impl
 			get { return pluginConfigurator.Scope; }
 		}
 
-		public InitializePluggableDelegate InitializePluggable
+		public InitializePluggableDelegate<object> InitializePluggable
 		{
 			get { return pluginConfigurator.InitializePluggable; }
 		}

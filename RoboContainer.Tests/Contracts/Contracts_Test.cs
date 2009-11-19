@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Tests.Contracts
 {

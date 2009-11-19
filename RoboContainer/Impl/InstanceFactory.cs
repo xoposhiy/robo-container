@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
 	internal abstract class BaseInstanceFactory : IInstanceFactory
 	{
-		private readonly InitializePluggableDelegate initializePluggable;
+		private readonly InitializePluggableDelegate<object> initializePluggable;
 		private readonly InstanceLifetime scope;
 		private object o;
 
-		protected BaseInstanceFactory(Type pluggableType, InstanceLifetime scope, InitializePluggableDelegate initializePluggable)
+		protected BaseInstanceFactory(Type pluggableType, InstanceLifetime scope, InitializePluggableDelegate<object> initializePluggable)
 		{
 			this.scope = scope;
 			this.initializePluggable = initializePluggable;

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
@@ -37,7 +39,7 @@ namespace RoboContainer.Impl
 		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
 		{
 			var config = new DependencyConfigurator();
-			var requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContract), false).Cast<RequireContract>();
+			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof (RequireContractAttribute), false).Cast<RequireContractAttribute>();
 			config.RequireContract(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
 			return config;
 		}

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using RoboContainer;
+using RoboContainer.Core;
 
 namespace DIContainer.Tests.Laziness
 {

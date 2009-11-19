@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
-using RoboContainer;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace DIContainer.Tests.Parts
 {

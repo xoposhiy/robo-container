@@ -1,13 +1,14 @@
 ﻿using System;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
 	internal class DelegateInstanceFactory : BaseInstanceFactory
 	{
-		private readonly CreatePluggableDelegate createPluggable;
+		private readonly CreatePluggableDelegate<object> createPluggable;
 
-		public DelegateInstanceFactory(InstanceLifetime scope, InitializePluggableDelegate initializePluggable,
-		                               CreatePluggableDelegate createPluggable)
+		public DelegateInstanceFactory(InstanceLifetime scope, InitializePluggableDelegate<object> initializePluggable,
+		                               CreatePluggableDelegate<object> createPluggable)
 			: base(null, scope, initializePluggable)
 		{
 			this.createPluggable = createPluggable;

@@ -1,4 +1,6 @@
-﻿namespace RoboContainer
+﻿using RoboContainer.Core;
+
+namespace RoboContainer.Infection
 {
 	public interface IInitializablePluggable
 	{

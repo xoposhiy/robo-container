@@ -12,11 +12,11 @@ namespace RoboContainer.Impl
 				dictionary.Add(key, value = create());
 			return value;
 		}
-		
+
 		public static TValue GetOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) where TValue : new()
 		{
 			TValue value;
-			if(!dictionary.TryGetValue(key, out value))
+			if (!dictionary.TryGetValue(key, out value))
 				dictionary.Add(key, value = new TValue());
 			return value;
 		}
