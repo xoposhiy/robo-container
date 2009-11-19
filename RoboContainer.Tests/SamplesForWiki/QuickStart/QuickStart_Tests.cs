@@ -203,7 +203,6 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				);
 			
 			var ship = container.Get<IBattleShip>();
-			Console.WriteLine(container.LastConstructionLog);
 			var anotherShip = container.Get<IBattleShip>();
 
 			// Действие InstanceLifetime.PerRequest

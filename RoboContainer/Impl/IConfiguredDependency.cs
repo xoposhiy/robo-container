@@ -4,6 +4,6 @@ namespace RoboContainer.Impl
 {
 	public interface IConfiguredDependency
 	{
-		IEnumerable<IContractRequirement> Contracts { get; }
+		IEnumerable<ContractRequirement> Contracts { get; }
 	}
 }

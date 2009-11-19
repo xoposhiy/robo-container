@@ -11,7 +11,7 @@ namespace RoboContainer.Impl
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
-		private readonly List<IContractRequirement> contracts = new List<IContractRequirement>();
+		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 
 		public PluginConfigurator(ContainerConfiguration configuration, Type pluginType)
 		{
@@ -83,9 +83,9 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluginConfigurator RequireContracts(params string[] requiredContracts)
+		public IPluginConfigurator RequireContracts(params ContractRequirement[] requiredContracts)
 		{
-			contracts.AddRange(requiredContracts.Select(c => (IContractRequirement)new NamedRequirement(c)));
+			contracts.AddRange(requiredContracts);
 			return this;
 		}
 
@@ -115,6 +115,10 @@ namespace RoboContainer.Impl
 				if (pluginAttribute.PluggableType != null) PluggableIs(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
+			RequireContracts(
+				PluginType.FindAttributes<RequireContract>()
+				.SelectMany(a => a.Contracts).Select(c => new NamedRequirement(c))
+				.ToArray());
 		}
 
 		// use / once
@@ -240,7 +244,7 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluginConfigurator<TPlugin> RequireContracts(params string[] requiredContracts)
+		public IPluginConfigurator<TPlugin> RequireContracts(params ContractRequirement[] requiredContracts)
 		{
 			realConfigurator.RequireContracts(requiredContracts);
 			return this;

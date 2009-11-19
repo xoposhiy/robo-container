@@ -1,8 +1,8 @@
 ﻿namespace RoboContainer.Impl
 {
-	public abstract class BaseDeclaredContract<TContractRequirement> : IDeclaredContract where TContractRequirement : IContractRequirement
+	public abstract class BaseDeclaredContract<TContractRequirement> : DeclaredContract where TContractRequirement : ContractRequirement
 	{
-		public bool Satisfy(IContractRequirement requirement)
+		public override bool Satisfy(ContractRequirement requirement)
 		{
 			if(typeof(TContractRequirement) != requirement.GetType()) return false;
 			return Satisfy((TContractRequirement) requirement);

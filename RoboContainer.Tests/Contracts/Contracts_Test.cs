@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.Contracts
 {
@@ -23,7 +22,16 @@ namespace RoboContainer.Tests.Contracts
 		}
 
 		[Test]
-		public void Can_inject_dependency_with_declared_contract()
+		public void Can_get_pluggable_with_required_contracts()
+		{
+			var container = new Container(
+				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast"));
+			var plugin = container.Get<IPluginWithContract>(new NamedRequirement("fast"));
+			Assert.IsInstanceOf<PluggableWithContracts1>(plugin);
+		}
+
+		[Test]
+		public void Can_inject_dependency_with_required_contract()
 		{
 			var container = new Container(
 				c =>
@@ -37,12 +45,56 @@ namespace RoboContainer.Tests.Contracts
 		}
 
 		[Test]
-		public void Can_get_pluggable_with_required_contracts()
+		public void Dependency_injection_with_required_contract_considers_plugin_contract_requirements()
 		{
 			var container = new Container(
-				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast"));
-			var plugin = container.Get<IPluginWithContract>(new NamedRequirement("fast"));
-			Assert.IsInstanceOf<PluggableWithContracts1>(plugin);
+				c =>
+				{
+					c.ForPlugin<IPluginWithContract>().RequireContracts("hidden");
+					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast", "hidden");
+					c.ForPluggable<PluggableWithContracts2>().DeclareContracts("fast");
+					c.ForPluggable<PluggableWithContracts3>().DeclareContracts("hidden");
+					c.ForPluggable<PluginWithDeclarecContract>().Dependency("plugin").RequireContract("fast");
+
+				});
+			var plugin = container.Get<PluginWithDeclarecContract>();
+			Assert.IsInstanceOf<PluggableWithContracts1>(plugin.Plugin);
+		}
+
+		[Test]
+		public void Contract_requirements_can_be_specified_with_attributes()
+		{
+			var container = new Container();
+			var root = container.Get<Root>();
+			Assert.IsInstanceOf<FastHiddenPluggable>(root.Plugin);
+		}
+	}
+
+	[RequireContract("hidden")]
+	public interface IPluginWithAttributes
+	{
+	}
+	[DeclareContract("hidden")]
+	public class HiddenPluggable : IPluginWithAttributes
+	{
+	}
+	[DeclareContract("hidden")]
+	[DeclareContract("fast")]
+	public class FastHiddenPluggable : IPluginWithAttributes
+	{
+	}
+	[DeclareContract("fast")]
+	public class FastPluggable : IPluginWithAttributes
+	{
+	}
+
+	public class Root
+	{
+		public IPluginWithAttributes Plugin { get; private set; }
+
+		public Root([RequireContract("fast")]IPluginWithAttributes plugin)
+		{
+			Plugin = plugin;
 		}
 	}
 
