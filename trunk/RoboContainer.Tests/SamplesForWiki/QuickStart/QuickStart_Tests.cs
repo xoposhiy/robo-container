@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using NUnit.Framework;
 using System.Linq;
 
@@ -168,7 +169,6 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 
 			public LaserWeapon Laser { get; private set; }
 			public RocketWeapon Rocket { get; private set; }
-			
 		}
 
 		public interface IBattleShip
@@ -203,6 +203,15 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				);
 			
 			var ship = container.Get<IBattleShip>();
+			//]
+
+			File.WriteAllText("QS_FinalSample_LogOutput.out.txt", container.LastConstructionLog.ToString());
+
+			//[QS_LastBuildSessionLog
+			Console.WriteLine(container.LastConstructionLog);
+			//]
+
+			//[QS_FinalSample
 			var anotherShip = container.Get<IBattleShip>();
 
 			// Действие InstanceLifetime.PerRequest

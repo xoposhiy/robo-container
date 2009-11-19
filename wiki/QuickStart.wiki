@@ -31,7 +31,6 @@ public class Robot : IRobot
 	public IDistanceSensor DistanceSensor { get; set; }
 	// ...
 }
-
 var container = new Container();
 IRobot robot = container.Get<IRobot>(); // <-- Контейнер в действии!
 Assert.IsInstanceOf<Robot>(robot);
@@ -59,13 +58,11 @@ public interface IWeapon
 public class RocketWeapon : IWeapon
 {
 	// ...
-
 }
 public class LaserWeapon : IWeapon
 {
 	// ...
 }
-
 var container = new Container(
 	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>() // <-- явное конфигурирование
 	);
@@ -157,7 +154,6 @@ public class ComboWeapon : IWeapon
 	}
 	public LaserWeapon Laser { get; private set; }
 	public RocketWeapon Rocket { get; private set; }
-	
 }
 public interface IBattleShip
 {
@@ -171,7 +167,6 @@ public class BigBattleShip : IBattleShip
 	}
 	public IWeapon[] Weapons { get; private set; }
 }
-
 var container = new Container(
 	c =>
 		{
@@ -227,16 +222,31 @@ Assert.AreSame(container.Get<RocketWeapon>(), shipsComboWeapon.Rocket);
 
 <wiki:comment>[QS_LastBuildSessionLog</wiki:comment>
 {{{
-Console.WriteLine(container.LastBuildSessionLog);
+
+Console.WriteLine(container.LastConstructionLog);
 }}}
 <wiki:comment></wiki:comment>
 
 выведет на консоль следующий текст:
-<wiki:comment>{QS_BuildLogHandler</wiki:comment>
+<wiki:comment>[QS_FinalSample_LogOutput</wiki:comment>
 {{{
-TODO
+Get IBattleShip
+	Get IWeapon[]
+		Get IWeapon
+			Constructed RocketWeapon
+			Constructed LaserWeapon
+			Get LaserWeapon
+				Reused LaserWeapon
+			Get RocketWeapon
+				Reused RocketWeapon
+			Constructed ComboWeapon
+	Constructed BigBattleShip
+
 }}}
+<wiki:comment></wiki:comment>
 
+С помощью метода `LastConstructionLog` можно в непонятных ситуациях прояснить, что происходит внутри контейнера.
+В частности, подобный журнал включается в текст всех исключений, выбрасываемых из контейнера.
 
-Примерно так, в первом приближении и работает `RoboContainer`. 
-Более сложные вопросы работы `RoboContainer` будут детально освещены в следующих разделах.
+Кроме продемонстрированных выше возможностей, `RoboContainer` обладает рядом других важных и полезных функций, 
+которые будут детально освещены в следующих разделах.

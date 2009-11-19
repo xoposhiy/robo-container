@@ -57,7 +57,9 @@ namespace RoboContainer.Tests.SamplesForWiki
 		private IDictionary<string, string> LoadSamples()
 		{
 			var samples = new Dictionary<string, string>();
-			foreach (var file in new DirectoryInfo(@".\SamplesForWiki").GetFiles("*.cs", SearchOption.AllDirectories))
+			var sourceFiles = new DirectoryInfo(@".").GetFiles("*.cs", SearchOption.AllDirectories);
+			var outputFiles = new DirectoryInfo(@".").GetFiles("*.out.txt", SearchOption.AllDirectories);
+			foreach (var file in sourceFiles)
 			{
 				string sampleContent = ReadContent(file);
 				foreach(Match match in sampleRegex.Matches(sampleContent))
@@ -68,10 +70,15 @@ namespace RoboContainer.Tests.SamplesForWiki
 					sampleText = MinimizeIdentation(sampleText);
 					Console.WriteLine(sampleText);
 					if(samples.ContainsKey(sampleName))
-						samples[sampleName] = samples[sampleName] + "\r\n" + sampleText;
+						samples[sampleName] = samples[sampleName].TrimEnd() + sampleText;
 					else
 						samples.Add(sampleName, sampleText);
 				}
+			}
+			foreach (var outputFile in outputFiles)
+			{
+				string sampleContent = ReadContent(outputFile);
+				samples.Add(outputFile.Name.Remove(outputFile.Name.Length - 8), sampleContent);
 			}
 			return samples;
 		}
