@@ -1,4 +1,4 @@
-  * [QuickStart Коротко о главном]
+  * [QuickStart Пятиминутное введение]
   * [DIContainers DI container — это...]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
