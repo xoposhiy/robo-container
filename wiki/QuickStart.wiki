@@ -223,5 +223,20 @@ Assert.AreSame(container.Get<RocketWeapon>(), shipsComboWeapon.Rocket);
 Однако для этих классов конфигурация не запрещает использовать ранее созданные объекты, поэтому второму кораблю достаются 
 в точности те же экземпляры классов оружия, что и первому кораблю.
 
+На самом деле `RoboContainer` предоставляет некоторый лог того, что происходило при вызове метода `Get`.
+
+<wiki:comment>[QS_LastBuildSessionLog</wiki:comment>
+{{{
+Console.WriteLine(container.LastBuildSessionLog);
+}}}
+<wiki:comment></wiki:comment>
+
+выведет на консоль следующий текст:
+<wiki:comment>{QS_BuildLogHandler</wiki:comment>
+{{{
+TODO
+}}}
+
+
 Примерно так, в первом приближении и работает `RoboContainer`. 
 Более сложные вопросы работы `RoboContainer` будут детально освещены в следующих разделах.
