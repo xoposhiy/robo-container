@@ -2,11 +2,12 @@
 using System.Diagnostics;
 using NUnit.Framework;
 using RoboContainer.Core;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.Generics
 {
 	[TestFixture]
-	public class Generics_Test : BaseContainerTest
+	public class Generics_Test
 	{
 		[Test]
 		public void closed_generics_configuration()
@@ -94,6 +95,26 @@ namespace RoboContainer.Tests.Generics
 			AfterConfigure(typeof (IFoo_of<long>), typeof (Foo_of<long>))
 				.CheckThat(typeof (IFoo_of<long>), typeof (Foo_of<long>))
 				.CheckThat(typeof (IFoo_of<string>), typeof (Foo_of<string>), typeof (Foo_of_string));
+		}
+
+		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
+		{
+			var containerConfiguration = new ContainerConfiguration();
+			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
+			return containerConfiguration;
+		}
+
+		public static ContainerConfiguration ConfigureAndCheckThat(Type pluginType, Type pluggableType)
+		{
+			var containerConfiguration = new ContainerConfiguration();
+			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
+			containerConfiguration.CheckThat(pluginType, pluggableType);
+			return containerConfiguration;
+		}
+
+		public static ContainerConfiguration WithoutConfiguration()
+		{
+			return new ContainerConfiguration();
 		}
 	}
 }
