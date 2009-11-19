@@ -35,5 +35,5 @@ namespace RoboContainer.Tests.Generics
 	{
 	}
 
-	// ReSharper restore UnusedTypeParameter}
+	// ReSharper restore UnusedTypeParameter
 }
