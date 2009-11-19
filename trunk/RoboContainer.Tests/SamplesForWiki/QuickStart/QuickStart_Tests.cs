@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using System.Linq;
+using RoboContainer.Core;
 
 namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 {

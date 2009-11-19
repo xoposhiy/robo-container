@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RoboContainer
+namespace RoboContainer.Core
 {
 	public interface IContainer
 	{

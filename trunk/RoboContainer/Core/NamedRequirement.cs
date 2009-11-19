@@ -1,4 +1,4 @@
-﻿namespace RoboContainer
+﻿namespace RoboContainer.Core
 {
 	public class NamedRequirement : ContractRequirement
 	{

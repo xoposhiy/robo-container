@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
@@ -79,7 +81,7 @@ namespace RoboContainer.Impl
 
 		public void AddParts(params object[] pluggables)
 		{
-			foreach (var pluggable in pluggables) AddPart(pluggable);
+			foreach (object pluggable in pluggables) AddPart(pluggable);
 		}
 
 		private void AddPartsExportedBy(object pluggable)

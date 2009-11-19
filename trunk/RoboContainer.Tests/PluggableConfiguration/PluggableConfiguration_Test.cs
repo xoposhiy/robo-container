@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using RoboContainer;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace DIContainer.Tests.PluggableConfiguration
 {

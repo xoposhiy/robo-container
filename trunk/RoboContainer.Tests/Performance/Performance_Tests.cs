@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using RoboContainer.Core;
 
 namespace RoboContainer.Tests.Performance
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace RoboContainer
+namespace RoboContainer.Core
 {
 	public delegate void ScannerDelegate(IContainerConfigurator configurator, Type pluggableType);
 

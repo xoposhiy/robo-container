@@ -45,13 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container.cs" />
-    <Compile Include="DontUsePluggableAttribute.cs" />
-    <Compile Include="ExportedPartAttribute.cs" />
-    <Compile Include="ContractRequirement.cs" />
-    <Compile Include="DeclaredContract.cs" />
-    <Compile Include="IInitializablePluggable.cs" />
-    <Compile Include="IgnoredPluggableAttribute.cs" />
+    <Compile Include="Infection\ContainerConstructorAttribute.cs" />
+    <Compile Include="Infection\DeclareContractAttribute.cs" />
+    <Compile Include="Infection\DontUsePluggableAttribute.cs" />
+    <Compile Include="Infection\ExportedPartAttribute.cs" />
+    <Compile Include="Infection\IgnoredPluggableAttribute.cs" />
+    <Compile Include="Infection\PluggableAttribute.cs" />
+    <Compile Include="Infection\PluginAttribute.cs" />
+    <Compile Include="Infection\RequireContractAttribute.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Core\ContractRequirement.cs" />
+    <Compile Include="Core\DeclaredContract.cs" />
+    <Compile Include="Core\IDependencyConfigurator.cs" />
+    <Compile Include="Infection\IInitializablePluggable.cs" />
     <Compile Include="Impl\BaseDeclaredContract.cs" />
     <Compile Include="Impl\ByDelegatePluggable.cs" />
     <Compile Include="Impl\ByPluginConfiguredPluggable.cs" />
@@ -66,25 +72,21 @@
     <Compile Include="Impl\IContainerConfiguration.cs" />
     <Compile Include="Impl\InstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
-    <Compile Include="ContainerConstructorAttribute.cs" />
     <Compile Include="Impl\DictionaryExtensions.cs" />
     <Compile Include="Impl\ContainerException.cs" />
-    <Compile Include="IContainer.cs" />
-    <Compile Include="IContainerConfigurator.cs" />
+    <Compile Include="Core\IContainer.cs" />
+    <Compile Include="Core\IContainerConfigurator.cs" />
     <Compile Include="Impl\IInstanceFactory.cs" />
     <Compile Include="Impl\NamedContract.cs" />
     <Compile Include="Impl\PluggableConfigurator.cs" />
     <Compile Include="Impl\PluginConfigurator.cs" />
     <Compile Include="Impl\ScopedConfiguration.cs" />
     <Compile Include="Impl\TypeExtensions.cs" />
-    <Compile Include="InstanceLifetime.cs" />
-    <Compile Include="IPluggableConfigurator.cs" />
-    <Compile Include="IPluginConfigurator.cs" />
-    <Compile Include="Lazy.cs" />
-    <Compile Include="NamedRequirement.cs" />
-    <Compile Include="PluggableAttribute.cs" />
-    <Compile Include="PluginAttribute.cs" />
-    <Compile Include="RequireContract.cs" />
+    <Compile Include="Core\InstanceLifetime.cs" />
+    <Compile Include="Core\IPluggableConfigurator.cs" />
+    <Compile Include="Core\IPluginConfigurator.cs" />
+    <Compile Include="Core\Lazy.cs" />
+    <Compile Include="Core\NamedRequirement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />

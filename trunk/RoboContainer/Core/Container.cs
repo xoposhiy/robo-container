@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using RoboContainer.Impl;
 
-namespace RoboContainer
+namespace RoboContainer.Core
 {
 	public class Container : IContainer
 	{
@@ -56,7 +56,7 @@ namespace RoboContainer
 			try
 			{
 				IDisposable session = sessionLog.StartConstruction(pluginType);
-				var pluggables = PlainGetAll(pluginType, requiredContracts);
+				IEnumerable<object> pluggables = PlainGetAll(pluginType, requiredContracts);
 				session.Dispose();
 				return pluggables;
 			}
@@ -64,18 +64,6 @@ namespace RoboContainer
 			{
 				throw new ContainerException(e, Environment.NewLine + sessionLog.ToString());
 			}
-		}
-
-		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
-		{
-			Type elementType;
-			if (IsCollection(pluginType, out elementType))
-				return CreateArray(elementType, GetAll(elementType, requiredContracts));
-			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
-				.Select(
-				c => c.GetFactory().GetOrCreate(this, pluginType)
-				).ToArray();
-			return pluggables;
 		}
 
 		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
@@ -98,6 +86,18 @@ namespace RoboContainer
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			return GetAll(typeof (TPlugin)).Cast<TPlugin>().ToArray();
+		}
+
+		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
+		{
+			Type elementType;
+			if (IsCollection(pluginType, out elementType))
+				return CreateArray(elementType, GetAll(elementType, requiredContracts));
+			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
+				.Select(
+				c => c.GetFactory().GetOrCreate(this, pluginType)
+				).ToArray();
+			return pluggables;
 		}
 
 		private static IContainerConfiguration CreateConfiguration(Action<IContainerConfigurator> configure)
@@ -143,9 +143,9 @@ namespace RoboContainer
 
 	public class ConstructionSessionLog : IConstructionSessionLog
 	{
-		private StringBuilder text;
 		private string ident;
 		private Type pluginType;
+		private StringBuilder text;
 
 		public ConstructionSessionLog(Type pluginType)
 		{

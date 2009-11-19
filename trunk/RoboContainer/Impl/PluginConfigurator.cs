@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
 	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin
 	{
 		private readonly IContainerConfiguration configuration;
+		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
-		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 
 		public PluginConfigurator(ContainerConfiguration configuration, Type pluginType)
 		{
@@ -22,8 +24,8 @@ namespace RoboContainer.Impl
 		public Type PluginType { get; private set; }
 		public InstanceLifetime Scope { get; private set; }
 		public bool ScopeSpecified { get; private set; }
-		public InitializePluggableDelegate InitializePluggable { get; private set; }
-		public CreatePluggableDelegate CreatePluggable { get; private set; }
+		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
+		public CreatePluggableDelegate<object> CreatePluggable { get; private set; }
 		public Type ExplicitlySetPluggable { get; private set; }
 
 		//use
@@ -61,13 +63,13 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate createPluggable)
+		public IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate<object> createPluggable)
 		{
 			CreatePluggable = createPluggable;
 			return this;
 		}
 
-		public IPluginConfigurator InitializeWith(InitializePluggableDelegate initializePluggable)
+		public IPluginConfigurator InitializeWith(InitializePluggableDelegate<object> initializePluggable)
 		{
 			InitializePluggable = initializePluggable;
 			return this;
@@ -116,9 +118,9 @@ namespace RoboContainer.Impl
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
-				PluginType.FindAttributes<RequireContract>()
-				.SelectMany(a => a.Contracts).Select(c => new NamedRequirement(c))
-				.ToArray());
+				PluginType.FindAttributes<RequireContractAttribute>()
+					.SelectMany(a => a.Contracts).Select(c => new NamedRequirement(c))
+					.ToArray());
 		}
 
 		// use / once
@@ -140,7 +142,7 @@ namespace RoboContainer.Impl
 					.ToArray();
 		}
 
-		private IConfiguredPluggable GetConfiguredPluggableForDelegate(CreatePluggableDelegate createPluggable)
+		private IConfiguredPluggable GetConfiguredPluggableForDelegate(CreatePluggableDelegate<object> createPluggable)
 		{
 			return createdPluggable ?? (createdPluggable = new ByDelegatePluggable(this, createPluggable));
 		}

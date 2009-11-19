@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using RoboContainer;
+using RoboContainer.Core;
 
 namespace DIContainer.Tests.Generics
 {

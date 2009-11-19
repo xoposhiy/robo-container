@@ -1,4 +1,6 @@
-﻿namespace RoboContainer.Impl
+﻿using RoboContainer.Core;
+
+namespace RoboContainer.Impl
 {
 	public class NamedContract : BaseDeclaredContract<NamedRequirement>
 	{

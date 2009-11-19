@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
@@ -30,7 +31,7 @@ namespace RoboContainer.Impl
 			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Scope : configuredPluggable.Scope; }
 		}
 
-		public InitializePluggableDelegate InitializePluggable
+		public InitializePluggableDelegate<object> InitializePluggable
 		{
 			get
 			{

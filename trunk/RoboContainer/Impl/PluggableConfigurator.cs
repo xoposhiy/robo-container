@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RoboContainer.Impl;
+using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
@@ -21,15 +22,6 @@ namespace RoboContainer.Impl
 		protected DependencyConfigurator[] Dependencies
 		{
 			get { return dependencies ?? (dependencies = CreateDependencies()); }
-		}
-
-		private DependencyConfigurator[] CreateDependencies()
-		{
-			var parameterInfos = InjectableConstructor.GetParameters();
-			var dependencyConfigurators = new DependencyConfigurator[parameterInfos.Length];
-			for(int i = 0; i < dependencyConfigurators.Length; i++)
-				dependencyConfigurators[i] = DependencyConfigurator.FromAttributes(parameterInfos[i]);
-			return dependencyConfigurators;
 		}
 
 		protected ConstructorInfo InjectableConstructor
@@ -53,7 +45,7 @@ namespace RoboContainer.Impl
 
 		public InstanceLifetime Scope { get; private set; }
 
-		public InitializePluggableDelegate InitializePluggable { get; private set; }
+		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
 		public IInstanceFactory GetFactory()
 		{
@@ -78,7 +70,7 @@ namespace RoboContainer.Impl
 			return Dependencies[index] ?? (Dependencies[index] = new DependencyConfigurator());
 		}
 
-		public IPluggableConfigurator InitializeWith(InitializePluggableDelegate initializePluggable)
+		public IPluggableConfigurator InitializeWith(InitializePluggableDelegate<object> initializePluggable)
 		{
 			InitializePluggable = initializePluggable;
 			return this;
@@ -105,6 +97,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
+		private DependencyConfigurator[] CreateDependencies()
+		{
+			ParameterInfo[] parameterInfos = InjectableConstructor.GetParameters();
+			var dependencyConfigurators = new DependencyConfigurator[parameterInfos.Length];
+			for (int i = 0; i < dependencyConfigurators.Length; i++)
+				dependencyConfigurators[i] = DependencyConfigurator.FromAttributes(parameterInfos[i]);
+			return dependencyConfigurators;
+		}
+
 		private int GetParameterIndex(string dependencyName)
 		{
 			ParameterInfo[] constructorParameters = InjectableConstructor.GetParameters();
@@ -127,9 +128,9 @@ namespace RoboContainer.Impl
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
 			if (pluggableAttribute != null) SetScope(pluggableAttribute.Scope);
 			DeclareContracts(
-				PluggableType.FindAttributes<DeclareContract>()
-				.SelectMany(a => a.Contracts).Select(c => new NamedContract(c))
-				.ToArray());
+				PluggableType.FindAttributes<DeclareContractAttribute>()
+					.SelectMany(a => a.Contracts).Select(c => new NamedContract(c))
+					.ToArray());
 		}
 	}
 
