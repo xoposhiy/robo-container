@@ -4,7 +4,7 @@ using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
-namespace DIContainer.Tests.PluginConfiguration
+namespace RoboContainer.Tests.PluginConfiguration
 {
 	[TestFixture]
 	public class PluginConfiguration_Test

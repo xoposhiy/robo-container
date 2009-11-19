@@ -3,7 +3,7 @@ using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
-namespace DIContainer.Tests.PluggableConfiguration
+namespace RoboContainer.Tests.PluggableConfiguration
 {
 	[TestFixture]
 	public class PluggableConfiguration_Test

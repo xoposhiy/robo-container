@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using RoboContainer.Core;
 
-namespace DIContainer.Tests.Laziness
+namespace RoboContainer.Tests.Laziness
 {
 	[TestFixture]
 	public class Lazy_Test

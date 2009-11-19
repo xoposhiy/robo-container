@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
 
-namespace DIContainer.Tests.Arrays
+namespace RoboContainer.Tests.Arrays
 {
 	[TestFixture]
 	public class Arrays_Test
