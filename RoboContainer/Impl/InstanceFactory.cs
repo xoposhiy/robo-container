@@ -23,7 +23,7 @@ namespace RoboContainer.Impl
 
 		public object GetOrCreate(Container container, Type typeToCreate)
 		{
-			if (o == null || scope == InstanceLifetime.PerRequest)
+			if(o == null || scope == InstanceLifetime.PerRequest)
 				container.LastConstructionLog.Constructed((o = Construct(container, typeToCreate)).GetType());
 			else
 				container.LastConstructionLog.Reused(o.GetType());
@@ -34,7 +34,7 @@ namespace RoboContainer.Impl
 		{
 			object constructed = CreatePluggable(container, typeToCreate);
 			var initializablePluggable = constructed as IInitializablePluggable;
-			if (initializablePluggable != null) initializablePluggable.Initialize(container);
+			if(initializablePluggable != null) initializablePluggable.Initialize(container);
 			return initializePluggable != null ? initializePluggable(constructed, container) : constructed;
 		}
 
@@ -53,7 +53,7 @@ namespace RoboContainer.Impl
 
 		protected override object CreatePluggable(Container container, Type pluginToCreate)
 		{
-			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor();
+			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(configuration.InjectableConstructorArgsTypes);
 			object[] arguments =
 				constructorInfo.GetParameters()
 					.Select(

@@ -49,6 +49,11 @@ namespace RoboContainer.Impl
 			}
 		}
 
+		public Type[] InjectableConstructorArgsTypes
+		{
+			get { return configuredPluggable.InjectableConstructorArgsTypes; }
+		}
+
 		public IInstanceFactory GetFactory()
 		{
 			return factory ?? (factory = CreateFactory());
@@ -66,7 +71,7 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if (pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
+			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
 				return new InstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

@@ -24,9 +24,11 @@ namespace RoboContainer.Impl
 			get { return dependencies ?? (dependencies = CreateDependencies()); }
 		}
 
-		protected ConstructorInfo InjectableConstructor
+		public Type[] InjectableConstructorArgsTypes { get; private set; }
+
+		private ConstructorInfo InjectableConstructor
 		{
-			get { return injectableConstructor ?? (injectableConstructor = PluggableType.GetInjectableConstructor()); }
+			get { return injectableConstructor ?? (injectableConstructor = PluggableType.GetInjectableConstructor(InjectableConstructorArgsTypes)); }
 		}
 
 		IEnumerable<IConfiguredDependency> IConfiguredPluggable.Dependencies
@@ -64,6 +66,12 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
+		public IPluggableConfigurator UseConstructor(params Type[] argsTypes)
+		{
+			InjectableConstructorArgsTypes = argsTypes;
+			return this;
+		}
+
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
 			int index = GetParameterIndex(dependencyName);
@@ -85,10 +93,10 @@ namespace RoboContainer.Impl
 		{
 			return InitializeWith(
 				(pluggable, container) =>
-					{
-						initializePluggable(pluggable);
-						return pluggable;
-					});
+				{
+					initializePluggable(pluggable);
+					return pluggable;
+				});
 		}
 
 		public IPluggableConfigurator DeclareContracts(params DeclaredContract[] declaredContracts)
@@ -101,7 +109,7 @@ namespace RoboContainer.Impl
 		{
 			ParameterInfo[] parameterInfos = InjectableConstructor.GetParameters();
 			var dependencyConfigurators = new DependencyConfigurator[parameterInfos.Length];
-			for (int i = 0; i < dependencyConfigurators.Length; i++)
+			for(int i = 0; i < dependencyConfigurators.Length; i++)
 				dependencyConfigurators[i] = DependencyConfigurator.FromAttributes(parameterInfos[i]);
 			return dependencyConfigurators;
 		}
@@ -109,8 +117,8 @@ namespace RoboContainer.Impl
 		private int GetParameterIndex(string dependencyName)
 		{
 			ParameterInfo[] constructorParameters = InjectableConstructor.GetParameters();
-			for (int i = 0; i < constructorParameters.Length; i++)
-				if (constructorParameters[i].Name == dependencyName) return i;
+			for(int i = 0; i < constructorParameters.Length; i++)
+				if(constructorParameters[i].Name == dependencyName) return i;
 			throw new ContainerException("У конструктора типа {0} нет параметра с именем {1}", PluggableType, dependencyName);
 		}
 
@@ -123,10 +131,10 @@ namespace RoboContainer.Impl
 
 		private void FillFromAttributes()
 		{
-			bool ignored = PluggableType.GetCustomAttributes(typeof (IgnoredPluggableAttribute), false).Length > 0;
-			if (ignored) Ignore();
+			bool ignored = PluggableType.GetCustomAttributes(typeof(IgnoredPluggableAttribute), false).Length > 0;
+			if(ignored) Ignore();
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
-			if (pluggableAttribute != null) SetScope(pluggableAttribute.Scope);
+			if(pluggableAttribute != null) SetScope(pluggableAttribute.Scope);
 			DeclareContracts(
 				PluggableType.FindAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts).Select(c => new NamedContract(c))
@@ -155,6 +163,12 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
+		public IPluggableConfigurator<TPluggable> UseConstructor(params Type[] argsTypes)
+		{
+			pluggableConfigurator.UseConstructor(argsTypes);
+			return this;
+		}
+
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
 			return pluggableConfigurator.Dependency(dependencyName);
@@ -162,7 +176,7 @@ namespace RoboContainer.Impl
 
 		public IPluggableConfigurator<TPluggable> InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable)
 		{
-			pluggableConfigurator.InitializeWith((pluggable, container) => initializePluggable((TPluggable) pluggable, container));
+			pluggableConfigurator.InitializeWith((pluggable, container) => initializePluggable((TPluggable)pluggable, container));
 			return this;
 		}
 
@@ -170,10 +184,10 @@ namespace RoboContainer.Impl
 		{
 			return InitializeWith(
 				(pluggable, container) =>
-					{
-						initializePluggable(pluggable);
-						return pluggable;
-					});
+				{
+					initializePluggable(pluggable);
+					return pluggable;
+				});
 		}
 
 		public IPluggableConfigurator<TPluggable> DeclareContracts(params DeclaredContract[] contracts)

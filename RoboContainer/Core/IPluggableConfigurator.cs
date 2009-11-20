@@ -4,13 +4,14 @@ namespace RoboContainer.Core
 {
 	public delegate TPluggable InitializePluggableDelegate<TPluggable>(TPluggable pluggable, Container container);
 
-	public interface IGenericPluggableConfigurator<TPluggable, TPluggableConfigurator>
+	public interface IGenericPluggableConfigurator<TPluggable, TSelf>
 	{
-		TPluggableConfigurator DeclareContracts(params DeclaredContract[] contracts);
-		TPluggableConfigurator SetScope(InstanceLifetime lifetime);
-		TPluggableConfigurator Ignore();
-		TPluggableConfigurator InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);
-		TPluggableConfigurator InitializeWith(Action<TPluggable> initializePluggable);
+		TSelf DeclareContracts(params DeclaredContract[] contracts);
+		TSelf SetScope(InstanceLifetime lifetime);
+		TSelf Ignore();
+		TSelf UseConstructor(params Type[] argsTypes);
+		TSelf InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);
+		TSelf InitializeWith(Action<TPluggable> initializePluggable);
 		IDependencyConfigurator Dependency(string dependencyName);
 	}
 
