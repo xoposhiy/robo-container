@@ -86,7 +86,8 @@ namespace RoboContainer.Impl
 
 		private void AddPartsExportedBy(object pluggable)
 		{
-			IEnumerable<PropertyInfo> exportableProperties = pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>());
+			IEnumerable<PropertyInfo> exportableProperties = 
+				pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>() && p.CanRead);
 			foreach (PropertyInfo prop in exportableProperties)
 			{
 				AddPart(

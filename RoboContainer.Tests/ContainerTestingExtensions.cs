@@ -12,7 +12,7 @@ namespace RoboContainer.Tests
 			this ContainerConfiguration configuration, Type pluginType,
 			Type pluggableType)
 		{
-			configuration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
+			configuration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
 			return configuration;
 		}
 

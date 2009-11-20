@@ -85,7 +85,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[Weapons
 			var container = new Container(
-				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>() // <-- явное конфигурирование
+				c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>() // <-- явное конфигурирование
 				);
 			IWeapon weapon = container.Get<IWeapon>();
 			Assert.IsInstanceOf<RocketWeapon>(weapon);
@@ -99,7 +99,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[TransientWeapon
 			var container = new Container(
-				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
+				c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
 				     	.SetScope(InstanceLifetime.PerRequest) // <-- конфигурирование
 				);
 			var weapon1 = container.Get<IWeapon>();
@@ -115,7 +115,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>();
+						c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>();
 						c.ForPluggable<RocketWeapon>().InitializeWith(
 							rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
 					}
@@ -149,7 +149,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 			//[SingletoneWeapon
 			var container = new Container(
-				c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
+				c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
 				);
 			var weapon1 = container.Get<IWeapon>();
 			var weapon2 = container.Get<IWeapon>();
@@ -199,7 +199,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 						c.ForPluggable<RocketWeapon>()
 							.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
 						c.ForPlugin<IBattleShip>()
-							.PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
+							.UsePluggable<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
 					}
 				);
 			

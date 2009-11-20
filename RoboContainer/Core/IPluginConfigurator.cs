@@ -8,8 +8,9 @@ namespace RoboContainer.Core
 	{
 		TSelf Ignore<TPluggable>();
 		TSelf Ignore(params Type[] pluggableTypes);
-		TSelf PluggableIs<TPluggable>();
-		TSelf PluggableIs(Type pluggableType);
+		TSelf UsePluggable<TPluggable>();
+		TSelf UsePluggable(Type pluggableType);
+		TSelf Use(TPlugin pluggable);
 		TSelf SetScope(InstanceLifetime lifetime);
 		TSelf RequireContracts(params ContractRequirement[] requiredContracts);
 		TSelf CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);

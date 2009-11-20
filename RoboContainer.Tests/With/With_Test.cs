@@ -22,9 +22,9 @@ namespace RoboContainer.Tests.With
 		public void With_returns_new_independent_container()
 		{
 			var container = new Container(
-				c => c.ForPlugin<IFoo>().PluggableIs<Foo2>());
+				c => c.ForPlugin<IFoo>().UsePluggable<Foo2>());
 			var foo1 = container.With(
-				c => c.ForPlugin<IFoo>().PluggableIs<Foo1>()
+				c => c.ForPlugin<IFoo>().UsePluggable<Foo1>()
 				).Get<IFoo>();
 			Assert.IsInstanceOf<Foo1>(foo1);
 			var foo2 = container.Get<IFoo>();

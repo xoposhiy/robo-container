@@ -43,7 +43,7 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo>",
-				() => new Container(c => c.ForPlugin<IFoo>().PluggableIs<Foo>()).Get<IFoo>()
+				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>()).Get<IFoo>()
 				);
 		}
 
@@ -52,7 +52,7 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo — PerRequest>",
-				() => new Container(c => c.ForPlugin<IFoo>().PluggableIs<Foo>().SetScope(InstanceLifetime.PerRequest)).Get<IFoo>()
+				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().SetScope(InstanceLifetime.PerRequest)).Get<IFoo>()
 				);
 		}
 

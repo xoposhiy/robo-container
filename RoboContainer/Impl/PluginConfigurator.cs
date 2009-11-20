@@ -45,14 +45,20 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator PluggableIs<TPluggable>()
+		public IPluginConfigurator UsePluggable<TPluggable>()
 		{
-			return PluggableIs(typeof (TPluggable));
+			return UsePluggable(typeof (TPluggable));
 		}
 
-		public IPluginConfigurator PluggableIs(Type pluggableType)
+		public IPluginConfigurator UsePluggable(Type pluggableType)
 		{
 			ExplicitlySetPluggable = pluggableType;
+			return this;
+		}
+
+		public IPluginConfigurator Use(object pluggable)
+		{
+			CreatePluggableBy((container, type) => pluggable);
 			return this;
 		}
 
@@ -114,7 +120,7 @@ namespace RoboContainer.Impl
 			if (pluginAttribute != null)
 			{
 				if (pluginAttribute.ScopeSpecified) SetScope(pluginAttribute.Scope);
-				if (pluginAttribute.PluggableType != null) PluggableIs(pluginAttribute.PluggableType);
+				if (pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
@@ -206,15 +212,21 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> PluggableIs<TPluggable>()
+		public IPluginConfigurator<TPlugin> UsePluggable<TPluggable>()
 		{
-			realConfigurator.PluggableIs<TPluggable>();
+			realConfigurator.UsePluggable<TPluggable>();
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> PluggableIs(Type pluggableType)
+		public IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType)
 		{
-			realConfigurator.PluggableIs(pluggableType);
+			realConfigurator.UsePluggable(pluggableType);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> Use(TPlugin pluggable)
+		{
+			realConfigurator.Use(pluggable);
 			return this;
 		}
 
