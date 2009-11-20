@@ -47,14 +47,6 @@ namespace RoboContainer.Tests.CommonFunctionality
 		}
 
 		[Test]
-		public void can_select_injectable_constructor_and_ignore_not_injectable()
-		{
-			var container = new Container();
-			var m = container.Get<Multiconstructor2>();
-			Assert.IsTrue(m.good);
-		}
-
-		[Test]
 		public void get_returns_singletones_by_default()
 		{
 			var container = new Container();
@@ -89,28 +81,6 @@ namespace RoboContainer.Tests.CommonFunctionality
 		{
 			var container = new Container();
 			Assert.AreSame(container.Get<IInterface1>(), container.Get<IInterface1>());
-		}
-	}
-
-	public class Multiconstructor2
-	{
-		public bool good;
-
-		public Multiconstructor2(Foo0 foo)
-		{
-			good = true;
-		}
-
-		public Multiconstructor2(int a)
-		{
-		}
-
-		public Multiconstructor2(int[] a)
-		{
-		}
-
-		public Multiconstructor2(Foo0 foo, string name)
-		{
 		}
 	}
 

@@ -57,11 +57,8 @@ namespace RoboContainer.Impl
 			object[] arguments =
 				constructorInfo.GetParameters()
 					.Select(
-					(p, i) =>
-					container.Get(
-						p.ParameterType,
-						configuration.Dependencies.ElementAt(i).Contracts.ToArray()
-						)).ToArray();
+					p => configuration.Dependencies.ElementAt(p.Position).GetValue(p, container)
+					).ToArray();
 			return constructorInfo.Invoke(arguments);
 		}
 	}

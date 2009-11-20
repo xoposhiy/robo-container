@@ -24,8 +24,8 @@ namespace RoboContainer.Core
 		public Container(IContainerConfiguration configuration)
 		{
 			this.configuration = configuration;
-			configuration.Configurator.ForPlugin(typeof (Lazy<>)).PluggableIs(typeof (Lazy<>)).SetScope(InstanceLifetime.PerRequest);
-			if (!configuration.HasAssemblies())
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).PluggableIs(typeof(Lazy<>)).SetScope(InstanceLifetime.PerRequest);
+			if(!configuration.HasAssemblies())
 				configuration.Configurator.ScanCallingAssembly();
 		}
 
@@ -36,14 +36,14 @@ namespace RoboContainer.Core
 
 		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return (TPlugin) Get(typeof (TPlugin), requiredContracts);
+			return (TPlugin)Get(typeof(TPlugin), requiredContracts);
 		}
 
 		public object Get(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
-			if (!items.Any()) throw new ContainerException("Plugguble for {0} not found", pluginType.Name);
-			if (items.Count() > 1)
+			if(!items.Any()) throw new ContainerException("Plugguble for {0} not found", pluginType.Name);
+			if(items.Count() > 1)
 				throw new ContainerException(
 					"Plugin {0} has many pluggables:{1}",
 					pluginType.Name,
@@ -60,15 +60,15 @@ namespace RoboContainer.Core
 				session.Dispose();
 				return pluggables;
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
-				throw new ContainerException(e, Environment.NewLine + sessionLog.ToString());
+				throw new ContainerException(e, e.Message + Environment.NewLine + sessionLog.ToString());
 			}
 		}
 
 		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return GetPluggableTypesFor(typeof (TPlugin), requiredContracts);
+			return GetPluggableTypesFor(typeof(TPlugin), requiredContracts);
 		}
 
 		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts)
@@ -85,13 +85,13 @@ namespace RoboContainer.Core
 
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return GetAll(typeof (TPlugin)).Cast<TPlugin>().ToArray();
+			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
 		}
 
 		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
 			Type elementType;
-			if (IsCollection(pluginType, out elementType))
+			if(IsCollection(pluginType, out elementType))
 				return CreateArray(elementType, GetAll(elementType, requiredContracts));
 			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
 				.Select(
@@ -110,12 +110,12 @@ namespace RoboContainer.Core
 		private static bool IsCollection(Type pluginType, out Type elementType)
 		{
 			elementType = null;
-			if (pluginType.IsArray && pluginType.GetArrayRank() == 1)
+			if(pluginType.IsArray && pluginType.GetArrayRank() == 1)
 				elementType = pluginType.GetElementType();
 			else
 			{
 				Type[] typeArgs = pluginType.GetGenericArguments();
-				if (pluginType.IsGenericType && typeArgs.Length == 1 && pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
+				if(pluginType.IsGenericType && typeArgs.Length == 1 && pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
 					elementType = typeArgs.Single();
 			}
 			return elementType != null;
@@ -135,7 +135,7 @@ namespace RoboContainer.Core
 		{
 			object[] elementsArray = elements.ToArray();
 			Array castedArray = Array.CreateInstance(elementType, elementsArray.Length);
-			for (int i = 0; i < elementsArray.Length; i++)
+			for(int i = 0; i < elementsArray.Length; i++)
 				castedArray.SetValue(elementsArray[i], i);
 			yield return castedArray;
 		}
@@ -162,7 +162,7 @@ namespace RoboContainer.Core
 			}
 			finally
 			{
-				if (pluginType == null) text = new StringBuilder();
+				if(pluginType == null) text = new StringBuilder();
 				Write("Get {0}", newPluginType.Name);
 				pluginType = newPluginType;
 				ident += "\t";

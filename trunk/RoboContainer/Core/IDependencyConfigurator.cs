@@ -4,9 +4,9 @@ namespace RoboContainer.Core
 {
 	public interface IDependencyConfigurator
 	{
-		void RequireContract(params string[] requiredContracts);
-		void UseValue(object o);
-		void UsePluggable(Type pluggableType);
-		void UsePluggable<TPluggable>();
+		IDependencyConfigurator RequireContract(params string[] requiredContracts);
+		IDependencyConfigurator UseValue(object o);
+		IDependencyConfigurator UsePluggable(Type pluggableType);
+		IDependencyConfigurator UsePluggable<TPluggable>();
 	}
 }

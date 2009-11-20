@@ -10,36 +10,50 @@ namespace RoboContainer.Impl
 	public class DependencyConfigurator : IDependencyConfigurator, IConfiguredDependency
 	{
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
+		private object value;
+		private bool valueSpecified;
+		private Type pluggableType;
 
 		public IEnumerable<ContractRequirement> Contracts
 		{
 			get { return contracts; }
 		}
 
-		public void RequireContract(params string[] requiredContracts)
+		public object GetValue(ParameterInfo parameter, Container container)
 		{
-			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement) new NamedRequirement(r)));
+			if(valueSpecified) return value;
+			return container.Get(pluggableType ?? parameter.ParameterType, contracts.ToArray());
 		}
 
-		public void UseValue(object o)
+		public IDependencyConfigurator RequireContract(params string[] requiredContracts)
 		{
-			throw new NotImplementedException();
+			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement)new NamedRequirement(r)));
+			return this;
 		}
 
-		public void UsePluggable(Type pluggableType)
+		public IDependencyConfigurator UseValue(object aValue)
 		{
-			throw new NotImplementedException();
+			value = aValue;
+			valueSpecified = true;
+			return this;
 		}
 
-		public void UsePluggable<TPluggable>()
+		public IDependencyConfigurator UsePluggable(Type aPluggableType)
 		{
-			throw new NotImplementedException();
+			pluggableType = aPluggableType;
+			return this;
+		}
+
+		public IDependencyConfigurator UsePluggable<TPluggable>()
+		{
+			UsePluggable(typeof(TPluggable));
+			return this;
 		}
 
 		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
 		{
 			var config = new DependencyConfigurator();
-			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof (RequireContractAttribute), false).Cast<RequireContractAttribute>();
+			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
 			config.RequireContract(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
 			return config;
 		}
