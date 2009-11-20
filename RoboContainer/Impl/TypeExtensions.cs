@@ -59,28 +59,28 @@ namespace RoboContainer.Impl
 
 		private static IEnumerable<ConstructorInfo> GetInjectableConstructors(Type type)
 		{
-			return type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Where(IsInjectableConstructor).ToArray();
+			return type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).ToArray();
 		}
 
-		private static bool IsInjectableConstructor(ConstructorInfo c)
-		{
-			return c.GetParameters().All(IsInjectableParameter);
-		}
-
-		private static bool IsInjectableParameter(ParameterInfo parameterInfo)
-		{
-			return !IsSimpleType(parameterInfo.ParameterType) || parameterInfo.GetCustomAttributes(false).Any();
-		}
-
-		private static bool IsSimpleType(Type parameterType)
-		{
-			return
-				parameterType.IsPrimitive
-				|| parameterType == typeof(string)
-				|| parameterType == typeof(DateTime)
-				|| parameterType == typeof(TimeSpan)
-				|| (parameterType.IsArray && IsSimpleType(parameterType.GetElementType()));
-		}
+		//		private static bool IsInjectableConstructor(ConstructorInfo c)
+		//		{
+		//			return c.GetParameters().All(IsInjectableParameter);
+		//		}
+		//
+		//		private static bool IsInjectableParameter(ParameterInfo parameterInfo)
+		//		{
+		//			return !IsSimpleType(parameterInfo.ParameterType) || parameterInfo.GetCustomAttributes(false).Any();
+		//		}
+		//
+		//		private static bool IsSimpleType(Type parameterType)
+		//		{
+		//			return
+		//				parameterType.IsPrimitive
+		//				|| parameterType == typeof(string)
+		//				|| parameterType == typeof(DateTime)
+		//				|| parameterType == typeof(TimeSpan)
+		//				|| (parameterType.IsArray && IsSimpleType(parameterType.GetElementType()));
+		//		}
 
 		public static ConstructorInfo GetInjectableConstructor(this Type type, Type[] argsTypes_nullable)
 		{

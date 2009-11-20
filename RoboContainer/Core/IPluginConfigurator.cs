@@ -4,17 +4,17 @@ namespace RoboContainer.Core
 {
 	public delegate TPlugin CreatePluggableDelegate<TPlugin>(Container container, Type pluginType);
 
-	public interface IGenericPluginConfigurator<TPlugin, TPluginConfigurator>
+	public interface IGenericPluginConfigurator<TPlugin, TSelf>
 	{
-		TPluginConfigurator Ignore<TPluggable>();
-		TPluginConfigurator Ignore(params Type[] pluggableTypes);
-		TPluginConfigurator PluggableIs<TPluggable>();
-		TPluginConfigurator PluggableIs(Type pluggableType);
-		TPluginConfigurator SetScope(InstanceLifetime lifetime);
-		TPluginConfigurator RequireContracts(params ContractRequirement[] requiredContracts);
-		TPluginConfigurator CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
-		TPluginConfigurator InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);
-		TPluginConfigurator InitializeWith(Action<TPlugin> initializePlugin);
+		TSelf Ignore<TPluggable>();
+		TSelf Ignore(params Type[] pluggableTypes);
+		TSelf PluggableIs<TPluggable>();
+		TSelf PluggableIs(Type pluggableType);
+		TSelf SetScope(InstanceLifetime lifetime);
+		TSelf RequireContracts(params ContractRequirement[] requiredContracts);
+		TSelf CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
+		TSelf InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);
+		TSelf InitializeWith(Action<TPlugin> initializePlugin);
 	}
 
 	public interface IPluginConfigurator : IGenericPluginConfigurator<object, IPluginConfigurator>
