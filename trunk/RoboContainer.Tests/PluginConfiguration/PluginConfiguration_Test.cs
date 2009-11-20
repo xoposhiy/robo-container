@@ -83,7 +83,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_explicitly_set_pluggable_for_plugin()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().SetScope(InstanceLifetime.Singletone).PluggableIs<Foo0>().SetScope(InstanceLifetime.PerRequest));
+			var container = new Container(c => c.ForPlugin<IFoo>().SetScope(InstanceLifetime.Singletone).UsePluggable<Foo0>().SetScope(InstanceLifetime.PerRequest));
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>());
 			Console.WriteLine(container.LastConstructionLog);
 		}
@@ -170,9 +170,9 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void scope_works_for_explicitly_specified_pluggable()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().SetScope(InstanceLifetime.PerRequest).PluggableIs<Foo0>());
+			var container = new Container(c => c.ForPlugin<IFoo>().SetScope(InstanceLifetime.PerRequest).UsePluggable<Foo0>());
 			Assert.AreNotSame(container.Get<IFoo>(), container.Get<IFoo>());
-			container = new Container(c => c.ForPlugin<IFoo>().PluggableIs<Foo0>().SetScope(InstanceLifetime.PerRequest));
+			container = new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo0>().SetScope(InstanceLifetime.PerRequest));
 			Assert.AreNotSame(container.Get<IFoo>(), container.Get<IFoo>());
 		}
 

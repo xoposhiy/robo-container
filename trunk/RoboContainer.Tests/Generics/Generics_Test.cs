@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
@@ -99,14 +98,14 @@ namespace RoboContainer.Tests.Generics
 		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
+			containerConfiguration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
 			return containerConfiguration;
 		}
 
 		public static ContainerConfiguration ConfigureAndCheckThat(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.Configurator.ForPlugin(pluginType).PluggableIs(pluggableType);
+			containerConfiguration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
 			containerConfiguration.CheckThat(pluginType, pluggableType);
 			return containerConfiguration;
 		}

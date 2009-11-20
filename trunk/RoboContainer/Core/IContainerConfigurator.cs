@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace RoboContainer.Core
 {
-	public delegate void ScannerDelegate(IContainerConfigurator configurator, Type pluggableType);
+	public delegate void ScannerDelegate(IContainerConfigurator configurator, Type type);
 
 	public interface IContainerConfigurator
 	{

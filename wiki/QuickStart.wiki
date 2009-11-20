@@ -64,7 +64,7 @@ public class LaserWeapon : IWeapon
 	// ...
 }
 var container = new Container(
-	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>() // <-- явное конфигурирование
+	c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>() // <-- явное конфигурирование
 	);
 IWeapon weapon = container.Get<IWeapon>();
 Assert.IsInstanceOf<RocketWeapon>(weapon);
@@ -77,7 +77,7 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 {{{
 
 var container = new Container(
-	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
+	c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
 	);
 var weapon1 = container.Get<IWeapon>();
 var weapon2 = container.Get<IWeapon>();
@@ -91,7 +91,7 @@ Assert.AreSame(weapon1, weapon2);
 {{{
 
 var container = new Container(
-	c => c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>()
+	c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
 	     	.SetScope(InstanceLifetime.PerRequest) // <-- конфигурирование
 	);
 var weapon1 = container.Get<IWeapon>();
@@ -108,7 +108,7 @@ Assert.AreNotSame(weapon1, weapon2); // <-- результат
 var container = new Container(
 	c =>
 		{
-			c.ForPlugin<IWeapon>().PluggableIs<RocketWeapon>();
+			c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>();
 			c.ForPluggable<RocketWeapon>().InitializeWith(
 				rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
 		}
@@ -173,7 +173,7 @@ var container = new Container(
 			c.ForPluggable<RocketWeapon>()
 				.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
 			c.ForPlugin<IBattleShip>()
-				.PluggableIs<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
+				.UsePluggable<BigBattleShip>().SetScope(InstanceLifetime.PerRequest);
 		}
 	);
 
