@@ -35,6 +35,11 @@ namespace RoboContainer.Impl
 			get { return pluginConfigurator.InitializePluggable; }
 		}
 
+		public Type[] InjectableConstructorArgsTypes
+		{
+			get { return null; }
+		}
+
 		public IInstanceFactory GetFactory()
 		{
 			return new DelegateInstanceFactory(Scope, InitializePluggable, createPluggable);

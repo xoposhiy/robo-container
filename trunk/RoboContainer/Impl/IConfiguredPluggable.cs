@@ -12,6 +12,7 @@ namespace RoboContainer.Impl
 		InitializePluggableDelegate<object> InitializePluggable { get; }
 		IEnumerable<DeclaredContract> Contracts { get; }
 		IEnumerable<IConfiguredDependency> Dependencies { get; }
+		Type[] InjectableConstructorArgsTypes { get; }
 		IInstanceFactory GetFactory();
 	}
 }
