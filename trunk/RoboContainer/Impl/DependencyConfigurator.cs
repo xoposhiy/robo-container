@@ -19,10 +19,15 @@ namespace RoboContainer.Impl
 			get { return contracts; }
 		}
 
-		public object GetValue(ParameterInfo parameter, Container container)
+		public bool TryGetValue(ParameterInfo parameter, Container container, out object result)
 		{
-			if(valueSpecified) return value;
-			return container.Get(pluggableType ?? parameter.ParameterType, contracts.ToArray());
+			if(valueSpecified)
+			{
+				result = value;
+				return true;
+			}
+			result = container.TryGet(pluggableType ?? parameter.ParameterType, contracts.ToArray());
+			return result != null;
 		}
 
 		public IDependencyConfigurator RequireContract(params string[] requiredContracts)

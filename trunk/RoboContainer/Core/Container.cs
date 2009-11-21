@@ -36,19 +36,29 @@ namespace RoboContainer.Core
 
 		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return (TPlugin)Get(typeof(TPlugin), requiredContracts);
+			return (TPlugin) Get(typeof(TPlugin), requiredContracts);
+		}
+
+		public TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts)
+		{
+			object tryGet = TryGet(typeof(TPlugin), requiredContracts);
+			return (TPlugin) (tryGet ?? default(TPlugin)); // may be default(TPlugin) != null
 		}
 
 		public object Get(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
-			if(!items.Any()) throw new ContainerException("Plugguble for {0} not found", pluginType.Name);
-			if(items.Count() > 1)
-				throw new ContainerException(
-					"Plugin {0} has many pluggables:{1}",
-					pluginType.Name,
-					items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
-			return items.First();
+			if(!items.Any()) throw NoPluggablesException(pluginType);
+			if(items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
+			return items.Single();
+		}
+
+		public object TryGet(Type pluginType, params ContractRequirement[] requiredContracts)
+		{
+			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
+			if(!items.Any()) return null;
+			if(items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
+			return items.Single();
 		}
 
 		public IEnumerable<object> GetAll(Type pluginType, params ContractRequirement[] requiredContracts)
@@ -88,6 +98,19 @@ namespace RoboContainer.Core
 			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
 		}
 
+		private static ContainerException NoPluggablesException(Type pluginType)
+		{
+			return new ContainerException("Plugguble for {0} not found", pluginType.Name);
+		}
+
+		private static ContainerException HasManyPluggablesException(Type pluginType, IEnumerable<object> items)
+		{
+			return new ContainerException(
+				"Plugin {0} has many pluggables:{1}",
+				pluginType.Name,
+				items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
+		}
+
 		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
 			Type elementType;
@@ -95,8 +118,9 @@ namespace RoboContainer.Core
 				return CreateArray(elementType, GetAll(elementType, requiredContracts));
 			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
 				.Select(
-				c => c.GetFactory().GetOrCreate(this, pluginType)
-				).ToArray();
+				c => c.GetFactory().TryGetOrCreate(this, pluginType)
+				)
+				.Where(p => p != null).ToArray();
 			return pluggables;
 		}
 
@@ -192,7 +216,12 @@ namespace RoboContainer.Core
 
 		public void TryConstruct(Type pluggableType)
 		{
-			Write("Constructing {0}", pluggableType);
+			Write("Constructing {0}", pluggableType.Name);
+		}
+
+		public void ConstructionFailed(Type pluggableType)
+		{
+			Write("Can't construct {0}", pluggableType.Name);
 		}
 
 		private void Write(string message, params object[] args)
@@ -229,5 +258,6 @@ namespace RoboContainer.Core
 		void Initialized(Type pluggableType);
 		string ToString();
 		void TryConstruct(Type pluggableType);
+		void ConstructionFailed(Type pluggableType);
 	}
 }
