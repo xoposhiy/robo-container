@@ -26,6 +26,11 @@ namespace RoboContainer.Impl
 		{
 		}
 
+		public override string ToString()
+		{
+			return "";
+		}
+
 		private class NullDisposable : IDisposable
 		{
 			public void Dispose()
