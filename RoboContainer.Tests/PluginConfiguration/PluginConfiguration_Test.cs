@@ -97,6 +97,21 @@ namespace RoboContainer.Tests.PluginConfiguration
 		}
 
 		[Test]
+		public void can_set_scope_using_attributes()
+		{
+			var container = new Container();
+			Assert.AreNotSame(container.Get<IWithImplFilteredByAttributes>(), container.Get<IWithImplFilteredByAttributes>());
+		}
+
+		[Test]
+		public void can_combine_configuration_with_attributes()
+		{
+			var container = new Container(c => c.ForPlugin<IWithImplFilteredByAttributes>().UsePluggable<WithImplFilteredByAttributes1>());
+			Assert.IsInstanceOf<WithImplFilteredByAttributes1>(container.Get<IWithImplFilteredByAttributes>());
+			Assert.AreNotSame(container.Get<IWithImplFilteredByAttributes>(), container.Get<IWithImplFilteredByAttributes>());
+		}
+
+		[Test]
 		public void can_ignore_specific_pluggable_for_specific_plugin()
 		{
 			var container = new Container(c => c.ForPlugin<IFoo>().Ignore<Foo0>());
