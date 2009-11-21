@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Tests.Generics
 {
@@ -95,6 +96,22 @@ namespace RoboContainer.Tests.Generics
 				.CheckThat(typeof(IFoo_of<string>), typeof(Foo_of<string>), typeof(Foo_of_string));
 		}
 
+		[Test]
+		public void can_configure_generics_with_attributes()
+		{
+			var container = new Container();
+			Assert.AreNotSame(container.Get<IAttributedTransient<string>>(), container.Get<IAttributedTransient<string>>());
+		}
+
+		[Test]
+		public void can_combine_configuration_and_attributes()
+		{
+			var container = new Container(
+				c => c.ForPlugin(typeof(IAttributedTransient<>)).UsePluggable(typeof(AttributedTransient<>))
+				);
+			Assert.AreNotSame(container.Get<IAttributedTransient<string>>(), container.Get<IAttributedTransient<string>>());
+		}
+
 		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
@@ -114,5 +131,15 @@ namespace RoboContainer.Tests.Generics
 		{
 			return new ContainerConfiguration();
 		}
+	}
+
+	[Plugin(Scope = InstanceLifetime.PerRequest)]
+	public interface IAttributedTransient<T>
+	{
+	}
+
+	public class AttributedTransient<T> : IAttributedTransient<T>
+	{
+		
 	}
 }
