@@ -190,6 +190,11 @@ namespace RoboContainer.Core
 			return text.ToString();
 		}
 
+		public void TryConstruct(Type pluggableType)
+		{
+			Write("Constructing {0}", pluggableType);
+		}
+
 		private void Write(string message, params object[] args)
 		{
 			text.AppendFormat(ident + message, args).AppendLine();
@@ -223,5 +228,6 @@ namespace RoboContainer.Core
 		void Reused(Type pluggableType);
 		void Initialized(Type pluggableType);
 		string ToString();
+		void TryConstruct(Type pluggableType);
 	}
 }

@@ -231,15 +231,19 @@ Console.WriteLine(container.LastConstructionLog);
 <wiki:comment>[QS_FinalSample_LogOutput</wiki:comment>
 {{{
 Get IBattleShip
-	Get IWeapon[]
-		Get IWeapon
-			Constructed RocketWeapon
-			Constructed LaserWeapon
-			Get LaserWeapon
-				Reused LaserWeapon
-			Get RocketWeapon
-				Reused RocketWeapon
-			Constructed ComboWeapon
+	Get BigBattleShip
+		Get IWeapon[]
+			Get IWeapon
+				Get RocketWeapon
+				Constructed RocketWeapon
+				Get LaserWeapon
+				Constructed LaserWeapon
+				Get ComboWeapon
+					Get LaserWeapon
+						Reused LaserWeapon
+					Get RocketWeapon
+						Reused RocketWeapon
+				Constructed ComboWeapon
 	Constructed BigBattleShip
 
 }}}

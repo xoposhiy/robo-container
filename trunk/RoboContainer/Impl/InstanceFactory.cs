@@ -53,13 +53,16 @@ namespace RoboContainer.Impl
 
 		protected override object CreatePluggable(Container container, Type pluginToCreate)
 		{
+			var session = container.LastConstructionLog.StartConstruction(InstanceType);
 			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(configuration.InjectableConstructorArgsTypes);
 			object[] arguments =
 				constructorInfo.GetParameters()
 					.Select(
 					p => configuration.Dependencies.ElementAt(p.Position).GetValue(p, container)
 					).ToArray();
-			return constructorInfo.Invoke(arguments);
+			var pluggable = constructorInfo.Invoke(arguments);
+			session.Dispose();
+			return pluggable;
 		}
 	}
 }
