@@ -6,6 +6,10 @@
 + Контракты
 + Человечный Initialize
 + Отладочная информация: по каким правилам разрешается заданный pluginType.
++ TryGet
++ Primitive arguments
+
+Управление журналированием
 
 Документация
 
@@ -13,15 +17,11 @@
 
 IDisposable
 
-TryGet
-
 Thread safety
 
 Определять тип делегата CreateBy
 
 BuildContext
-
-Primitive arguments
 
 container.AssertConfigurationIsValid();
 

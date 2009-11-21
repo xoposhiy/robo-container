@@ -14,5 +14,6 @@ namespace RoboContainer.Core
 		IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts);
 		IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts);
 		IContainer With(Action<IContainerConfigurator> configure);
+		string LastConstructionLog { get; }
 	}
 }

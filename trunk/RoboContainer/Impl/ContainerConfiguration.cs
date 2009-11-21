@@ -9,11 +9,17 @@ namespace RoboContainer.Impl
 	public class ContainerConfiguration : IContainerConfiguration
 	{
 		private readonly List<Assembly> assemblies = new List<Assembly>();
+		private readonly LoggingConfigurator loggerConfigurator = new LoggingConfigurator();
 
 		private readonly IDictionary<Type, PluggableConfigurator> pluggableConfigs =
 			new Dictionary<Type, PluggableConfigurator>();
 
 		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
+
+		public IConfiguredLogging GetConfiguredLogging()
+		{
+			return loggerConfigurator;
+		}
 
 		public void ScanAssemblies(IEnumerable<Assembly> assembliesToScan)
 		{
@@ -25,9 +31,15 @@ namespace RoboContainer.Impl
 			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
 		}
 
+		//TODO: bug? не учитываются атрибуты!
 		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
 		{
 			return pluginConfigs.GetOrCreate(pluginType, () => new PluginConfigurator(this, pluginType));
+		}
+
+		public virtual ILoggingConfigurator GetLoggingConfigurator()
+		{
+			return loggerConfigurator;
 		}
 
 		// use
@@ -36,6 +48,7 @@ namespace RoboContainer.Impl
 			return pluggableConfigs.ContainsKey(pluggableType);
 		}
 
+		//TODO: bug? не учитываются атрибуты!
 		public virtual IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
 		{
 			return pluginConfigs.GetOrCreate(pluginType, () => GetPluginConfiguratorWithoutCache(pluginType));
@@ -76,8 +89,8 @@ namespace RoboContainer.Impl
 		private PluginConfigurator GetPluginConfiguratorWithoutCache(Type pluginType)
 		{
 			PluginConfigurator configuredPlugin;
-			if (pluginType.IsGenericType &&
-			    pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
+			if(pluginType.IsGenericType &&
+			   pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
 				return GetConfiguredPluginByClosingOpenGenericWithoutCache(configuredPlugin, pluginType);
 			return PluginConfigurator.FromAttributes(this, pluginType);
 		}
