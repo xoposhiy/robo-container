@@ -21,24 +21,29 @@ namespace RoboContainer.Impl
 
 		public Type InstanceType { get; protected set; }
 
-		public object GetOrCreate(Container container, Type typeToCreate)
+		public object TryGetOrCreate(Container container, Type typeToCreate)
 		{
 			if(o == null || scope == InstanceLifetime.PerRequest)
-				container.LastConstructionLog.Constructed((o = Construct(container, typeToCreate)).GetType());
+			{
+				o = TryConstruct(container, typeToCreate);
+				if (o == null) container.LastConstructionLog.ConstructionFailed(InstanceType);
+				else container.LastConstructionLog.Constructed(o.GetType());
+			}
 			else
 				container.LastConstructionLog.Reused(o.GetType());
 			return o;
 		}
 
-		private object Construct(Container container, Type typeToCreate)
+		private object TryConstruct(Container container, Type typeToCreate)
 		{
-			object constructed = CreatePluggable(container, typeToCreate);
+			object constructed = TryCreatePluggable(container, typeToCreate);
+			if(constructed == null) return null;
 			var initializablePluggable = constructed as IInitializablePluggable;
 			if(initializablePluggable != null) initializablePluggable.Initialize(container);
 			return initializePluggable != null ? initializePluggable(constructed, container) : constructed;
 		}
 
-		protected abstract object CreatePluggable(Container container, Type pluginToCreate);
+		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate);
 	}
 
 	internal class InstanceFactory : BaseInstanceFactory
@@ -51,16 +56,23 @@ namespace RoboContainer.Impl
 			this.configuration = configuration;
 		}
 
-		protected override object CreatePluggable(Container container, Type pluginToCreate)
+		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
 			var session = container.LastConstructionLog.StartConstruction(InstanceType);
 			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(configuration.InjectableConstructorArgsTypes);
-			object[] arguments =
-				constructorInfo.GetParameters()
-					.Select(
-					p => configuration.Dependencies.ElementAt(p.Position).GetValue(p, container)
-					).ToArray();
-			var pluggable = constructorInfo.Invoke(arguments);
+			var formalArgs = constructorInfo.GetParameters();
+			var actualArgs = new object[formalArgs.Length];
+			for(int i=0; i<actualArgs.Length; i++)
+			{
+				object actualArg;
+				if (!configuration.Dependencies.ElementAt(i).TryGetValue(formalArgs[i], container, out actualArg))
+				{
+					session.Dispose();
+					return null;
+				}
+				actualArgs[i] = actualArg;
+			}
+			var pluggable = constructorInfo.Invoke(actualArgs);
 			session.Dispose();
 			return pluggable;
 		}

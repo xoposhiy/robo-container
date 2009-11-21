@@ -14,7 +14,7 @@ namespace RoboContainer.Impl
 			this.createPluggable = createPluggable;
 		}
 
-		protected override object CreatePluggable(Container container, Type pluginToCreate)
+		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
 			return createPluggable(container, pluginToCreate);
 		}

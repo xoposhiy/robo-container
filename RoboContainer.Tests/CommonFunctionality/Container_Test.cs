@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
@@ -29,6 +30,15 @@ namespace RoboContainer.Tests.CommonFunctionality
 		}
 
 		[Test]
+		public void try_get_interface()
+		{
+			var container = new Container();
+			Assert.AreSame(container.TryGet<IFoo0>(), container.Get<Foo0>());
+			Assert.IsNull(container.TryGet<NotInjectableImpl1>());
+			Assert.IsNull(container.TryGet<IHasNoImpls>());
+		}
+
+		[Test]
 		public void can_inject_constructor_argument()
 		{
 			var container = new Container();
@@ -52,6 +62,7 @@ namespace RoboContainer.Tests.CommonFunctionality
 			var container = new Container();
 			var m = container.Get<IHasNotInjectableImpls>();
 			Assert.IsInstanceOf<InjectableImpl>(m);
+			Console.WriteLine(container.LastConstructionLog);
 		}
 
 		[Test]

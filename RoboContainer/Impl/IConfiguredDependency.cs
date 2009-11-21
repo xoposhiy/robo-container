@@ -7,6 +7,6 @@ namespace RoboContainer.Impl
 	public interface IConfiguredDependency
 	{
 		IEnumerable<ContractRequirement> Contracts { get; }
-		object GetValue(ParameterInfo parameter, Container container);
+		bool TryGetValue(ParameterInfo parameter, Container container, out object actualArg);
 	}
 }
