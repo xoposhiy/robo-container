@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using RoboContainer.Impl;
 
 namespace RoboContainer.Core
@@ -9,7 +8,6 @@ namespace RoboContainer.Core
 	public class Container : IContainer
 	{
 		private readonly IContainerConfiguration configuration;
-		private readonly IConstructionSessionLog sessionLog = new ConstructionSessionLog(null);
 
 		public Container()
 			: this(c => { })
@@ -29,9 +27,9 @@ namespace RoboContainer.Core
 				configuration.Configurator.ScanCallingAssembly();
 		}
 
-		public IConstructionSessionLog LastConstructionLog
+		public IConstructionLogger ConstructionLogger
 		{
-			get { return sessionLog; }
+			get { return configuration.GetConfiguredLogging().GetLogger(); }
 		}
 
 		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
@@ -65,14 +63,14 @@ namespace RoboContainer.Core
 		{
 			try
 			{
-				IDisposable session = sessionLog.StartConstruction(pluginType);
+				IDisposable session = ConstructionLogger.StartConstruction(pluginType);
 				IEnumerable<object> pluggables = PlainGetAll(pluginType, requiredContracts);
 				session.Dispose();
 				return pluggables;
 			}
 			catch(Exception e)
 			{
-				throw new ContainerException(e, e.Message + Environment.NewLine + sessionLog.ToString());
+				throw new ContainerException(e, e.Message + Environment.NewLine + ConstructionLogger.ToString());
 			}
 		}
 
@@ -91,6 +89,11 @@ namespace RoboContainer.Core
 			var childConfiguration = new ScopedConfiguration(configuration);
 			configure(childConfiguration.Configurator);
 			return new Container(childConfiguration);
+		}
+
+		public string LastConstructionLog
+		{
+			get { return ConstructionLogger.ToString(); }
 		}
 
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
@@ -163,101 +166,5 @@ namespace RoboContainer.Core
 				castedArray.SetValue(elementsArray[i], i);
 			yield return castedArray;
 		}
-	}
-
-	public class ConstructionSessionLog : IConstructionSessionLog
-	{
-		private string ident;
-		private Type pluginType;
-		private StringBuilder text;
-
-		public ConstructionSessionLog(Type pluginType)
-		{
-			this.pluginType = pluginType;
-			text = new StringBuilder();
-			ident = "";
-		}
-
-		public IDisposable StartConstruction(Type newPluginType)
-		{
-			try
-			{
-				return new SessionFinisher(this, pluginType, ident);
-			}
-			finally
-			{
-				if(pluginType == null) text = new StringBuilder();
-				Write("Get {0}", newPluginType.Name);
-				pluginType = newPluginType;
-				ident += "\t";
-			}
-		}
-
-
-		public void Constructed(Type pluggableType)
-		{
-			Write("Constructed {0}", pluggableType.Name);
-		}
-
-		public void Reused(Type pluggableType)
-		{
-			Write("Reused {0}", pluggableType.Name);
-		}
-
-		public void Initialized(Type pluggableType)
-		{
-			Write("Initialized {0}", pluggableType.Name);
-		}
-
-		public override string ToString()
-		{
-			return text.ToString();
-		}
-
-		public void TryConstruct(Type pluggableType)
-		{
-			Write("Constructing {0}", pluggableType.Name);
-		}
-
-		public void ConstructionFailed(Type pluggableType)
-		{
-			Write("Can't construct {0}", pluggableType.Name);
-		}
-
-		private void Write(string message, params object[] args)
-		{
-			text.AppendFormat(ident + message, args).AppendLine();
-		}
-
-		public class SessionFinisher : IDisposable
-		{
-			private readonly string ident;
-			private readonly ConstructionSessionLog parent;
-			private readonly Type pluginType;
-
-			public SessionFinisher(ConstructionSessionLog parent, Type pluginType, string ident)
-			{
-				this.parent = parent;
-				this.pluginType = pluginType;
-				this.ident = ident;
-			}
-
-			public void Dispose()
-			{
-				parent.ident = ident;
-				parent.pluginType = pluginType;
-			}
-		}
-	}
-
-	public interface IConstructionSessionLog
-	{
-		IDisposable StartConstruction(Type pluginType);
-		void Constructed(Type pluggableType);
-		void Reused(Type pluggableType);
-		void Initialized(Type pluggableType);
-		string ToString();
-		void TryConstruct(Type pluggableType);
-		void ConstructionFailed(Type pluggableType);
 	}
 }

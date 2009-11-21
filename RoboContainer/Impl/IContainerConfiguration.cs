@@ -14,9 +14,11 @@ namespace RoboContainer.Impl
 		bool HasConfiguredPluggable(Type pluggableType);
 		IConfiguredPlugin GetConfiguredPlugin(Type pluginType);
 		bool HasConfiguredPlugin(Type pluginType);
+		IConfiguredLogging GetConfiguredLogging();
 
 		void ScanAssemblies(IEnumerable<Assembly> assembliesToScan);
 		IPluggableConfigurator GetPluggableConfigurator(Type pluggableType);
 		IPluginConfigurator GetPluginConfigurator(Type pluginType);
+		ILoggingConfigurator GetLoggingConfigurator();
 	}
 }

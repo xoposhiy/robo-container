@@ -44,7 +44,7 @@ namespace RoboContainer.Impl
 
 		public void ScanTypesWith(ScannerDelegate scanner)
 		{
-			foreach (Type type in configuration.GetScannableTypes())
+			foreach(Type type in configuration.GetScannableTypes())
 				scanner(this, type);
 		}
 
@@ -55,17 +55,22 @@ namespace RoboContainer.Impl
 
 		public IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>()
 		{
-			return ForPluggable(typeof (TPluggable)).TypedConfigurator<TPluggable>();
+			return ForPluggable(typeof(TPluggable)).TypedConfigurator<TPluggable>();
 		}
 
 		public IPluginConfigurator<TPlugin> ForPlugin<TPlugin>()
 		{
-			return ForPlugin(typeof (TPlugin)).TypedConfigurator<TPlugin>();
+			return ForPlugin(typeof(TPlugin)).TypedConfigurator<TPlugin>();
 		}
 
 		public IPluginConfigurator ForPlugin(Type pluginType)
 		{
 			return configuration.GetPluginConfigurator(pluginType);
+		}
+
+		public ILoggingConfigurator Logging()
+		{
+			return configuration.GetLoggingConfigurator();
 		}
 
 		public void AddPart(Type pluginType, object pluggable)
@@ -76,19 +81,24 @@ namespace RoboContainer.Impl
 
 		public void AddPart<TPluginType>(TPluginType pluggable)
 		{
-			AddPart(typeof (TPluginType), pluggable);
+			AddPart(typeof(TPluginType), pluggable);
 		}
 
 		public void AddParts(params object[] pluggables)
 		{
-			foreach (object pluggable in pluggables) AddPart(pluggable);
+			foreach(object pluggable in pluggables) AddPart(pluggable);
+		}
+
+		public IConstructionLogger GetLogger()
+		{
+			return configuration.GetConfiguredLogging().GetLogger();
 		}
 
 		private void AddPartsExportedBy(object pluggable)
 		{
-			IEnumerable<PropertyInfo> exportableProperties = 
+			IEnumerable<PropertyInfo> exportableProperties =
 				pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>() && p.CanRead);
-			foreach (PropertyInfo prop in exportableProperties)
+			foreach(PropertyInfo prop in exportableProperties)
 			{
 				AddPart(
 					prop.GetAttribute<ExportedPartAttribute>().AsPlugin ?? prop.PropertyType,

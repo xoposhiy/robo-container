@@ -23,14 +23,15 @@ namespace RoboContainer.Impl
 
 		public object TryGetOrCreate(Container container, Type typeToCreate)
 		{
+			var constructionLog = container.ConstructionLogger;
 			if(o == null || scope == InstanceLifetime.PerRequest)
 			{
 				o = TryConstruct(container, typeToCreate);
-				if (o == null) container.LastConstructionLog.ConstructionFailed(InstanceType);
-				else container.LastConstructionLog.Constructed(o.GetType());
+				if (o == null) constructionLog.ConstructionFailed(InstanceType);
+				else constructionLog.Constructed(o.GetType());
 			}
 			else
-				container.LastConstructionLog.Reused(o.GetType());
+				constructionLog.Reused(o.GetType());
 			return o;
 		}
 
@@ -58,7 +59,7 @@ namespace RoboContainer.Impl
 
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
-			var session = container.LastConstructionLog.StartConstruction(InstanceType);
+			var session = container.ConstructionLogger.StartConstruction(InstanceType);
 			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(configuration.InjectableConstructorArgsTypes);
 			var formalArgs = constructorInfo.GetParameters();
 			var actualArgs = new object[formalArgs.Length];
