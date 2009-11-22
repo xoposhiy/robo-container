@@ -7,7 +7,7 @@ namespace RoboContainer.Core
 	public interface IGenericPluggableConfigurator<TPluggable, TSelf>
 	{
 		TSelf DeclareContracts(params DeclaredContract[] contracts);
-		TSelf SetScope(InstanceLifetime lifetime);
+		TSelf SetLifetime(LifetimeScope lifetime);
 		TSelf Ignore();
 		TSelf UseConstructor(params Type[] argsTypes);
 		TSelf InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);

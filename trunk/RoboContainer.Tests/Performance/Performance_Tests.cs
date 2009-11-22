@@ -52,7 +52,7 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo — PerRequest>",
-				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().SetScope(InstanceLifetime.PerRequest)).Get<IFoo>()
+				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().SetLifetime(LifetimeScope.PerRequest)).Get<IFoo>()
 				);
 		}
 
@@ -63,7 +63,7 @@ namespace RoboContainer.Tests.Performance
 				c =>
 				{
 					c.ScanCallingAssembly();
-					c.ForPlugin<IFoo>().SetScope(InstanceLifetime.PerRequest);
+					c.ForPlugin<IFoo>().SetLifetime(LifetimeScope.PerRequest);
 				});
 			Time(
 				"container.Get<IFoo — PerRequest>",

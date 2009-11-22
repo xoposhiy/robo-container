@@ -26,7 +26,7 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Ignored; }
 		}
 
-		public InstanceLifetime Scope
+		public LifetimeScope Scope
 		{
 			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Scope : configuredPluggable.Scope; }
 		}

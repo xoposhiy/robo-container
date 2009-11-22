@@ -19,10 +19,11 @@ namespace RoboContainer.Impl
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
+			Scope = LifetimeScope.PerContainer;
 		}
 
 		public Type PluginType { get; private set; }
-		public InstanceLifetime Scope { get; private set; }
+		public LifetimeScope Scope { get; private set; }
 		public bool ScopeSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 		public CreatePluggableDelegate<object> CreatePluggable { get; private set; }
@@ -62,7 +63,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator SetScope(InstanceLifetime lifetime)
+		public IPluginConfigurator SetLifetime(LifetimeScope lifetime)
 		{
 			Scope = lifetime;
 			ScopeSpecified = true;
@@ -119,7 +120,7 @@ namespace RoboContainer.Impl
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
 			if (pluginAttribute != null)
 			{
-				if (pluginAttribute.ScopeSpecified) SetScope(pluginAttribute.Scope);
+				if (pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScope.FromEnum(pluginAttribute.Lifetime));
 				if (pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
@@ -181,7 +182,7 @@ namespace RoboContainer.Impl
 			var result = new PluginConfigurator(containerConfiguration, pluginType);
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
 			if (genericDefinition.ScopeSpecified)
-				result.SetScope(genericDefinition.Scope);
+				result.SetLifetime(genericDefinition.Scope);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.CreatePluggable = genericDefinition.CreatePluggable;
 			if (genericDefinition.ExplicitlySetPluggable != null)
@@ -230,9 +231,9 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> SetScope(InstanceLifetime lifetime)
+		public IPluginConfigurator<TPlugin> SetLifetime(LifetimeScope lifetime)
 		{
-			realConfigurator.SetScope(lifetime);
+			realConfigurator.SetLifetime(lifetime);
 			return this;
 		}
 

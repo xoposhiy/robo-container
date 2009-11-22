@@ -17,6 +17,7 @@ namespace RoboContainer.Impl
 		private PluggableConfigurator(Type pluggableType)
 		{
 			PluggableType = pluggableType;
+			Scope = LifetimeScope.PerContainer;
 		}
 
 		protected DependencyConfigurator[] Dependencies
@@ -45,7 +46,7 @@ namespace RoboContainer.Impl
 
 		public bool Ignored { get; private set; }
 
-		public InstanceLifetime Scope { get; private set; }
+		public LifetimeScope Scope { get; private set; }
 
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
@@ -54,7 +55,7 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = new InstanceFactory(this));
 		}
 
-		public IPluggableConfigurator SetScope(InstanceLifetime lifetime)
+		public IPluggableConfigurator SetLifetime(LifetimeScope lifetime)
 		{
 			Scope = lifetime;
 			return this;
@@ -134,7 +135,7 @@ namespace RoboContainer.Impl
 			bool ignored = PluggableType.GetCustomAttributes(typeof(IgnoredPluggableAttribute), false).Length > 0;
 			if(ignored) Ignore();
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
-			if(pluggableAttribute != null) SetScope(pluggableAttribute.Scope);
+			if(pluggableAttribute != null) SetLifetime(LifetimeScope.FromEnum(pluggableAttribute.Lifetime));
 			DeclareContracts(
 				PluggableType.FindAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts).Select(c => new NamedContract(c))
@@ -151,9 +152,9 @@ namespace RoboContainer.Impl
 			this.pluggableConfigurator = pluggableConfigurator;
 		}
 
-		public IPluggableConfigurator<TPluggable> SetScope(InstanceLifetime lifetime)
+		public IPluggableConfigurator<TPluggable> SetLifetime(LifetimeScope lifetime)
 		{
-			pluggableConfigurator.SetScope(lifetime);
+			pluggableConfigurator.SetLifetime(lifetime);
 			return this;
 		}
 

@@ -12,7 +12,7 @@ namespace RoboContainer.Core
 		TSelf UsePluggable(Type pluggableType);
 		TSelf Use(TPlugin pluggable);
 //		TSelf UseAlso(TPlugin pluggable);
-		TSelf SetScope(InstanceLifetime lifetime);
+		TSelf SetLifetime(LifetimeScope lifetime);
 		TSelf RequireContracts(params ContractRequirement[] requiredContracts);
 		TSelf CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
 		TSelf InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);

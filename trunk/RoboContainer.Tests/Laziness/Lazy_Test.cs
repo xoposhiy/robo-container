@@ -29,7 +29,7 @@ namespace RoboContainer.Tests.Laziness
 		[Test]
 		public void lazy_of_PerRequest()
 		{
-			var container = new Container(c => c.ForPlugin<ShouldBeLazy>().SetScope(InstanceLifetime.PerRequest));
+			var container = new Container(c => c.ForPlugin<ShouldBeLazy>().SetLifetime(LifetimeScope.PerRequest));
 			var lazy1 = container.Get<Lazy<ShouldBeLazy>>();
 			var lazy2 = container.Get<Lazy<ShouldBeLazy>>();
 			Assert.AreNotSame(lazy1.Get(), lazy1.Get());

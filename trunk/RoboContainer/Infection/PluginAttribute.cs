@@ -6,15 +6,15 @@ namespace RoboContainer.Infection
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
 	public class PluginAttribute : Attribute
 	{
-		private InstanceLifetime scope;
+		private LifetimeScopeEnum lifetime;
 
-		public InstanceLifetime Scope
+		public LifetimeScopeEnum Lifetime
 		{
-			get { return scope; }
+			get { return lifetime; }
 			set
 			{
 				ScopeSpecified = true;
-				scope = value;
+				lifetime = value;
 			}
 		}
 

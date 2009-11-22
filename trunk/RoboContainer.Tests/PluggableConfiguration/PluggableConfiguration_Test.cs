@@ -43,7 +43,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 		[Test]
 		public void set_lifetime_scope_to_PerRequest_by_configuration()
 		{
-			var container = new Container(c => c.ForPluggable<Foo2>().SetScope(InstanceLifetime.PerRequest));
+			var container = new Container(c => c.ForPluggable<Foo2>().SetLifetime(LifetimeScope.PerRequest));
 			Assert.AreNotSame(container.Get<Foo2>(), container.Get<Foo2>());
 		}
 
@@ -67,7 +67,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 	{
 	}
 
-	[Pluggable(Scope = InstanceLifetime.PerRequest)]
+	[Pluggable(Lifetime = LifetimeScopeEnum.PerRequest)]
 	public class Foo1 : IFoo
 	{
 	}
