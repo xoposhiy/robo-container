@@ -6,17 +6,17 @@ namespace RoboContainer.Core
 	{
 	}
 
-	public class Lazy<TPlugin, TLifetimeSlot> : IInitializablePluggable where TLifetimeSlot : ILifetimeSlot, new()
+	public class Lazy<TPlugin, TLifetime> : IInitializablePluggable where TLifetime : ILifetime, new()
 	{
 		private IContainer container;
-		private readonly ILifetimeSlot slot = new TLifetimeSlot();
+		private readonly ILifetime slot = new TLifetime();
 
 		void IInitializablePluggable.Initialize(IContainer aContainer)
 		{
 			container = aContainer;
 		}
 
-		public static explicit operator TPlugin(Lazy<TPlugin, TLifetimeSlot> lazy)
+		public static explicit operator TPlugin(Lazy<TPlugin, TLifetime> lazy)
 		{
 			return lazy.Get();
 		}

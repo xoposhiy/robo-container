@@ -32,7 +32,7 @@ namespace RoboContainer.Tests.Laziness
 		[Test]
 		public void singletone_lazy_of_perRequest()
 		{
-			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().SetLifetime<PerRequest>());
 			container.GetAll<Lazy<ShouldBeLazy, PerContainer>>();
 			Console.WriteLine(container.LastConstructionLog);
 			var lazy1 = container.Get<Lazy<ShouldBeLazy, PerContainer>>();

@@ -67,7 +67,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 	{
 	}
 
-	[Pluggable(Lifetime = LifetimeScopeEnum.PerRequest)]
+	[Pluggable(Lifetime = LifetimeScope.PerRequest)]
 	public class Foo1 : IFoo
 	{
 	}

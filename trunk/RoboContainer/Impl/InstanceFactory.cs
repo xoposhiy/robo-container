@@ -9,11 +9,11 @@ namespace RoboContainer.Impl
 	internal abstract class BaseInstanceFactory : IInstanceFactory
 	{
 		private readonly InitializePluggableDelegate<object> initializePluggable;
-		private readonly ILifetimeSlot objectSlot;
+		private readonly ILifetime objectSlot;
 
-		protected BaseInstanceFactory(Type pluggableType, LifetimeScope lifetime, InitializePluggableDelegate<object> initializePluggable)
+		protected BaseInstanceFactory(Type pluggableType, Func<ILifetime> createLifetimeSlot, InitializePluggableDelegate<object> initializePluggable)
 		{
-			objectSlot = lifetime.CreateSlot();
+			objectSlot = createLifetimeSlot();
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 		}

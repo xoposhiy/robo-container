@@ -204,7 +204,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		}
 	}
 
-	[Plugin(Lifetime = LifetimeScopeEnum.PerRequest, PluggableType = typeof(WithImplSetByAttribute1))]
+	[Plugin(Lifetime = LifetimeScope.PerRequest, PluggableType = typeof(WithImplSetByAttribute1))]
 	public interface IWithImplSetByAttribute
 	{
 	}
@@ -218,7 +218,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 	}
 
 
-	[Plugin(Lifetime = LifetimeScopeEnum.PerRequest)]
+	[Plugin(Lifetime = LifetimeScope.PerRequest)]
 	[DontUsePluggable(typeof (WithImplFilteredByAttributes1))]
 	[DontUsePluggable(typeof (WithImplFilteredByAttributes2))]
 	public interface IWithImplFilteredByAttributes

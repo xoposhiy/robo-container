@@ -8,6 +8,7 @@ namespace RoboContainer.Core
 	{
 		TSelf DeclareContracts(params ContractDeclaration[] contractsDeclaration);
 		TSelf SetLifetime(LifetimeScope lifetime);
+		TSelf SetLifetime<TLifetime>() where TLifetime : ILifetime, new();
 		TSelf Ignore();
 		TSelf UseConstructor(params Type[] argsTypes);
 		TSelf InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);

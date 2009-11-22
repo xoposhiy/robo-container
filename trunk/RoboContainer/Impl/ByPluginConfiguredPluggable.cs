@@ -26,9 +26,9 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Ignored; }
 		}
 
-		public LifetimeScope Scope
+		public Func<ILifetime> Scope
 		{
-			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Scope : configuredPluggable.Scope; }
+			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Lifetime : configuredPluggable.Scope; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -71,7 +71,7 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.Scope != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
+			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.Lifetime != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
 				return new InstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

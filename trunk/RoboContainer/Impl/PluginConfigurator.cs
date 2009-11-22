@@ -19,11 +19,11 @@ namespace RoboContainer.Impl
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
-			Scope = LifetimeScope.PerContainer;
+			Lifetime = LifetimeScopes.PerContainer;
 		}
 
 		public Type PluginType { get; private set; }
-		public LifetimeScope Scope { get; private set; }
+		public Func<ILifetime> Lifetime { get; private set; }
 		public bool ScopeSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 		public CreatePluggableDelegate<object> CreatePluggable { get; private set; }
@@ -65,9 +65,19 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator SetLifetime(LifetimeScope lifetime)
 		{
-			Scope = lifetime;
+			return SetLifetime(LifetimeScopes.FromEnum(lifetime));
+		}
+
+		private IPluginConfigurator SetLifetime(Func<ILifetime> lifetime)
+		{
+			Lifetime = lifetime;
 			ScopeSpecified = true;
 			return this;
+		}
+
+		public IPluginConfigurator SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		{
+			return SetLifetime(() => new TLifetime());
 		}
 
 		public IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate<object> createPluggable)
@@ -120,7 +130,7 @@ namespace RoboContainer.Impl
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
 			if (pluginAttribute != null)
 			{
-				if (pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScope.FromEnum(pluginAttribute.Lifetime));
+				if (pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScopes.FromEnum(pluginAttribute.Lifetime));
 				if (pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
@@ -162,7 +172,7 @@ namespace RoboContainer.Impl
 			if (pluggableType == null) return null;
 			if (pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			if (ScopeSpecified && Scope != configuredPluggable.Scope || InitializePluggable != null)
+			if (ScopeSpecified && Lifetime != configuredPluggable.Scope || InitializePluggable != null)
 				return pluggableConfigs.GetOrCreate(pluggableType, () => new ByPluginConfiguredPluggable(this, configuredPluggable));
 			return configuredPluggable;
 		}
@@ -182,7 +192,7 @@ namespace RoboContainer.Impl
 			var result = new PluginConfigurator(containerConfiguration, pluginType);
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
 			if (genericDefinition.ScopeSpecified)
-				result.SetLifetime(genericDefinition.Scope);
+				result.SetLifetime(genericDefinition.Lifetime);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.CreatePluggable = genericDefinition.CreatePluggable;
 			if (genericDefinition.ExplicitlySetPluggable != null)
@@ -234,6 +244,12 @@ namespace RoboContainer.Impl
 		public IPluginConfigurator<TPlugin> SetLifetime(LifetimeScope lifetime)
 		{
 			realConfigurator.SetLifetime(lifetime);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		{
+			realConfigurator.SetLifetime<TLifetime>();
 			return this;
 		}
 
