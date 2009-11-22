@@ -52,7 +52,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = new InstanceFactory(this));
+			return factory ?? (factory = new ByConstructorInstanceFactory(this));
 		}
 
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)

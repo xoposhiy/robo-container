@@ -11,7 +11,7 @@ namespace RoboContainer.Core
 		TSelf UsePluggable<TPluggable>();
 		TSelf UsePluggable(Type pluggableType);
 		TSelf UseOnly(TPlugin part);
-		TSelf UseAlso(TPlugin part);
+		TSelf UseAlso(TPlugin part, params ContractDeclaration[] declaredContracts);
 		TSelf ReusePluggable(ReusePolicy reusePolicy);
 		TSelf ReusePluggable<TReuse>() where TReuse : IReuse, new();
 		TSelf RequireContracts(params ContractRequirement[] requiredContracts);

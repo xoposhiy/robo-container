@@ -3,12 +3,14 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	internal class DelegateInstanceFactory : BaseInstanceFactory
+	public class ByDelegateInstanceFactory : AbstractInstanceFactory
 	{
 		private readonly CreatePluggableDelegate<object> createPluggable;
 
-		public DelegateInstanceFactory(Func<IReuse> scope, InitializePluggableDelegate<object> initializePluggable,
-		                               CreatePluggableDelegate<object> createPluggable)
+		public ByDelegateInstanceFactory(
+			Func<IReuse> scope, 
+			InitializePluggableDelegate<object> initializePluggable,
+			CreatePluggableDelegate<object> createPluggable)
 			: base(null, scope, initializePluggable)
 		{
 			this.createPluggable = createPluggable;
