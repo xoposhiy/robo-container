@@ -2,7 +2,7 @@
 
 namespace RoboContainer.Impl
 {
-	public abstract class BaseDeclaredContract<TContractRequirement> : DeclaredContract where TContractRequirement : ContractRequirement
+	public abstract class BaseContractDeclaration<TContractRequirement> : ContractDeclaration where TContractRequirement : ContractRequirement
 	{
 		public override bool Satisfy(ContractRequirement requirement)
 		{

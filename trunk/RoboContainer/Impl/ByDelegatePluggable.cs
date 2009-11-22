@@ -45,7 +45,7 @@ namespace RoboContainer.Impl
 			return new DelegateInstanceFactory(Scope, InitializePluggable, createPluggable);
 		}
 
-		public IEnumerable<DeclaredContract> Contracts
+		public IEnumerable<ContractDeclaration> Contracts
 		{
 			get { yield break; }
 		}

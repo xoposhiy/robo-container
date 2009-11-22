@@ -10,7 +10,7 @@ namespace RoboContainer.Impl
 		bool Ignored { get; }
 		LifetimeScope Scope { get; }
 		InitializePluggableDelegate<object> InitializePluggable { get; }
-		IEnumerable<DeclaredContract> Contracts { get; }
+		IEnumerable<ContractDeclaration> Contracts { get; }
 		IEnumerable<IConfiguredDependency> Dependencies { get; }
 		Type[] InjectableConstructorArgsTypes { get; }
 		IInstanceFactory GetFactory();
