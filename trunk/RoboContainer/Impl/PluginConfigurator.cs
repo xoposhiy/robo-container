@@ -11,8 +11,8 @@ namespace RoboContainer.Impl
 		private readonly IContainerConfiguration configuration;
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
+		private readonly IList<object> parts = new List<object>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
-		private readonly IList<object> useAlso = new List<object>();
 		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
 
@@ -33,17 +33,7 @@ namespace RoboContainer.Impl
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables()
 		{
-			return
-				pluggables ??
-				(
-					pluggables =
-					CreatePluggables()
-						.Concat(
-						useAlso.Select(
-							o => GetConfiguredPluggableForDelegate((container, type) => o)
-							)
-						).ToArray()
-				);
+			return pluggables ?? (pluggables = AddPartsTo(CreatePluggables()));
 		}
 
 		public IPluginConfigurator Ignore<TPluggable>()
@@ -76,7 +66,7 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator UseAlso(object pluggable)
 		{
-			useAlso.Add(pluggable);
+			parts.Add(pluggable);
 			return this;
 		}
 
@@ -123,6 +113,14 @@ namespace RoboContainer.Impl
 			return new PluginConfigurator<TPlugin>(this);
 		}
 
+		private IConfiguredPluggable[] AddPartsTo(IEnumerable<IConfiguredPluggable> somePluggables)
+		{
+			return
+				somePluggables.Concat(
+					parts.Select(part => (IConfiguredPluggable)new ByDelegatePluggable(this, (container, type) => part))
+					).ToArray();
+		}
+
 		private IPluginConfigurator ReusePluggable(Func<IReuse> reusePolicy)
 		{
 			ReusePolicy = reusePolicy;
@@ -158,7 +156,7 @@ namespace RoboContainer.Impl
 		}
 
 		// use / once
-		private IConfiguredPluggable[] CreatePluggables()
+		private IEnumerable<IConfiguredPluggable> CreatePluggables()
 		{
 			if(ExplicitlySetPluggable != null)
 			{
