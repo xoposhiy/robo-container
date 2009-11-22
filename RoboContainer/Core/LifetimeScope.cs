@@ -12,9 +12,9 @@ namespace RoboContainer.Core
 
 	public class LifetimeScope
 	{
-		public static LifetimeScope PerContainer = new LifetimeScope(() => new PerContainerSlot());
-		public static LifetimeScope PerRequest = new LifetimeScope(() => new PerRequestSlot());
-		public static LifetimeScope PerThread = new LifetimeScope(() => new PerThreadSlot());
+		public static LifetimeScope PerContainer = new LifetimeScope(() => new PerContainer());
+		public static LifetimeScope PerRequest = new LifetimeScope(() => new PerRequest());
+		public static LifetimeScope PerThread = new LifetimeScope(() => new PerThread());
 
 		private readonly Func<ILifetimeSlot> createSlot;
 

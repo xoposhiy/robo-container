@@ -126,7 +126,7 @@ namespace RoboContainer.Impl
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
 				PluginType.FindAttributes<RequireContractAttribute>()
-					.SelectMany(a => a.Contracts).Select(c => new NamedRequirement(c))
+					.SelectMany(a => a.Contracts).Select(c => new NamedContractRequirement(c))
 					.ToArray());
 		}
 

@@ -32,7 +32,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator RequireContract(params string[] requiredContracts)
 		{
-			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement)new NamedRequirement(r)));
+			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement)new NamedContractRequirement(r)));
 			return this;
 		}
 
