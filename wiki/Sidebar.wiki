@@ -7,5 +7,4 @@
   * [Lazy Ленивое инжектирование]
   * [Contracts Контракты]
   * [BestPractices Советы]
-
   * [Roadmap Что в планах]
