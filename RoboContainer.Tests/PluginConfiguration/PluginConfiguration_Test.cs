@@ -26,6 +26,17 @@ namespace RoboContainer.Tests.PluginConfiguration
 		}
 
 		[Test]
+		public void can_also_use_several_values()
+		{
+			var specialValue1 = new Foo1();
+			var specialValue2 = new Foo1();
+			var container = new Container(c => c.ForPlugin<IFoo>().UseAlso(specialValue1).UseAlso(specialValue2));
+			var foos = container.GetAll<IFoo>();
+			CollectionAssert.Contains(foos, specialValue1);
+			CollectionAssert.Contains(foos, specialValue2);
+		}
+
+		[Test]
 		public void also_use_value_for_concrete_types()
 		{
 			var specialValue = new Foo1();
