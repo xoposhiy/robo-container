@@ -2,28 +2,28 @@
 
 namespace RoboContainer.Core
 {
-	public class Lazy<TPlugin> : Lazy<TPlugin, PerRequest>
+	public class Lazy<TPlugin> : Lazy<TPlugin, ReuseNever>
 	{
 	}
 
-	public class Lazy<TPlugin, TLifetime> : IInitializablePluggable where TLifetime : ILifetime, new()
+	public class Lazy<TPlugin, TReuse> : IInitializablePluggable where TReuse : IReuse, new()
 	{
 		private IContainer container;
-		private readonly ILifetime slot = new TLifetime();
+		private readonly IReuse reuseSlot = new TReuse();
 
 		void IInitializablePluggable.Initialize(IContainer aContainer)
 		{
 			container = aContainer;
 		}
 
-		public static explicit operator TPlugin(Lazy<TPlugin, TLifetime> lazy)
+		public static explicit operator TPlugin(Lazy<TPlugin, TReuse> lazy)
 		{
 			return lazy.Get();
 		}
 
 		public TPlugin Get()
 		{
-			return (TPlugin) (slot.Value ?? (slot.Value = container.Get<TPlugin>()));
+			return (TPlugin) (reuseSlot.Value ?? (reuseSlot.Value = container.Get<TPlugin>()));
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace RoboContainer.Impl
 		private PluggableConfigurator(Type pluggableType)
 		{
 			PluggableType = pluggableType;
-			Scope = LifetimeScopes.PerContainer;
+			ReusePolicy = ReusePolicies.Always;
 		}
 
 		protected DependencyConfigurator[] Dependencies
@@ -46,7 +46,7 @@ namespace RoboContainer.Impl
 
 		public bool Ignored { get; private set; }
 
-		public Func<ILifetime> Scope { get; private set; }
+		public Func<IReuse> ReusePolicy { get; private set; }
 
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
@@ -55,15 +55,15 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = new InstanceFactory(this));
 		}
 
-		public IPluggableConfigurator SetLifetime(LifetimeScope lifetime)
+		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)
 		{
-			Scope = LifetimeScopes.FromEnum(lifetime);
+			ReusePolicy = ReusePolicies.FromEnum(reusePolicy);
 			return this;
 		}
 
-		public IPluggableConfigurator SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		public IPluggableConfigurator ReuseIt<TReuse>() where TReuse : IReuse, new()
 		{
-			Scope = () => new TLifetime();
+			ReusePolicy = () => new TReuse();
 			return this;
 		}
 
@@ -141,7 +141,7 @@ namespace RoboContainer.Impl
 			bool ignored = PluggableType.GetCustomAttributes(typeof(IgnoredPluggableAttribute), false).Length > 0;
 			if(ignored) Ignore();
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
-			if(pluggableAttribute != null) SetLifetime(pluggableAttribute.Lifetime);
+			if(pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
 			DeclareContracts(
 				PluggableType.FindAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts).Select(c => new NamedContractDeclaration(c))
@@ -158,15 +158,15 @@ namespace RoboContainer.Impl
 			this.pluggableConfigurator = pluggableConfigurator;
 		}
 
-		public IPluggableConfigurator<TPluggable> SetLifetime(LifetimeScope lifetime)
+		public IPluggableConfigurator<TPluggable> ReuseIt(ReusePolicy reusePolicy)
 		{
-			pluggableConfigurator.SetLifetime(lifetime);
+			pluggableConfigurator.ReuseIt(reusePolicy);
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		public IPluggableConfigurator<TPluggable> ReuseIt<TReuse>() where TReuse : IReuse, new()
 		{
-			pluggableConfigurator.SetLifetime<TLifetime>();
+			pluggableConfigurator.ReuseIt<TReuse>();
 			return this;
 		}
 

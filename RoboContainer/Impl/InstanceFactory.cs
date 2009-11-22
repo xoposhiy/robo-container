@@ -9,11 +9,11 @@ namespace RoboContainer.Impl
 	internal abstract class BaseInstanceFactory : IInstanceFactory
 	{
 		private readonly InitializePluggableDelegate<object> initializePluggable;
-		private readonly ILifetime objectSlot;
+		private readonly IReuse reuseValueSlot;
 
-		protected BaseInstanceFactory(Type pluggableType, Func<ILifetime> createLifetimeSlot, InitializePluggableDelegate<object> initializePluggable)
+		protected BaseInstanceFactory(Type pluggableType, Func<IReuse> createReuseSlot, InitializePluggableDelegate<object> initializePluggable)
 		{
-			objectSlot = createLifetimeSlot();
+			reuseValueSlot = createReuseSlot();
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 		}
@@ -22,12 +22,12 @@ namespace RoboContainer.Impl
 
 		public object TryGetOrCreate(Container container, Type typeToCreate)
 		{
-			if (objectSlot.Value != null)
+			if (reuseValueSlot.Value != null)
 			{
-				container.ConstructionLogger.Reused(objectSlot.Value.GetType());
-				return objectSlot.Value;
+				container.ConstructionLogger.Reused(reuseValueSlot.Value.GetType());
+				return reuseValueSlot.Value;
 			}
-			return objectSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
+			return reuseValueSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
 		}
 
 		private object TryConstructAndLog(Container container, Type typeToCreate)
@@ -56,7 +56,7 @@ namespace RoboContainer.Impl
 		private readonly IConfiguredPluggable configuration;
 
 		public InstanceFactory(IConfiguredPluggable configuration)
-			: base(configuration.PluggableType, configuration.Scope, configuration.InitializePluggable)
+			: base(configuration.PluggableType, configuration.ReusePolicy, configuration.InitializePluggable)
 		{
 			this.configuration = configuration;
 		}

@@ -51,8 +51,8 @@ namespace RoboContainer.Tests.Performance
 		public void Test_Create_StrictConfigure_PerRequest()
 		{
 			Time(
-				"new Container().Get<IFoo — PerRequest>",
-				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().SetLifetime(LifetimeScope.PerRequest)).Get<IFoo>()
+				"new Container().Get<IFoo — Never>",
+				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().ReusePluggable(ReusePolicy.Never)).Get<IFoo>()
 				);
 		}
 
@@ -63,10 +63,10 @@ namespace RoboContainer.Tests.Performance
 				c =>
 				{
 					c.ScanCallingAssembly();
-					c.ForPlugin<IFoo>().SetLifetime(LifetimeScope.PerRequest);
+					c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Never);
 				});
 			Time(
-				"container.Get<IFoo — PerRequest>",
+				"container.Get<IFoo — Never>",
 				() => container.Get<IFoo>()
 				);
 		}

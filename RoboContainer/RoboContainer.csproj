@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
-    <Compile Include="Core\ILifetime.cs" />
+    <Compile Include="Core\IReuse.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
@@ -82,7 +82,7 @@
     <Compile Include="Impl\PluginConfigurator.cs" />
     <Compile Include="Impl\ScopedConfiguration.cs" />
     <Compile Include="Impl\TypeExtensions.cs" />
-    <Compile Include="Core\LifetimeScope.cs" />
+    <Compile Include="Core\ReusePolicy.cs" />
     <Compile Include="Core\IPluggableConfigurator.cs" />
     <Compile Include="Core\IPluginConfigurator.cs" />
     <Compile Include="Core\Lazy.cs" />

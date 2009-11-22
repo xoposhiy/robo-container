@@ -25,9 +25,9 @@ namespace RoboContainer.Impl
 			get { return false; }
 		}
 
-		public Func<ILifetime> Scope
+		public Func<IReuse> ReusePolicy
 		{
-			get { return pluginConfigurator.Lifetime; }
+			get { return pluginConfigurator.ReusePolicy; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -42,7 +42,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return new DelegateInstanceFactory(Scope, InitializePluggable, createPluggable);
+			return new DelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable);
 		}
 
 		public IEnumerable<ContractDeclaration> Contracts
