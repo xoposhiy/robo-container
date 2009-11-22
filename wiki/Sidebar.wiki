@@ -1,11 +1,12 @@
-  * [QuickStart Пятиминутное введение]
   * [DIContainers DI container — это...]
+
+  * [QuickStart Пятиминутное введение]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
   * [Generics Поддержка generics]
   * [Collections Поддержка коллекций]
   * [Lazy Ленивое инжектирование]
-  * [ExportedParts Экспортирование частей]
+  * [Contracts Контракты]
   * [BestPractices Советы]
 
   * [Roadmap Что в планах]
