@@ -12,10 +12,11 @@ namespace RoboContainer.Impl
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
+		private readonly IList<object> useAlso = new List<object>();
 		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
 
-		public PluginConfigurator(ContainerConfiguration configuration, Type pluginType)
+		public PluginConfigurator(IContainerConfiguration configuration, Type pluginType)
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
@@ -32,12 +33,22 @@ namespace RoboContainer.Impl
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables()
 		{
-			return pluggables ?? (pluggables = CreatePluggables());
+			return
+				pluggables ??
+				(
+					pluggables =
+					CreatePluggables()
+						.Concat(
+						useAlso.Select(
+							o => GetConfiguredPluggableForDelegate((container, type) => o)
+							)
+						).ToArray()
+				);
 		}
 
 		public IPluginConfigurator Ignore<TPluggable>()
 		{
-			return Ignore(typeof (TPluggable));
+			return Ignore(typeof(TPluggable));
 		}
 
 		public IPluginConfigurator Ignore(params Type[] pluggableTypes)
@@ -48,7 +59,7 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator UsePluggable<TPluggable>()
 		{
-			return UsePluggable(typeof (TPluggable));
+			return UsePluggable(typeof(TPluggable));
 		}
 
 		public IPluginConfigurator UsePluggable(Type pluggableType)
@@ -63,16 +74,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
+		public IPluginConfigurator UseAlso(object pluggable)
+		{
+			useAlso.Add(pluggable);
+			return this;
+		}
+
 		public IPluginConfigurator SetLifetime(LifetimeScope lifetime)
 		{
 			return SetLifetime(LifetimeScopes.FromEnum(lifetime));
-		}
-
-		private IPluginConfigurator SetLifetime(Func<ILifetime> lifetime)
-		{
-			Lifetime = lifetime;
-			ScopeSpecified = true;
-			return this;
 		}
 
 		public IPluginConfigurator SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
@@ -113,6 +123,13 @@ namespace RoboContainer.Impl
 			return new PluginConfigurator<TPlugin>(this);
 		}
 
+		private IPluginConfigurator SetLifetime(Func<ILifetime> lifetime)
+		{
+			Lifetime = lifetime;
+			ScopeSpecified = true;
+			return this;
+		}
+
 		public bool IsPluggableIgnored(Type pluggableType)
 		{
 			return ignoredPluggables.Contains(pluggableType);
@@ -128,10 +145,10 @@ namespace RoboContainer.Impl
 		private void FillFromAttributes()
 		{
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
-			if (pluginAttribute != null)
+			if(pluginAttribute != null)
 			{
-				if (pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScopes.FromEnum(pluginAttribute.Lifetime));
-				if (pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
+				if(pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScopes.FromEnum(pluginAttribute.Lifetime));
+				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
@@ -143,12 +160,12 @@ namespace RoboContainer.Impl
 		// use / once
 		private IConfiguredPluggable[] CreatePluggables()
 		{
-			if (ExplicitlySetPluggable != null)
+			if(ExplicitlySetPluggable != null)
 			{
 				IConfiguredPluggable pluggable = TryGetConfiguredPluggable(ExplicitlySetPluggable);
 				return pluggable == null ? new IConfiguredPluggable[0] : new[] {pluggable};
 			}
-			if (CreatePluggable != null)
+			if(CreatePluggable != null)
 				return new[] {GetConfiguredPluggableForDelegate(CreatePluggable)};
 			return
 				configuration.GetScannableTypes()
@@ -167,12 +184,12 @@ namespace RoboContainer.Impl
 		// use / once
 		private IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
-			if (!pluggableType.Constructable()) return null;
+			if(!pluggableType.Constructable()) return null;
 			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, PluginType);
-			if (pluggableType == null) return null;
-			if (pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
+			if(pluggableType == null) return null;
+			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			if (ScopeSpecified && Lifetime != configuredPluggable.Scope || InitializePluggable != null)
+			if(ScopeSpecified && Lifetime != configuredPluggable.Scope || InitializePluggable != null)
 				return pluggableConfigs.GetOrCreate(pluggableType, () => new ByPluginConfiguredPluggable(this, configuredPluggable));
 			return configuredPluggable;
 		}
@@ -191,11 +208,11 @@ namespace RoboContainer.Impl
 		{
 			var result = new PluginConfigurator(containerConfiguration, pluginType);
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
-			if (genericDefinition.ScopeSpecified)
+			if(genericDefinition.ScopeSpecified)
 				result.SetLifetime(genericDefinition.Lifetime);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.CreatePluggable = genericDefinition.CreatePluggable;
-			if (genericDefinition.ExplicitlySetPluggable != null)
+			if(genericDefinition.ExplicitlySetPluggable != null)
 				result.ExplicitlySetPluggable =
 					GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(genericDefinition.ExplicitlySetPluggable, pluginType);
 			return result;
@@ -238,6 +255,12 @@ namespace RoboContainer.Impl
 		public IPluginConfigurator<TPlugin> Use(TPlugin pluggable)
 		{
 			realConfigurator.Use(pluggable);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> UseAlso(TPlugin pluggable)
+		{
+			realConfigurator.UseAlso(pluggable);
 			return this;
 		}
 

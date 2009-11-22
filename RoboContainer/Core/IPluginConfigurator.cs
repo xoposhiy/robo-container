@@ -11,7 +11,7 @@ namespace RoboContainer.Core
 		TSelf UsePluggable<TPluggable>();
 		TSelf UsePluggable(Type pluggableType);
 		TSelf Use(TPlugin pluggable);
-//		TSelf UseAlso(TPlugin pluggable);
+		TSelf UseAlso(TPlugin pluggable);
 		TSelf SetLifetime(LifetimeScope lifetime);
 		TSelf SetLifetime<TLifetime>() where TLifetime : ILifetime, new();
 		TSelf RequireContracts(params ContractRequirement[] requiredContracts);
