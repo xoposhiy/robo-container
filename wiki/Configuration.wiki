@@ -21,6 +21,8 @@
 
 ==Интерфейс конфигурирования==
 
+TODO: пояснительный текст
+
 <wiki:comment>[IContainerConfigurator.interface</wiki:comment>
 {{{
 void ScanAssemblies(Assembly[] assembliesToScan);
@@ -39,6 +41,8 @@ ILoggingConfigurator Logging { get; }
 <wiki:comment></wiki:comment>
 
 ==Конфигурирование на уровне plugin==
+
+TODO: пояснительный текст
 
 <wiki:comment>[IGenericPluginConfigurator.interface</wiki:comment>
 {{{
@@ -60,6 +64,8 @@ IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin);
 
 ==Конфигурирование на уровне pluggable==
 
+TODO: пояснительный текст
+
 <wiki:comment>[IGenericPluggableConfigurator.interface</wiki:comment>
 {{{
 IPluggableConfigurator<TPluggable> DeclareContracts(ContractDeclaration[] contractsDeclaration);
@@ -73,6 +79,8 @@ IDependencyConfigurator Dependency(String dependencyName);
 
 }}}
 <wiki:comment></wiki:comment>
+
+TODO: пояснительный текст
 
 <wiki:comment>[IDependencyConfigurator.interface</wiki:comment>
 {{{
