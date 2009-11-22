@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
@@ -58,15 +59,17 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator Use(object pluggable)
+		public IPluginConfigurator UseOnly(object part)
 		{
-			CreatePluggableBy((container, type) => pluggable);
+			CreatePluggableBy((container, type) => part);
+			UseProvidedParts(part);
 			return this;
 		}
 
-		public IPluginConfigurator UseAlso(object pluggable)
+		public IPluginConfigurator UseAlso(object part)
 		{
-			parts.Add(pluggable);
+			parts.Add(part);
+			UseProvidedParts(part);
 			return this;
 		}
 
@@ -113,11 +116,40 @@ namespace RoboContainer.Impl
 			return new PluginConfigurator<TPlugin>(this);
 		}
 
+		private void UseProvidedParts(object part)
+		{
+			foreach(PartDescription partDescription in GetProvidedParts(part))
+			{
+				IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
+				object providedPart = partDescription.Part();
+				if(partDescription.UseOnlyThis) pluginConfigurator.UseOnly(providedPart);
+				else pluginConfigurator.UseAlso(providedPart);
+			}
+		}
+
+		private static IEnumerable<PartDescription> GetProvidedParts(object part)
+		{
+			return
+				part.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+					.Select(p => TryCreatePart(p, part)).Where(p => p != null);
+		}
+
+		private static PartDescription TryCreatePart(PropertyInfo propertyInfo, object part)
+		{
+			var attribute = propertyInfo.FindAttribute<ProvidePartAttribute>();
+			if(attribute == null) return null;
+			return
+				new PartDescription(
+					attribute.UseOnlyThis,
+					attribute.AsPlugin ?? propertyInfo.PropertyType,
+					() => propertyInfo.GetValue(part, null));
+		}
+
 		private IConfiguredPluggable[] AddPartsTo(IEnumerable<IConfiguredPluggable> somePluggables)
 		{
 			return
 				somePluggables.Concat(
-					parts.Select(part => (IConfiguredPluggable)new ByDelegatePluggable(this, (container, type) => part))
+					parts.Select(part => (IConfiguredPluggable) new ByDelegatePluggable(this, (container, type) => part))
 					).ToArray();
 		}
 
@@ -250,15 +282,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> Use(TPlugin pluggable)
+		public IPluginConfigurator<TPlugin> UseOnly(TPlugin part)
 		{
-			realConfigurator.Use(pluggable);
+			realConfigurator.UseOnly(part);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UseAlso(TPlugin pluggable)
+		public IPluginConfigurator<TPlugin> UseAlso(TPlugin part)
 		{
-			realConfigurator.UseAlso(pluggable);
+			realConfigurator.UseAlso(part);
 			return this;
 		}
 

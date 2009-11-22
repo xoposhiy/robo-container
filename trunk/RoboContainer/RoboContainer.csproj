@@ -46,10 +46,11 @@
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
+    <Compile Include="Impl\PartDescription.cs" />
     <Compile Include="Infection\ContainerConstructorAttribute.cs" />
     <Compile Include="Infection\DeclareContractAttribute.cs" />
     <Compile Include="Infection\DontUsePluggableAttribute.cs" />
-    <Compile Include="Infection\ExportedPartAttribute.cs" />
+    <Compile Include="Infection\ProvidePartAttribute.cs" />
     <Compile Include="Infection\IgnoredPluggableAttribute.cs" />
     <Compile Include="Infection\PluggableAttribute.cs" />
     <Compile Include="Infection\PluginAttribute.cs" />
