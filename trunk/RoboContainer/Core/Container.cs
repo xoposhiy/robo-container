@@ -23,6 +23,7 @@ namespace RoboContainer.Core
 		{
 			this.configuration = configuration;
 			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).SetLifetime(LifetimeScope.PerRequest);
+			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).SetLifetime(LifetimeScope.PerRequest);
 			if(!configuration.HasAssemblies())
 				configuration.Configurator.ScanCallingAssembly();
 		}

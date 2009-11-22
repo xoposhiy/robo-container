@@ -2,7 +2,7 @@
 
 namespace RoboContainer.Core
 {
-	public class NamedContractDeclaration : BaseContractDeclaration<NamedRequirement>
+	public class NamedContractDeclaration : BaseContractDeclaration<NamedContractRequirement>
 	{
 		private readonly string contractName;
 
@@ -11,7 +11,7 @@ namespace RoboContainer.Core
 			this.contractName = contractName;
 		}
 
-		protected override bool Satisfy(NamedRequirement requirement)
+		protected override bool Satisfy(NamedContractRequirement requirement)
 		{
 			return contractName == requirement.Name;
 		}

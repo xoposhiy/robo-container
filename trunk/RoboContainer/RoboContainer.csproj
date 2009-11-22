@@ -46,9 +46,6 @@
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
-    <Compile Include="Impl\PerContainerSlot.cs" />
-    <Compile Include="Impl\PerRequestSlot.cs" />
-    <Compile Include="Impl\PerThreadSlot.cs" />
     <Compile Include="Infection\ContainerConstructorAttribute.cs" />
     <Compile Include="Infection\DeclareContractAttribute.cs" />
     <Compile Include="Infection\DontUsePluggableAttribute.cs" />
@@ -89,7 +86,7 @@
     <Compile Include="Core\IPluggableConfigurator.cs" />
     <Compile Include="Core\IPluginConfigurator.cs" />
     <Compile Include="Core\Lazy.cs" />
-    <Compile Include="Core\NamedRequirement.cs" />
+    <Compile Include="Core\NamedContractRequirement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />

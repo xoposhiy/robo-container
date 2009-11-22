@@ -10,6 +10,7 @@
 + Primitive arguments
 + Управление журналированием
 + Расширяемый Lifetime scope
++ Переработка Lazy. LifetimeScope!!!
 
 Переработка AddPart и экспорта частей.
 

@@ -1,8 +1,8 @@
 ﻿namespace RoboContainer.Core
 {
-	public class NamedRequirement : ContractRequirement
+	public class NamedContractRequirement : ContractRequirement
 	{
-		public NamedRequirement(string name)
+		public NamedContractRequirement(string name)
 		{
 			Name = name;
 		}

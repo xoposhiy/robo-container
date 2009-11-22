@@ -28,7 +28,7 @@ namespace RoboContainer.Tests.Contracts
 		{
 			var container = new Container(
 				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast"));
-			var plugin = container.Get<IPluginWithContract>(new NamedRequirement("fast"));
+			var plugin = container.Get<IPluginWithContract>("fast");
 			Assert.IsInstanceOf<PluggableWithContracts1>(plugin);
 		}
 

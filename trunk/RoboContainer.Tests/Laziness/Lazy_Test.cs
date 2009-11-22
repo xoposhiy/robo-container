@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using RoboContainer.Core;
 
 namespace RoboContainer.Tests.Laziness
@@ -23,7 +24,22 @@ namespace RoboContainer.Tests.Laziness
 			var container = new Container();
 			var lazy1 = container.Get<Lazy<ShouldBeLazy>>();
 			var lazy2 = container.Get<Lazy<ShouldBeLazy>>();
+			Assert.AreNotSame(lazy1, lazy2);
+			Assert.AreSame(lazy1.Get(), lazy1.Get());
 			Assert.AreSame(lazy1.Get(), lazy2.Get());
+		}
+
+		[Test]
+		public void singletone_lazy_of_perRequest()
+		{
+			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().SetLifetime(LifetimeScope.PerRequest));
+			container.GetAll<Lazy<ShouldBeLazy, PerContainer>>();
+			Console.WriteLine(container.LastConstructionLog);
+			var lazy1 = container.Get<Lazy<ShouldBeLazy, PerContainer>>();
+			var lazy2 = container.Get<Lazy<ShouldBeLazy, PerContainer>>();
+			Assert.AreNotSame(lazy1, lazy2);
+			Assert.AreSame(lazy1.Get(), lazy1.Get());
+			Assert.AreNotSame(lazy1.Get(), lazy2.Get());
 		}
 
 		[Test]
