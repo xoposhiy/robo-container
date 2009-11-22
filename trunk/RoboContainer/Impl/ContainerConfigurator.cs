@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
-using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
@@ -73,37 +72,9 @@ namespace RoboContainer.Impl
 			return configuration.GetLoggingConfigurator();
 		}
 
-		public void AddPart(Type pluginType, object pluggable)
-		{
-			ForPlugin(pluginType).CreatePluggableBy((c, pluginType_not_used) => pluggable);
-			AddPartsExportedBy(pluggable);
-		}
-
-		public void AddPart<TPluginType>(TPluginType pluggable)
-		{
-			AddPart(typeof(TPluginType), pluggable);
-		}
-
-		public void AddParts(params object[] pluggables)
-		{
-			foreach(object pluggable in pluggables) AddPart(pluggable);
-		}
-
 		public IConstructionLogger GetLogger()
 		{
 			return configuration.GetConfiguredLogging().GetLogger();
-		}
-
-		private void AddPartsExportedBy(object pluggable)
-		{
-			IEnumerable<PropertyInfo> exportableProperties =
-				pluggable.GetType().GetProperties().Where(p => p.HasAttribute<ExportedPartAttribute>() && p.CanRead);
-			foreach(PropertyInfo prop in exportableProperties)
-			{
-				AddPart(
-					prop.GetAttribute<ExportedPartAttribute>().AsPlugin ?? prop.PropertyType,
-					prop.GetValue(pluggable, null));
-			}
 		}
 
 		private static Assembly GetTheCallingAssembly()

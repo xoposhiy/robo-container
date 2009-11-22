@@ -17,6 +17,25 @@ namespace RoboContainer.Tests.PluginConfiguration
 		}
 
 		[Test]
+		public void can_also_use_value()
+		{
+			var specialValue = new Foo1();
+			var container = new Container(c => c.ForPlugin<IFoo>().UseAlso(specialValue));
+			var foos = container.GetAll<IFoo>();
+			CollectionAssert.Contains(foos, specialValue);
+		}
+
+		[Test]
+		public void also_use_value_for_concrete_types()
+		{
+			var specialValue = new Foo1();
+			var container = new Container(c => c.ForPlugin<Foo1>().UseAlso(specialValue));
+			var foos = container.GetAll<Foo1>();
+			CollectionAssert.Contains(foos, specialValue);
+			Assert.AreEqual(2, foos.Count());
+		}
+
+		[Test]
 		public void can_create_pluggable_by_delegate_and_initialize()
 		{
 			var container = new Container(

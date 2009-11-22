@@ -23,10 +23,6 @@ namespace RoboContainer.Core
 		IPluginConfigurator ForPlugin(Type pluginType);
 
 		ILoggingConfigurator Logging();
-
-		void AddPart(Type pluginType, object pluggable);
-		void AddPart<TPluginType>(TPluginType pluggable);
-		void AddParts(params object[] pluggable);
 	}
 
 	public interface ILoggingConfigurator
