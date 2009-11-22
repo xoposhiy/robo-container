@@ -20,11 +20,11 @@ namespace RoboContainer.Impl
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
-			Lifetime = LifetimeScopes.PerContainer;
+			ReusePolicy = ReusePolicies.Always;
 		}
 
 		public Type PluginType { get; private set; }
-		public Func<ILifetime> Lifetime { get; private set; }
+		public Func<IReuse> ReusePolicy { get; private set; }
 		public bool ScopeSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 		public CreatePluggableDelegate<object> CreatePluggable { get; private set; }
@@ -80,14 +80,14 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator SetLifetime(LifetimeScope lifetime)
+		public IPluginConfigurator ReusePluggable(ReusePolicy reusePolicy)
 		{
-			return SetLifetime(LifetimeScopes.FromEnum(lifetime));
+			return ReusePluggable(ReusePolicies.FromEnum(reusePolicy));
 		}
 
-		public IPluginConfigurator SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		public IPluginConfigurator ReusePluggable<TReuse>() where TReuse : IReuse, new()
 		{
-			return SetLifetime(() => new TLifetime());
+			return ReusePluggable(() => new TReuse());
 		}
 
 		public IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate<object> createPluggable)
@@ -123,9 +123,9 @@ namespace RoboContainer.Impl
 			return new PluginConfigurator<TPlugin>(this);
 		}
 
-		private IPluginConfigurator SetLifetime(Func<ILifetime> lifetime)
+		private IPluginConfigurator ReusePluggable(Func<IReuse> reusePolicy)
 		{
-			Lifetime = lifetime;
+			ReusePolicy = reusePolicy;
 			ScopeSpecified = true;
 			return this;
 		}
@@ -147,7 +147,7 @@ namespace RoboContainer.Impl
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
 			if(pluginAttribute != null)
 			{
-				if(pluginAttribute.ScopeSpecified) SetLifetime(LifetimeScopes.FromEnum(pluginAttribute.Lifetime));
+				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(ReusePolicies.FromEnum(pluginAttribute.ReusePluggable));
 				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
@@ -189,7 +189,7 @@ namespace RoboContainer.Impl
 			if(pluggableType == null) return null;
 			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			if(ScopeSpecified && Lifetime != configuredPluggable.Scope || InitializePluggable != null)
+			if(ScopeSpecified && ReusePolicy != configuredPluggable.ReusePolicy || InitializePluggable != null)
 				return pluggableConfigs.GetOrCreate(pluggableType, () => new ByPluginConfiguredPluggable(this, configuredPluggable));
 			return configuredPluggable;
 		}
@@ -209,7 +209,7 @@ namespace RoboContainer.Impl
 			var result = new PluginConfigurator(containerConfiguration, pluginType);
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
 			if(genericDefinition.ScopeSpecified)
-				result.SetLifetime(genericDefinition.Lifetime);
+				result.ReusePluggable(genericDefinition.ReusePolicy);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.CreatePluggable = genericDefinition.CreatePluggable;
 			if(genericDefinition.ExplicitlySetPluggable != null)
@@ -264,15 +264,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> SetLifetime(LifetimeScope lifetime)
+		public IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy)
 		{
-			realConfigurator.SetLifetime(lifetime);
+			realConfigurator.ReusePluggable(reusePolicy);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> SetLifetime<TLifetime>() where TLifetime : ILifetime, new()
+		public IPluginConfigurator<TPlugin> ReusePluggable<TReuse>() where TReuse : IReuse, new()
 		{
-			realConfigurator.SetLifetime<TLifetime>();
+			realConfigurator.ReusePluggable<TReuse>();
 			return this;
 		}
 

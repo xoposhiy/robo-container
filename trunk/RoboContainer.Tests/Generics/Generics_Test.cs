@@ -47,7 +47,7 @@ namespace RoboContainer.Tests.Generics
 			var container =
 				new Container(
 					c =>
-					c.ForPlugin(typeof(IBaz_of_pair<,>)).SetLifetime(LifetimeScope.PerRequest)
+					c.ForPlugin(typeof(IBaz_of_pair<,>)).ReusePluggable(ReusePolicy.Never)
 						.InitializeWith(
 						(pluggable, cont) =>
 						{
@@ -133,7 +133,7 @@ namespace RoboContainer.Tests.Generics
 		}
 	}
 
-	[Plugin(Lifetime = LifetimeScope.PerRequest)]
+	[Plugin(ReusePluggable = ReusePolicy.Never)]
 	public interface IAttributedTransient<T>
 	{
 	}

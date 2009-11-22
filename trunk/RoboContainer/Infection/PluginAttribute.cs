@@ -6,19 +6,19 @@ namespace RoboContainer.Infection
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
 	public class PluginAttribute : Attribute
 	{
-		private LifetimeScope lifetime;
+		private ReusePolicy reusePluggable;
 
-		public LifetimeScope Lifetime
+		public ReusePolicy ReusePluggable
 		{
-			get { return lifetime; }
+			get { return reusePluggable; }
 			set
 			{
-				ScopeSpecified = true;
-				lifetime = value;
+				ReusePolicySpecified = true;
+				reusePluggable = value;
 			}
 		}
 
-		public bool ScopeSpecified { get; private set; }
+		public bool ReusePolicySpecified { get; private set; }
 
 		public Type PluggableType { get; set; }
 	}

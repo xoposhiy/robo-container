@@ -8,9 +8,9 @@ namespace RoboContainer.Tests.Threading
 	public class Threading_Test
 	{
 		[Test]
-		public void PerThread_lifetime_scope()
+		public void Reuse_value_InSameThread()
 		{
-			var container = new Container(c => c.ForPlugin<ThreadObject>().SetLifetime(LifetimeScope.PerThread));
+			var container = new Container(c => c.ForPlugin<ThreadObject>().ReusePluggable(ReusePolicy.InSameThread));
 			ThreadObject v1 = null, v2 = null;
 			var t1 = new Thread(() => { lock(container) v1 = container.Get<ThreadObject>(); });
 			var t2 = new Thread(() => { lock(container) v2 = container.Get<ThreadObject>(); });
@@ -24,7 +24,7 @@ namespace RoboContainer.Tests.Threading
 		}
 
 		[Test]
-		public void PerContainer_uses_the_same_value_in_all_threads()
+		public void Reuse_Always_uses_the_same_value_in_all_threads()
 		{
 			var container = new Container();
 			ThreadObject v1 = null, v2 = null;
@@ -39,7 +39,7 @@ namespace RoboContainer.Tests.Threading
 			Assert.AreSame(v1, v2);
 		}
 	}
-
+	
 	public class ThreadObject
 	{
 	}

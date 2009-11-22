@@ -26,9 +26,9 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Ignored; }
 		}
 
-		public Func<ILifetime> Scope
+		public Func<IReuse> ReusePolicy
 		{
-			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.Lifetime : configuredPluggable.Scope; }
+			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.ReusePolicy : configuredPluggable.ReusePolicy; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -71,7 +71,7 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.Lifetime != configuredPluggable.Scope || pluginConfigurator.InitializePluggable != null)
+			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
 				return new InstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

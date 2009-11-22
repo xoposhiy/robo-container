@@ -32,11 +32,11 @@ namespace RoboContainer.Tests.Laziness
 		[Test]
 		public void singletone_lazy_of_perRequest()
 		{
-			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().SetLifetime<PerRequest>());
-			container.GetAll<Lazy<ShouldBeLazy, PerContainer>>();
+			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().ReuseIt<ReuseNever>());
+			container.GetAll<Lazy<ShouldBeLazy, ReuseAlways>>();
 			Console.WriteLine(container.LastConstructionLog);
-			var lazy1 = container.Get<Lazy<ShouldBeLazy, PerContainer>>();
-			var lazy2 = container.Get<Lazy<ShouldBeLazy, PerContainer>>();
+			var lazy1 = container.Get<Lazy<ShouldBeLazy, ReuseAlways>>();
+			var lazy2 = container.Get<Lazy<ShouldBeLazy, ReuseAlways>>();
 			Assert.AreNotSame(lazy1, lazy2);
 			Assert.AreSame(lazy1.Get(), lazy1.Get());
 			Assert.AreNotSame(lazy1.Get(), lazy2.Get());
@@ -45,7 +45,7 @@ namespace RoboContainer.Tests.Laziness
 		[Test]
 		public void lazy_of_PerRequest()
 		{
-			var container = new Container(c => c.ForPlugin<ShouldBeLazy>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPlugin<ShouldBeLazy>().ReusePluggable(ReusePolicy.Never));
 			var lazy1 = container.Get<Lazy<ShouldBeLazy>>();
 			var lazy2 = container.Get<Lazy<ShouldBeLazy>>();
 			Assert.AreNotSame(lazy1.Get(), lazy1.Get());

@@ -34,16 +34,16 @@ namespace RoboContainer.Tests.PluggableConfiguration
 		}
 
 		[Test]
-		public void set_lifetime_scope_to_PerRequest_by_attribute()
+		public void set_reusePolicy_to_Never_by_attribute()
 		{
 			var container = new Container();
 			Assert.AreNotSame(container.Get<Foo1>(), container.Get<Foo1>());
 		}
 
 		[Test]
-		public void set_lifetime_scope_to_PerRequest_by_configuration()
+		public void set_reuse_policy_to_Never_by_configuration()
 		{
-			var container = new Container(c => c.ForPluggable<Foo2>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPluggable<Foo2>().ReuseIt(ReusePolicy.Never));
 			Assert.AreNotSame(container.Get<Foo2>(), container.Get<Foo2>());
 		}
 
@@ -67,7 +67,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 	{
 	}
 
-	[Pluggable(Lifetime = LifetimeScope.PerRequest)]
+	[Pluggable(Reuse = ReusePolicy.Never)]
 	public class Foo1 : IFoo
 	{
 	}

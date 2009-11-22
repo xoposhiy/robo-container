@@ -100,7 +100,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//[TransientWeapon
 			var container = new Container(
 				c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
-				     	.SetLifetime(LifetimeScope.PerRequest) // <-- конфигурирование
+				     	.ReusePluggable(ReusePolicy.Never) // <-- конфигурирование
 				);
 			var weapon1 = container.Get<IWeapon>();
 			var weapon2 = container.Get<IWeapon>();
@@ -133,7 +133,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var weaponIndex = 0;
 			var container = new Container(
 				c =>
-				c.ForPlugin<IWeapon>().SetLifetime(LifetimeScope.PerRequest)
+				c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
 					.CreatePluggableBy(
 					(aContainer, pluginType) =>
 					weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
@@ -199,7 +199,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 						c.ForPluggable<RocketWeapon>()
 							.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
 						c.ForPlugin<IBattleShip>()
-							.UsePluggable<BigBattleShip>().SetLifetime(LifetimeScope.PerRequest);
+							.UsePluggable<BigBattleShip>().ReusePluggable(ReusePolicy.Never);
 					}
 				);
 			
@@ -215,7 +215,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//[QS_FinalSample
 			var anotherShip = container.Get<IBattleShip>();
 
-			// Действие LifetimeScope.PerRequest
+			// Действие ReusePolicy.Never
 			Assert.AreNotSame(ship, anotherShip);
 
 			// Инжектирование массива зависимостей

@@ -9,8 +9,8 @@
 + TryGet
 + Primitive arguments
 + Управление журналированием
-+ Расширяемый Lifetime scope
-+ Переработка Lazy. LifetimeScope!!!
++ Расширяемый Reuse policy
++ Переработка Lazy. Reuse policy!!!
 
 Переработка AddPart и экспорта частей.
 

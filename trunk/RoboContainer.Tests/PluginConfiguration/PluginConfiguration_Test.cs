@@ -102,7 +102,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_explicitly_set_pluggable_for_plugin()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().SetLifetime(LifetimeScope.PerContainer).UsePluggable<Foo0>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Always).UsePluggable<Foo0>().ReusePluggable(ReusePolicy.Never));
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>());
 			Console.WriteLine(container.LastConstructionLog);
 		}
@@ -145,9 +145,9 @@ namespace RoboContainer.Tests.PluginConfiguration
 				c =>
 				{
 					c.ForPluggable<FirstSecond>().InitializeWith(second => initialized = true);
-					c.ForPlugin<IFirst>().SetLifetime(LifetimeScope.PerContainer);
-					c.ForPlugin<ISecond>().SetLifetime(LifetimeScope.PerContainer);
-					c.ForPluggable<FirstSecond>().SetLifetime(LifetimeScope.PerRequest);
+					c.ForPlugin<IFirst>().ReusePluggable(ReusePolicy.Always);
+					c.ForPlugin<ISecond>().ReusePluggable(ReusePolicy.Always);
+					c.ForPluggable<FirstSecond>().ReuseIt(ReusePolicy.Never);
 				});
 			Assert.AreSame(container.Get<IFirst>(), container.Get<IFirst>());
 			Assert.AreSame(container.Get<ISecond>(), container.Get<ISecond>());
@@ -169,7 +169,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_set_scope_for_plugin()
 		{
-			var container = new Container(c => c.ForPlugin<ISingleImpl>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPlugin<ISingleImpl>().ReusePluggable(ReusePolicy.Never));
 			Assert.AreNotSame(container.Get<ISingleImpl>(), container.Get<ISingleImpl>());
 		}
 
@@ -179,8 +179,8 @@ namespace RoboContainer.Tests.PluginConfiguration
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<ISingleImpl>().SetLifetime(LifetimeScope.PerRequest);
-						c.ForPluggable<SingleImpl>().SetLifetime(LifetimeScope.PerContainer);
+						c.ForPlugin<ISingleImpl>().ReusePluggable(ReusePolicy.Never);
+						c.ForPluggable<SingleImpl>().ReuseIt(ReusePolicy.Always);
 					});
 			Assert.AreNotSame(container.Get<ISingleImpl>(), container.Get<ISingleImpl>());
 		}
@@ -196,7 +196,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void plugin_scope_doesnot_interfere_with_pluggable_scope_when_pluggable_is_used_as_another_interface()
 		{
-			var container = new Container(c => c.ForPlugin<IFirst>().SetLifetime(LifetimeScope.PerRequest));
+			var container = new Container(c => c.ForPlugin<IFirst>().ReusePluggable(ReusePolicy.Never));
 			Assert.AreSame(container.Get<ISecond>(), container.Get<ISecond>());
 			Assert.AreSame(container.Get<ISecond>(), container.Get<FirstSecond>());
 		}
@@ -204,9 +204,9 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void scope_works_for_explicitly_specified_pluggable()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().SetLifetime(LifetimeScope.PerRequest).UsePluggable<Foo0>());
+			var container = new Container(c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Never).UsePluggable<Foo0>());
 			Assert.AreNotSame(container.Get<IFoo>(), container.Get<IFoo>());
-			container = new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo0>().SetLifetime(LifetimeScope.PerRequest));
+			container = new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo0>().ReusePluggable(ReusePolicy.Never));
 			Assert.AreNotSame(container.Get<IFoo>(), container.Get<IFoo>());
 		}
 
@@ -216,14 +216,14 @@ namespace RoboContainer.Tests.PluginConfiguration
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<ISingleImpl>().SetLifetime(LifetimeScope.PerContainer);
-						c.ForPluggable<SingleImpl>().SetLifetime(LifetimeScope.PerRequest);
+						c.ForPlugin<ISingleImpl>().ReusePluggable(ReusePolicy.Always);
+						c.ForPluggable<SingleImpl>().ReuseIt(ReusePolicy.Never);
 					});
 			Assert.AreSame(container.Get<ISingleImpl>(), container.Get<ISingleImpl>());
 		}
 	}
 
-	[Plugin(Lifetime = LifetimeScope.PerRequest, PluggableType = typeof(WithImplSetByAttribute1))]
+	[Plugin(ReusePluggable = ReusePolicy.Never, PluggableType = typeof(WithImplSetByAttribute1))]
 	public interface IWithImplSetByAttribute
 	{
 	}
@@ -237,7 +237,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 	}
 
 
-	[Plugin(Lifetime = LifetimeScope.PerRequest)]
+	[Plugin(ReusePluggable = ReusePolicy.Never)]
 	[DontUsePluggable(typeof (WithImplFilteredByAttributes1))]
 	[DontUsePluggable(typeof (WithImplFilteredByAttributes2))]
 	public interface IWithImplFilteredByAttributes

@@ -22,8 +22,8 @@ namespace RoboContainer.Core
 		public Container(IContainerConfiguration configuration)
 		{
 			this.configuration = configuration;
-			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).SetLifetime(LifetimeScope.PerRequest);
-			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).SetLifetime(LifetimeScope.PerRequest);
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
 			if(!configuration.HasAssemblies())
 				configuration.Configurator.ScanCallingAssembly();
 		}

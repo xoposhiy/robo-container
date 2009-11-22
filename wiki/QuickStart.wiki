@@ -92,7 +92,7 @@ Assert.AreSame(weapon1, weapon2);
 
 var container = new Container(
 	c => c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>()
-	     	.SetLifetime(LifetimeScope.PerRequest) // <-- конфигурирование
+	     	.ReusePluggable(ReusePolicy.Never) // <-- конфигурирование
 	);
 var weapon1 = container.Get<IWeapon>();
 var weapon2 = container.Get<IWeapon>();
@@ -127,7 +127,7 @@ API конфигурации позволяет и более хитро соз�
 var weaponIndex = 0;
 var container = new Container(
 	c =>
-	c.ForPlugin<IWeapon>().SetLifetime(LifetimeScope.PerRequest)
+	c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
 		.CreatePluggableBy(
 		(aContainer, pluginType) =>
 		weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
@@ -173,13 +173,13 @@ var container = new Container(
 			c.ForPluggable<RocketWeapon>()
 				.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
 			c.ForPlugin<IBattleShip>()
-				.UsePluggable<BigBattleShip>().SetLifetime(LifetimeScope.PerRequest);
+				.UsePluggable<BigBattleShip>().ReusePluggable(ReusePolicy.Never);
 		}
 	);
 
 var ship = container.Get<IBattleShip>();
 var anotherShip = container.Get<IBattleShip>();
-// Действие LifetimeScope.PerRequest
+// Действие ReusePolicy.Never
 Assert.AreNotSame(ship, anotherShip);
 // Инжектирование массива зависимостей
 Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is LaserWeapon));
