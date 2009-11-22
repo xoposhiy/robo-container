@@ -3,8 +3,10 @@
 namespace RoboContainer.Infection
 {
 	[AttributeUsage(AttributeTargets.Property)]
-	public class ExportedPartAttribute : Attribute
+	public class ProvidePartAttribute : Attribute
 	{
 		public Type AsPlugin { get; set; }
+
+		public bool UseOnlyThis { get; set; }
 	}
 }
