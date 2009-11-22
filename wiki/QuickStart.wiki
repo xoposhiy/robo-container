@@ -228,7 +228,7 @@ Console.WriteLine(container.LastConstructionLog);
 <wiki:comment></wiki:comment>
 
 выведет на консоль следующий текст:
-<wiki:comment>[QS_FinalSample_LogOutput</wiki:comment>
+<wiki:comment>[QS_FinalSample.out</wiki:comment>
 {{{
 Get IBattleShip
 	Get BigBattleShip

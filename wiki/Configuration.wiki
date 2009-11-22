@@ -19,14 +19,68 @@
   * атрибуты plugin;
   * динамическое конфигурирование plugin _(высокий приоритет)_.
 
+==Интерфейс конфигурирования==
+
+<wiki:comment>[IContainerConfigurator.interface</wiki:comment>
+{{{
+void ScanAssemblies(Assembly[] assembliesToScan);
+void ScanAssemblies(IEnumerable<Assembly> assembliesToScan);
+void ScanCallingAssembly();
+void ScanLoadedAssemblies();
+void ScanLoadedAssemblies(Func<Assembly, Boolean> shouldScan);
+void ScanTypesWith(ScannerDelegate scanner);
+IPluggableConfigurator ForPluggable(Type pluggableType);
+IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>();
+IPluginConfigurator<TPlugin> ForPlugin<TPlugin>();
+IPluginConfigurator ForPlugin(Type pluginType);
+ILoggingConfigurator Logging { get; }
+
+}}}
+<wiki:comment></wiki:comment>
+
 ==Конфигурирование на уровне plugin==
 
-TODO
+<wiki:comment>[IGenericPluginConfigurator.interface</wiki:comment>
+{{{
+IPluginConfigurator<TPlugin> Ignore<TPluggable>();
+IPluginConfigurator<TPlugin> Ignore(Type[] pluggableTypes);
+IPluginConfigurator<TPlugin> UsePluggable<TPluggable>();
+IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType);
+IPluginConfigurator<TPlugin> UseOnly(TPlugin part);
+IPluginConfigurator<TPlugin> UseAlso(TPlugin part, ContractDeclaration[] declaredContracts);
+IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy);
+IPluginConfigurator<TPlugin> ReusePluggable<TReuse>();
+IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
+IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
+IPluginConfigurator<TPlugin> InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);
+IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin);
+
+}}}
+<wiki:comment></wiki:comment>
 
 ==Конфигурирование на уровне pluggable==
 
-TODO
+<wiki:comment>[IGenericPluggableConfigurator.interface</wiki:comment>
+{{{
+IPluggableConfigurator<TPluggable> DeclareContracts(ContractDeclaration[] contractsDeclaration);
+IPluggableConfigurator<TPluggable> ReuseIt(ReusePolicy reusePolicy);
+IPluggableConfigurator<TPluggable> ReuseIt<TReuse>();
+IPluggableConfigurator<TPluggable> Ignore();
+IPluggableConfigurator<TPluggable> UseConstructor(Type[] argsTypes);
+IPluggableConfigurator<TPluggable> InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);
+IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> initializePluggable);
+IDependencyConfigurator Dependency(String dependencyName);
 
-==Сканирование типов==
+}}}
+<wiki:comment></wiki:comment>
 
-TODO
+<wiki:comment>[IDependencyConfigurator.interface</wiki:comment>
+{{{
+IDependencyConfigurator RequireContract(String[] requiredContracts);
+IDependencyConfigurator UseValue(Object o);
+IDependencyConfigurator UsePluggable(Type pluggableType);
+IDependencyConfigurator UsePluggable<TPluggable>();
+
+}}}
+<wiki:comment></wiki:comment>
+
