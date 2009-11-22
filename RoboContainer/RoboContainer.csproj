@@ -41,9 +41,13 @@
   <ItemGroup>
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
+    <Compile Include="Core\ILifetimeSlot.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
+    <Compile Include="Impl\PerContainerSlot.cs" />
+    <Compile Include="Impl\PerRequestSlot.cs" />
+    <Compile Include="Impl\PerThreadSlot.cs" />
     <Compile Include="Infection\ContainerConstructorAttribute.cs" />
     <Compile Include="Infection\DeclareContractAttribute.cs" />
     <Compile Include="Infection\DontUsePluggableAttribute.cs" />
@@ -81,7 +85,7 @@
     <Compile Include="Impl\PluginConfigurator.cs" />
     <Compile Include="Impl\ScopedConfiguration.cs" />
     <Compile Include="Impl\TypeExtensions.cs" />
-    <Compile Include="Core\InstanceLifetime.cs" />
+    <Compile Include="Core\LifetimeScope.cs" />
     <Compile Include="Core\IPluggableConfigurator.cs" />
     <Compile Include="Core\IPluginConfigurator.cs" />
     <Compile Include="Core\Lazy.cs" />

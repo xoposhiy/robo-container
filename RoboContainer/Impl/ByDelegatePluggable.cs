@@ -25,7 +25,7 @@ namespace RoboContainer.Impl
 			get { return false; }
 		}
 
-		public InstanceLifetime Scope
+		public LifetimeScope Scope
 		{
 			get { return pluginConfigurator.Scope; }
 		}

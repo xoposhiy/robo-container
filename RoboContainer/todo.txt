@@ -9,10 +9,11 @@
 + TryGet
 + Primitive arguments
 + Управление журналированием
++ Расширяемый Lifetime scope
+
+Переработка AddPart и экспорта частей.
 
 Документация
-
-Расширяемый InstanceLifetime scope
 
 IDisposable
 

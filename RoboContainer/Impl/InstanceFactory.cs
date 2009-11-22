@@ -9,12 +9,11 @@ namespace RoboContainer.Impl
 	internal abstract class BaseInstanceFactory : IInstanceFactory
 	{
 		private readonly InitializePluggableDelegate<object> initializePluggable;
-		private readonly InstanceLifetime scope;
-		private object o;
+		private readonly ILifetimeSlot objectSlot;
 
-		protected BaseInstanceFactory(Type pluggableType, InstanceLifetime scope, InitializePluggableDelegate<object> initializePluggable)
+		protected BaseInstanceFactory(Type pluggableType, LifetimeScope lifetime, InitializePluggableDelegate<object> initializePluggable)
 		{
-			this.scope = scope;
+			objectSlot = lifetime.CreateSlot();
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 		}
@@ -23,16 +22,21 @@ namespace RoboContainer.Impl
 
 		public object TryGetOrCreate(Container container, Type typeToCreate)
 		{
-			var constructionLog = container.ConstructionLogger;
-			if(o == null || scope == InstanceLifetime.PerRequest)
+			if (objectSlot.Value != null)
 			{
-				o = TryConstruct(container, typeToCreate);
-				if (o == null) constructionLog.ConstructionFailed(InstanceType);
-				else constructionLog.Constructed(o.GetType());
+				container.ConstructionLogger.Reused(objectSlot.Value.GetType());
+				return objectSlot.Value;
 			}
-			else
-				constructionLog.Reused(o.GetType());
-			return o;
+			return objectSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
+		}
+
+		private object TryConstructAndLog(Container container, Type typeToCreate)
+		{
+			var constructionLog = container.ConstructionLogger;
+			object result = TryConstruct(container, typeToCreate);
+			if (result == null) constructionLog.ConstructionFailed(InstanceType);
+			else constructionLog.Constructed(result.GetType());
+			return result;
 		}
 
 		private object TryConstruct(Container container, Type typeToCreate)
