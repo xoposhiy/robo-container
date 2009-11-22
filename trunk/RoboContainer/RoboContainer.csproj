@@ -43,6 +43,9 @@
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\IReuse.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
+    <Compile Include="Impl\AbstractInstanceFactory.cs" />
+    <Compile Include="Impl\ConfiguredAsPartPluggable.cs" />
+    <Compile Include="Impl\ConstantInstanceFactory.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
@@ -61,10 +64,10 @@
     <Compile Include="Core\IDependencyConfigurator.cs" />
     <Compile Include="Infection\IInitializablePluggable.cs" />
     <Compile Include="Impl\BaseContractDeclaration.cs" />
-    <Compile Include="Impl\ByDelegatePluggable.cs" />
-    <Compile Include="Impl\ByPluginConfiguredPluggable.cs" />
+    <Compile Include="Impl\ConfiguredByDelegatePluggable.cs" />
+    <Compile Include="Impl\ConfiguredByPluginPluggable.cs" />
     <Compile Include="Impl\ContainerConfigurator.cs" />
-    <Compile Include="Impl\DelegateInstanceFactory.cs" />
+    <Compile Include="Impl\ByDelegateInstanceFactory.cs" />
     <Compile Include="Impl\DependencyConfigurator.cs" />
     <Compile Include="Impl\DeveloperMistake.cs" />
     <Compile Include="Impl\GenericTypes.cs" />
@@ -72,7 +75,7 @@
     <Compile Include="Impl\IConfiguredPluggable.cs" />
     <Compile Include="Impl\IConfiguredPlugin.cs" />
     <Compile Include="Impl\IContainerConfiguration.cs" />
-    <Compile Include="Impl\InstanceFactory.cs" />
+    <Compile Include="Impl\ByConstructorInstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
     <Compile Include="Impl\DictionaryExtensions.cs" />
     <Compile Include="Impl\ContainerException.cs" />

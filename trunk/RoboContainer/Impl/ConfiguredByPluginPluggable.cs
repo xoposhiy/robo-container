@@ -4,13 +4,13 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	internal class ByPluginConfiguredPluggable : IConfiguredPluggable
+	public class ConfiguredByPluginPluggable : IConfiguredPluggable
 	{
 		private readonly IConfiguredPluggable configuredPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
 		private IInstanceFactory factory;
 
-		public ByPluginConfiguredPluggable(PluginConfigurator pluginConfigurator, IConfiguredPluggable configuredPluggable)
+		public ConfiguredByPluginPluggable(PluginConfigurator pluginConfigurator, IConfiguredPluggable configuredPluggable)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.configuredPluggable = configuredPluggable;
@@ -72,7 +72,7 @@ namespace RoboContainer.Impl
 		private IInstanceFactory CreateFactory()
 		{
 			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
-				return new InstanceFactory(this);
+				return new ByConstructorInstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}
 	}

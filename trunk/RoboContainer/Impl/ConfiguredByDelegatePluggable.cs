@@ -4,12 +4,12 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	internal class ByDelegatePluggable : IConfiguredPluggable
+	public class ConfiguredByDelegatePluggable : IConfiguredPluggable
 	{
 		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
 
-		public ByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable)
+		public ConfiguredByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.createPluggable = createPluggable;
@@ -42,7 +42,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return new DelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable);
+			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable);
 		}
 
 		public IEnumerable<ContractDeclaration> Contracts
