@@ -67,9 +67,9 @@ namespace RoboContainer.Impl
 			return configuration.GetPluginConfigurator(pluginType);
 		}
 
-		public ILoggingConfigurator Logging()
+		public ILoggingConfigurator Logging
 		{
-			return configuration.GetLoggingConfigurator();
+			get { return configuration.GetLoggingConfigurator(); }
 		}
 
 		public IConstructionLogger GetLogger()
