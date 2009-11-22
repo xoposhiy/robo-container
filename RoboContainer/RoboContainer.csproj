@@ -42,6 +42,7 @@
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\ILifetimeSlot.cs" />
+    <Compile Include="Core\NamedContractDeclaration.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
@@ -58,10 +59,10 @@
     <Compile Include="Infection\RequireContractAttribute.cs" />
     <Compile Include="Core\Container.cs" />
     <Compile Include="Core\ContractRequirement.cs" />
-    <Compile Include="Core\DeclaredContract.cs" />
+    <Compile Include="Core\ContractDeclaration.cs" />
     <Compile Include="Core\IDependencyConfigurator.cs" />
     <Compile Include="Infection\IInitializablePluggable.cs" />
-    <Compile Include="Impl\BaseDeclaredContract.cs" />
+    <Compile Include="Impl\BaseContractDeclaration.cs" />
     <Compile Include="Impl\ByDelegatePluggable.cs" />
     <Compile Include="Impl\ByPluginConfiguredPluggable.cs" />
     <Compile Include="Impl\ContainerConfigurator.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="Core\IContainer.cs" />
     <Compile Include="Core\IContainerConfigurator.cs" />
     <Compile Include="Impl\IInstanceFactory.cs" />
-    <Compile Include="Impl\NamedContract.cs" />
     <Compile Include="Impl\PluggableConfigurator.cs" />
     <Compile Include="Impl\PluginConfigurator.cs" />
     <Compile Include="Impl\ScopedConfiguration.cs" />

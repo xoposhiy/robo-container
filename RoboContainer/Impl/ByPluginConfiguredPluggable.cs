@@ -59,7 +59,7 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = CreateFactory());
 		}
 
-		public IEnumerable<DeclaredContract> Contracts
+		public IEnumerable<ContractDeclaration> Contracts
 		{
 			get { return configuredPluggable.Contracts; }
 		}
