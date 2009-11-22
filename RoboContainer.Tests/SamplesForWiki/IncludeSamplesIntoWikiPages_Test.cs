@@ -58,7 +58,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 		{
 			var samples = new Dictionary<string, string>();
 			var sourceFiles = new DirectoryInfo(@".").GetFiles("*.cs", SearchOption.AllDirectories);
-			var outputFiles = new DirectoryInfo(@".").GetFiles("*.out.txt", SearchOption.AllDirectories);
+			var textFiles = new DirectoryInfo(@".").GetFiles("*.txt", SearchOption.AllDirectories);
 			foreach (var file in sourceFiles)
 			{
 				string sampleContent = ReadContent(file);
@@ -75,10 +75,10 @@ namespace RoboContainer.Tests.SamplesForWiki
 						samples.Add(sampleName, sampleText);
 				}
 			}
-			foreach (var outputFile in outputFiles)
+			foreach (var outputFile in textFiles)
 			{
 				string sampleContent = ReadContent(outputFile);
-				samples.Add(outputFile.Name.Remove(outputFile.Name.Length - 8), sampleContent);
+				samples.Add(outputFile.Name.Remove(outputFile.Name.Length - 4), sampleContent);
 			}
 			return samples;
 		}

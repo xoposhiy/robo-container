@@ -206,7 +206,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var ship = container.Get<IBattleShip>();
 			//]
 
-			File.WriteAllText("QS_FinalSample_LogOutput.out.txt", container.LastConstructionLog);
+			File.WriteAllText("QS_FinalSample.out.txt", container.LastConstructionLog);
 
 			//[QS_LastBuildSessionLog
 			Console.WriteLine(container.LastConstructionLog);
