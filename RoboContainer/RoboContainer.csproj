@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
-    <Compile Include="Core\ILifetimeSlot.cs" />
+    <Compile Include="Core\ILifetime.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />

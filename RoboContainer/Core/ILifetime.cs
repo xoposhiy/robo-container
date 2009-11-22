@@ -3,17 +3,17 @@ using System.Threading;
 
 namespace RoboContainer.Core
 {
-	public interface ILifetimeSlot
+	public interface ILifetime
 	{
 		object Value { get; set; }
 	}
 
-	public class PerContainer : ILifetimeSlot
+	public class PerContainer : ILifetime
 	{
 		public object Value { get; set; }
 	}
 
-	public class PerRequest : ILifetimeSlot
+	public class PerRequest : ILifetime
 	{
 		public object Value
 		{
@@ -22,7 +22,7 @@ namespace RoboContainer.Core
 		}
 	}
 
-	public class PerThread : ILifetimeSlot
+	public class PerThread : ILifetime
 	{
 		private readonly LocalDataStoreSlot threadSlot = Thread.AllocateDataSlot();
 

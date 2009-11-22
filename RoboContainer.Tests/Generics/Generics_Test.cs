@@ -133,7 +133,7 @@ namespace RoboContainer.Tests.Generics
 		}
 	}
 
-	[Plugin(Lifetime = LifetimeScopeEnum.PerRequest)]
+	[Plugin(Lifetime = LifetimeScope.PerRequest)]
 	public interface IAttributedTransient<T>
 	{
 	}

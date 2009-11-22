@@ -1,42 +1,29 @@
 ﻿using System;
-using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
-	public enum LifetimeScopeEnum
+	public enum LifetimeScope
 	{
 		PerContainer = 0,
 		PerRequest,
 		PerThread
 	}
 
-	public class LifetimeScope
+	public class LifetimeScopes
 	{
-		public static LifetimeScope PerContainer = new LifetimeScope(() => new PerContainer());
-		public static LifetimeScope PerRequest = new LifetimeScope(() => new PerRequest());
-		public static LifetimeScope PerThread = new LifetimeScope(() => new PerThread());
+		public static Func<ILifetime> PerContainer = () => new PerContainer();
+		public static Func<ILifetime> PerRequest = () => new PerRequest();
+		public static Func<ILifetime> PerThread = () => new PerThread();
 
-		private readonly Func<ILifetimeSlot> createSlot;
-
-		protected LifetimeScope(Func<ILifetimeSlot> createSlot)
-		{
-			this.createSlot = createSlot;
-		}
-
-		public ILifetimeSlot CreateSlot()
-		{
-			return createSlot();
-		}
-
-		public static LifetimeScope FromEnum(LifetimeScopeEnum lifetime)
+		public static Func<ILifetime> FromEnum(LifetimeScope lifetime)
 		{
 			switch(lifetime)
 			{
-				case LifetimeScopeEnum.PerContainer:
+				case LifetimeScope.PerContainer:
 					return PerContainer;
-				case LifetimeScopeEnum.PerRequest:
+				case LifetimeScope.PerRequest:
 					return PerRequest;
-				case LifetimeScopeEnum.PerThread:
+				case LifetimeScope.PerThread:
 					return PerThread;
 				default:
 					throw new NotSupportedException(lifetime.ToString());

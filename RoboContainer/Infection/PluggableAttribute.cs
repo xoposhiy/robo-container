@@ -6,6 +6,6 @@ namespace RoboContainer.Infection
 	[AttributeUsage(AttributeTargets.Class)]
 	public class PluggableAttribute : Attribute
 	{
-		public LifetimeScopeEnum Lifetime { get; set; }
+		public LifetimeScope Lifetime { get; set; }
 	}
 }

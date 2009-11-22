@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 	{
 		private readonly CreatePluggableDelegate<object> createPluggable;
 
-		public DelegateInstanceFactory(LifetimeScope scope, InitializePluggableDelegate<object> initializePluggable,
+		public DelegateInstanceFactory(Func<ILifetime> scope, InitializePluggableDelegate<object> initializePluggable,
 		                               CreatePluggableDelegate<object> createPluggable)
 			: base(null, scope, initializePluggable)
 		{
