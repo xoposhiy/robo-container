@@ -7,7 +7,7 @@ using System.Text;
 using NUnit.Framework;
 using RoboContainer.Core;
 
-namespace RoboContainer.Tests.SamplesForWiki.QuickStart
+namespace RoboContainer.Tests.SamplesForWiki
 {
 	[TestFixture]
 	public class DescribeConfiguratorInterfaces
@@ -85,12 +85,12 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			if(methodInfo.IsSpecialName) return null;
 			return 
 				string.Format(
-				"{0} {1}{2}({3});", 
-				GetTypeDesc(methodInfo.ReturnType),
-				methodInfo.Name,
-				GetGenericArgsDesc(methodInfo.GetGenericArguments()),
-				GetArgsDesc(methodInfo)
-				);
+					"{0} {1}{2}({3});", 
+					GetTypeDesc(methodInfo.ReturnType),
+					methodInfo.Name,
+					GetGenericArgsDesc(methodInfo.GetGenericArguments()),
+					GetArgsDesc(methodInfo)
+					);
 		}
 
 		private static string GetTypeDesc(Type type)
@@ -121,5 +121,4 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 		{
 		}
 	}
-
 }
