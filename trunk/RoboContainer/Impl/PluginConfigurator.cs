@@ -55,12 +55,14 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator UsePluggable(Type pluggableType)
 		{
+			CheckPluggablility(pluggableType);
 			ExplicitlySetPluggable = pluggableType;
 			return this;
 		}
 
 		public IPluginConfigurator UseOnly(object part)
 		{
+			CheckPluggablility(part.GetType());
 			CreatePluggableBy((container, type) => part);
 			UseProvidedParts(part);
 			return this;
@@ -68,6 +70,7 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator UseAlso(object part, params ContractDeclaration[] declaredContracts)
 		{
+			CheckPluggablility(part.GetType());
 			parts.Add(new ConfiguredAsPartPluggable(part, declaredContracts));
 			UseProvidedParts(part);
 			return this;
@@ -116,14 +119,28 @@ namespace RoboContainer.Impl
 			return new PluginConfigurator<TPlugin>(this);
 		}
 
+		private void CheckPluggablility(Type pluggableType)
+		{
+			//TODO диагностика для Generics тоже нужна...
+			if(!PluginType.ContainsGenericParameters && !PluginType.IsAssignableFrom(pluggableType))
+				throw new ContainerException("'{0}' is not pluggable into '{1}'", pluggableType.Name, PluginType.Name);
+		}
+
 		private void UseProvidedParts(object part)
 		{
 			foreach(PartDescription partDescription in GetProvidedParts(part))
 			{
-				IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
-				object providedPart = partDescription.Part();
-				if(partDescription.UseOnlyThis) pluginConfigurator.UseOnly(providedPart);
-				else pluginConfigurator.UseAlso(providedPart);
+				try
+				{
+					IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
+					object providedPart = partDescription.Part();
+					if(partDescription.UseOnlyThis) pluginConfigurator.UseOnly(providedPart);
+					else pluginConfigurator.UseAlso(providedPart);
+				}
+				catch(ContainerException e)
+				{
+					throw new ContainerException(e, "Provided part {0}. {1}", partDescription.Name, e.Message);
+				}
 			}
 		}
 
@@ -140,6 +157,7 @@ namespace RoboContainer.Impl
 			if(attribute == null) return null;
 			return
 				new PartDescription(
+					propertyInfo.Name,
 					attribute.UseOnlyThis,
 					attribute.AsPlugin ?? propertyInfo.PropertyType,
 					() => propertyInfo.GetValue(part, null));

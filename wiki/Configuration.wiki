@@ -19,9 +19,28 @@
   * атрибуты plugin;
   * динамическое конфигурирование plugin _(высокий приоритет)_.
 
-==Интерфейс конфигурирования==
+==Интерфейс динамического конфигурирования==
 
-TODO: пояснительный текст
+Динамическое конфигурирование осуществляется с помощью параметра конструктора контейнера.
+<wiki:comment>[Configuration.FirstSample</wiki:comment>
+{{{
+
+var container = new Container(
+	(IContainerConfigurator c) =>
+		{
+			c.ForPlugin<IPlugin>().UsePluggable<Pluggable>();
+			c.ForPluggable<Pluggable>().ReuseIt(ReusePolicy.Never);
+			c.ScanLoadedAssemblies(assembly => (assembly.FullName + "").Contains("RoboContainer"));
+			c.Logging.Disable();
+		});
+}}}
+<wiki:comment></wiki:comment>
+Тут `c` — это объект, через который можно конфигурировать контейнер. В этом примере продемонстрировано:
+  # настройка того, какие типы контейнер будет иметь в виду, а какие нет.
+  # конфигурирование plugin'а.
+  # конфигурирование pluggable/.
+  
+Полный список методов интерфейса представлен ниже:
 
 <wiki:comment>[IContainerConfigurator.interface</wiki:comment>
 {{{

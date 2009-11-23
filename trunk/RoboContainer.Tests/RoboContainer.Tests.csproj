@@ -62,8 +62,11 @@
     <Compile Include="Performance\Performance_Tests.cs" />
     <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />
     <Compile Include="PluginConfiguration\PluginConfiguration_Test.cs" />
+    <Compile Include="SamplesForWiki\ConfigurationSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\DescribeConfiguratorInterfaces.cs" />
     <Compile Include="SamplesForWiki\IncludeSamplesIntoWikiPages_Test.cs" />
-    <Compile Include="SamplesForWiki\QuickStart\DescribeConfiguratorInterfaces.cs" />
     <Compile Include="SamplesForWiki\QuickStart\QuickStart_Tests.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
