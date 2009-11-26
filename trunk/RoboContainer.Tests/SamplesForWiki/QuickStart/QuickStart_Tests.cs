@@ -116,7 +116,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				c =>
 					{
 						c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>();
-						c.ForPluggable<RocketWeapon>().InitializeWith(
+						c.ForPluggable<RocketWeapon>().SetInitializer(
 							rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
 					}
 				);
@@ -134,7 +134,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var container = new Container(
 				c =>
 				c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
-					.CreatePluggableBy(
+					.UsePluggableCreatedBy(
 					(aContainer, pluginType) =>
 					weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
 				);
@@ -197,7 +197,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				c =>
 					{
 						c.ForPluggable<RocketWeapon>()
-							.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
+							.SetInitializer(weapon => weapon.LoadedMissile = "big rocket");
 						c.ForPlugin<IBattleShip>()
 							.UsePluggable<BigBattleShip>().ReusePluggable(ReusePolicy.Never);
 					}
@@ -223,7 +223,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is RocketWeapon));
 			Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is ComboWeapon));
 
-			// Действие InitializeWith
+			// Действие SetInitializer
 			var shipsRocketWeapon = ship.Weapons.OfType<RocketWeapon>().Single();
 			Assert.AreEqual("big rocket", shipsRocketWeapon.LoadedMissile);
 

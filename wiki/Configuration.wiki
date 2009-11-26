@@ -64,18 +64,18 @@ TODO: пояснительный текст
 
 <wiki:comment>[IGenericPluginConfigurator.interface</wiki:comment>
 {{{
-IPluginConfigurator<TPlugin> Ignore<TPluggable>();
-IPluginConfigurator<TPlugin> Ignore(Type[] pluggableTypes);
-IPluginConfigurator<TPlugin> UsePluggable<TPluggable>();
-IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType);
-IPluginConfigurator<TPlugin> UseOnly(TPlugin part);
-IPluginConfigurator<TPlugin> UseAlso(TPlugin part, ContractDeclaration[] declaredContracts);
+IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(ContractDeclaration[] declaredContracts);
+IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, ContractDeclaration[] declaredContracts);
+IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, ContractDeclaration[] declaredContracts);
+IPluginConfigurator<TPlugin> UsePluggableCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable);
+IPluginConfigurator<TPlugin> UseOtherPluggablesToo();
+IPluginConfigurator<TPlugin> DontUse<TPluggable>();
+IPluginConfigurator<TPlugin> DontUse(Type[] pluggableTypes);
 IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy);
 IPluginConfigurator<TPlugin> ReusePluggable<TReuse>();
 IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
-IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable);
-IPluginConfigurator<TPlugin> InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable);
-IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin);
+IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable);
+IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin);
 
 }}}
 <wiki:comment></wiki:comment>
@@ -89,10 +89,10 @@ TODO: пояснительный текст
 IPluggableConfigurator<TPluggable> DeclareContracts(ContractDeclaration[] contractsDeclaration);
 IPluggableConfigurator<TPluggable> ReuseIt(ReusePolicy reusePolicy);
 IPluggableConfigurator<TPluggable> ReuseIt<TReuse>();
-IPluggableConfigurator<TPluggable> Ignore();
+IPluggableConfigurator<TPluggable> DontUseIt();
 IPluggableConfigurator<TPluggable> UseConstructor(Type[] argsTypes);
-IPluggableConfigurator<TPluggable> InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);
-IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> initializePluggable);
+IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable);
+IPluggableConfigurator<TPluggable> SetInitializer(Action<TPluggable> initializePluggable);
 IDependencyConfigurator Dependency(String dependencyName);
 
 }}}

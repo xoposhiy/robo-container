@@ -55,6 +55,19 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = new ByConstructorInstanceFactory(this));
 		}
 
+		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
+		{
+			var closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
+			var result = new PluggableConfigurator(closedPluggableType);
+			result.contracts.AddRange(Contracts);
+			result.dependencies = dependencies;
+			result.InjectableConstructorArgsTypes = InjectableConstructorArgsTypes; //TODO среди аргументов могут быть параметры типа, которые надо бы сконвертировать
+			result.ReusePolicy = ReusePolicy;
+			result.Ignored = Ignored;
+			result.InitializePluggable = InitializePluggable;
+			return result;
+		}
+
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)
 		{
 			ReusePolicy = ReusePolicies.FromEnum(reusePolicy);
@@ -67,7 +80,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator Ignore()
+		public IPluggableConfigurator DontUseIt()
 		{
 			Ignored = true;
 			return this;
@@ -85,7 +98,7 @@ namespace RoboContainer.Impl
 			return Dependencies[index] ?? (Dependencies[index] = new DependencyConfigurator());
 		}
 
-		public IPluggableConfigurator InitializeWith(InitializePluggableDelegate<object> initializePluggable)
+		public IPluggableConfigurator SetInitializer(InitializePluggableDelegate<object> initializePluggable)
 		{
 			InitializePluggable = initializePluggable;
 			return this;
@@ -96,9 +109,9 @@ namespace RoboContainer.Impl
 			return new PluggableConfigurator<TPluggable>(this);
 		}
 
-		public IPluggableConfigurator InitializeWith(Action<object> initializePluggable)
+		public IPluggableConfigurator SetInitializer(Action<object> initializePluggable)
 		{
-			return InitializeWith(
+			return SetInitializer(
 				(pluggable, container) =>
 				{
 					initializePluggable(pluggable);
@@ -139,7 +152,7 @@ namespace RoboContainer.Impl
 		private void FillFromAttributes()
 		{
 			bool ignored = PluggableType.GetCustomAttributes(typeof(IgnoredPluggableAttribute), false).Length > 0;
-			if(ignored) Ignore();
+			if(ignored) DontUseIt();
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
 			if(pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
 			DeclareContracts(
@@ -170,9 +183,9 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> Ignore()
+		public IPluggableConfigurator<TPluggable> DontUseIt()
 		{
-			pluggableConfigurator.Ignore();
+			pluggableConfigurator.DontUseIt();
 			return this;
 		}
 
@@ -187,15 +200,15 @@ namespace RoboContainer.Impl
 			return pluggableConfigurator.Dependency(dependencyName);
 		}
 
-		public IPluggableConfigurator<TPluggable> InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable)
+		public IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable)
 		{
-			pluggableConfigurator.InitializeWith((pluggable, container) => initializePluggable((TPluggable)pluggable, container));
+			pluggableConfigurator.SetInitializer((pluggable, container) => initializePluggable((TPluggable)pluggable, container));
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> InitializeWith(Action<TPluggable> initializePluggable)
+		public IPluggableConfigurator<TPluggable> SetInitializer(Action<TPluggable> initializePluggable)
 		{
-			return InitializeWith(
+			return SetInitializer(
 				(pluggable, container) =>
 				{
 					initializePluggable(pluggable);

@@ -33,7 +33,7 @@ namespace RoboContainer.Impl
 
 		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
 		{
-			return GetPluginConfigurator_Internal(pluginType);
+			return pluginConfigs.GetOrCreate(pluginType, () => PluginConfigurator.FromAttributes(this, pluginType));
 		}
 
 		public virtual ILoggingConfigurator GetLoggingConfigurator()
@@ -49,7 +49,7 @@ namespace RoboContainer.Impl
 
 		public virtual IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
 		{
-			return GetPluginConfigurator_Internal(pluginType);
+			return pluginConfigs.GetOrCreate(pluginType, () => GetPluginConfiguratorWithoutCache(pluginType));
 		}
 
 		public virtual bool HasConfiguredPlugin(Type pluginType)
@@ -77,11 +77,6 @@ namespace RoboContainer.Impl
 		public virtual IPluggableConfigurator GetPluggableConfigurator(Type pluggableType)
 		{
 			return GetPluggableConfigurator_Internal(pluggableType);
-		}
-
-		private PluginConfigurator GetPluginConfigurator_Internal(Type pluginType)
-		{
-			return pluginConfigs.GetOrCreate(pluginType, () => GetPluginConfiguratorWithoutCache(pluginType));
 		}
 
 		private PluggableConfigurator GetPluggableConfigurator_Internal(Type pluggableType)

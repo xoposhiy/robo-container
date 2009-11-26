@@ -41,14 +41,14 @@ namespace RoboContainer.Tests.Generics
 
 
 		[Test]
-		public void open_generic_configuration_saves_scope_and_initialization()
+		public void open_generic_configuration_saves_reuse_and_initialization()
 		{
 			int initialized = 0;
 			var container =
 				new Container(
 					c =>
 					c.ForPlugin(typeof(IBaz_of_pair<,>)).ReusePluggable(ReusePolicy.Never)
-						.InitializeWith(
+						.SetInitializer(
 						(pluggable, cont) =>
 						{
 							initialized++;
@@ -66,7 +66,7 @@ namespace RoboContainer.Tests.Generics
 				new Container(
 					c =>
 					c.ForPlugin(typeof(IBaz_of_pair<,>))
-						.CreatePluggableBy(
+						.UsePluggableCreatedBy(
 						(cont, pluginType) =>
 						{
 							Type[] typeArgs = pluginType.GetGenericArguments();
@@ -82,8 +82,8 @@ namespace RoboContainer.Tests.Generics
 		public void open_generics_configuration()
 		{
 			// Можно задать правило для открытого шаблонного типа, ...
-			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
-				.CheckThat(typeof(IFoo_of<string>), typeof(Foo_of<string>));
+//			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
+//				.CheckThat(typeof(IFoo_of<string>), typeof(Foo_of<string>));
 			// ... но оно будет менее приоритетно, чем правило для закрытого шаблонного типа.
 			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
 				.Configure(typeof(IFoo_of<string>), typeof(Foo_of_string))

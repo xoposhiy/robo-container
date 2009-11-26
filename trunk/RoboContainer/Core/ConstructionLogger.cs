@@ -32,7 +32,7 @@ namespace RoboContainer.Core
 
 		public void Reused(Type pluggableType)
 		{
-			Write("Reused {0}", pluggableType.Name);
+			Write("Reused {0}", pluggableType == null ? "?" : pluggableType.Name);
 		}
 
 		public void Initialized(Type pluggableType)

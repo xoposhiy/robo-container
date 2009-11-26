@@ -9,10 +9,10 @@ namespace RoboContainer.Core
 		TSelf DeclareContracts(params ContractDeclaration[] contractsDeclaration);
 		TSelf ReuseIt(ReusePolicy reusePolicy);
 		TSelf ReuseIt<TReuse>() where TReuse : IReuse, new();
-		TSelf Ignore();
+		TSelf DontUseIt();
 		TSelf UseConstructor(params Type[] argsTypes);
-		TSelf InitializeWith(InitializePluggableDelegate<TPluggable> initializePluggable);
-		TSelf InitializeWith(Action<TPluggable> initializePluggable);
+		TSelf SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable);
+		TSelf SetInitializer(Action<TPluggable> initializePluggable);
 		IDependencyConfigurator Dependency(string dependencyName);
 	}
 

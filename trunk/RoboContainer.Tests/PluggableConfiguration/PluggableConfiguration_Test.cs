@@ -16,7 +16,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 			var container = new Container(
 				c =>
 				c.ForPluggable<WantToBeInitialized>()
-					.InitializeWith(
+					.SetInitializer(
 					(o, cont) =>
 					{
 						o.Container = cont;
@@ -29,7 +29,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 		[Test]
 		public void can_ignore_pluggable()
 		{
-			var container = new Container(c => c.ForPluggable<Foo1>().Ignore());
+			var container = new Container(c => c.ForPluggable<Foo1>().DontUseIt());
 			Assert.IsInstanceOf<Foo2>(container.GetAll<IFoo>().Single());
 		}
 

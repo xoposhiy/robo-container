@@ -109,7 +109,7 @@ var container = new Container(
 	c =>
 		{
 			c.ForPlugin<IWeapon>().UsePluggable<RocketWeapon>();
-			c.ForPluggable<RocketWeapon>().InitializeWith(
+			c.ForPluggable<RocketWeapon>().SetInitializer(
 				rocketWeapon => rocketWeapon.LoadedMissile = "big rocket");
 		}
 	);
@@ -128,7 +128,7 @@ var weaponIndex = 0;
 var container = new Container(
 	c =>
 	c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
-		.CreatePluggableBy(
+		.UsePluggableCreatedBy(
 		(aContainer, pluginType) =>
 		weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
 	);
@@ -171,7 +171,7 @@ var container = new Container(
 	c =>
 		{
 			c.ForPluggable<RocketWeapon>()
-				.InitializeWith(weapon => weapon.LoadedMissile = "big rocket");
+				.SetInitializer(weapon => weapon.LoadedMissile = "big rocket");
 			c.ForPlugin<IBattleShip>()
 				.UsePluggable<BigBattleShip>().ReusePluggable(ReusePolicy.Never);
 		}
@@ -185,7 +185,7 @@ Assert.AreNotSame(ship, anotherShip);
 Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is LaserWeapon));
 Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is RocketWeapon));
 Assert.IsNotNull(ship.Weapons.SingleOrDefault(weapon => weapon is ComboWeapon));
-// Действие InitializeWith
+// Действие SetInitializer
 var shipsRocketWeapon = ship.Weapons.OfType<RocketWeapon>().Single();
 Assert.AreEqual("big rocket", shipsRocketWeapon.LoadedMissile);
 // Инжектирование зависимостей на несколько уровней в глубь

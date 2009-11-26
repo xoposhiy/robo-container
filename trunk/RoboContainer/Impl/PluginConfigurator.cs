@@ -11,11 +11,11 @@ namespace RoboContainer.Impl
 	{
 		private readonly IContainerConfiguration configuration;
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
+		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
-		private readonly IList<ConfiguredAsPartPluggable> parts = new List<ConfiguredAsPartPluggable>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
-		private IConfiguredPluggable createdPluggable;
 		private IConfiguredPluggable[] pluggables;
+		private bool useOthersToo;
 
 		public PluginConfigurator(IContainerConfiguration configuration, Type pluginType)
 		{
@@ -28,50 +28,46 @@ namespace RoboContainer.Impl
 		public Func<IReuse> ReusePolicy { get; private set; }
 		public bool ScopeSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
-		public CreatePluggableDelegate<object> CreatePluggable { get; private set; }
-		public Type ExplicitlySetPluggable { get; private set; }
 
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables()
 		{
-			return pluggables ?? (pluggables = AddPartsTo(CreatePluggables()));
+			return pluggables ?? (pluggables = CreatePluggables());
 		}
 
-		public IPluginConfigurator Ignore<TPluggable>()
+		public IPluginConfigurator UseOtherPluggablesToo()
 		{
-			return Ignore(typeof(TPluggable));
+			useOthersToo = true;
+			return this;
 		}
 
-		public IPluginConfigurator Ignore(params Type[] pluggableTypes)
+		public IPluginConfigurator DontUse<TPluggable>()
+		{
+			return DontUse(typeof(TPluggable));
+		}
+
+		public IPluginConfigurator DontUse(params Type[] pluggableTypes)
 		{
 			ignoredPluggables.UnionWith(pluggableTypes);
 			return this;
 		}
 
-		public IPluginConfigurator UsePluggable<TPluggable>()
+		public IPluginConfigurator UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts)
 		{
-			return UsePluggable(typeof(TPluggable));
+			return UsePluggable(typeof(TPluggable), declaredContracts);
 		}
 
-		public IPluginConfigurator UsePluggable(Type pluggableType)
+		public IPluginConfigurator UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts)
 		{
 			CheckPluggablility(pluggableType);
-			ExplicitlySetPluggable = pluggableType;
+			explicitlySpecifiedPluggables.Add(new ConfiguredTypePluggable(() => configuration.GetConfiguredPluggable(pluggableType), declaredContracts));
 			return this;
 		}
 
-		public IPluginConfigurator UseOnly(object part)
+		public IPluginConfigurator UseInstance(object part, params ContractDeclaration[] declaredContracts)
 		{
 			CheckPluggablility(part.GetType());
-			CreatePluggableBy((container, type) => part);
-			UseProvidedParts(part);
-			return this;
-		}
-
-		public IPluginConfigurator UseAlso(object part, params ContractDeclaration[] declaredContracts)
-		{
-			CheckPluggablility(part.GetType());
-			parts.Add(new ConfiguredAsPartPluggable(part, declaredContracts));
+			explicitlySpecifiedPluggables.Add(new ConfiguredInstancePluggable(part, declaredContracts));
 			UseProvidedParts(part);
 			return this;
 		}
@@ -86,21 +82,21 @@ namespace RoboContainer.Impl
 			return ReusePluggable(() => new TReuse());
 		}
 
-		public IPluginConfigurator CreatePluggableBy(CreatePluggableDelegate<object> createPluggable)
+		public IPluginConfigurator UsePluggableCreatedBy(CreatePluggableDelegate<object> createPluggable)
 		{
-			CreatePluggable = createPluggable;
+			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable));
 			return this;
 		}
 
-		public IPluginConfigurator InitializeWith(InitializePluggableDelegate<object> initializePluggable)
+		public IPluginConfigurator SetInitializer(InitializePluggableDelegate<object> initializePluggable)
 		{
 			InitializePluggable = initializePluggable;
 			return this;
 		}
 
-		public IPluginConfigurator InitializeWith(Action<object> initializePlugin)
+		public IPluginConfigurator SetInitializer(Action<object> initializePlugin)
 		{
-			return InitializeWith(
+			return SetInitializer(
 				(pluggable, container) =>
 					{
 						initializePlugin(pluggable);
@@ -123,7 +119,12 @@ namespace RoboContainer.Impl
 		{
 			//TODO диагностика для Generics тоже нужна...
 			if(!PluginType.ContainsGenericParameters && !PluginType.IsAssignableFrom(pluggableType))
-				throw new ContainerException("'{0}' is not pluggable into '{1}'", pluggableType.Name, PluginType.Name);
+				throw NotPluggableException(pluggableType);
+		}
+
+		private ContainerException NotPluggableException(Type pluggableType)
+		{
+			return new ContainerException("'{0}' is not pluggable into '{1}'", pluggableType.Name, PluginType.Name);
 		}
 
 		private void UseProvidedParts(object part)
@@ -134,8 +135,8 @@ namespace RoboContainer.Impl
 				{
 					IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
 					object providedPart = partDescription.Part();
-					if(partDescription.UseOnlyThis) pluginConfigurator.UseOnly(providedPart);
-					else pluginConfigurator.UseAlso(providedPart);
+					pluginConfigurator.UseInstance(providedPart);
+					if(!partDescription.UseOnlyThis) pluginConfigurator.UseOtherPluggablesToo();
 				}
 				catch(ContainerException e)
 				{
@@ -161,11 +162,6 @@ namespace RoboContainer.Impl
 					attribute.UseOnlyThis,
 					attribute.AsPlugin ?? propertyInfo.PropertyType,
 					() => propertyInfo.GetValue(part, null));
-		}
-
-		private IConfiguredPluggable[] AddPartsTo(IEnumerable<IConfiguredPluggable> somePluggables)
-		{
-			return somePluggables.Concat(parts.Cast<IConfiguredPluggable>()).ToArray();
 		}
 
 		private IPluginConfigurator ReusePluggable(Func<IReuse> reusePolicy)
@@ -195,7 +191,7 @@ namespace RoboContainer.Impl
 				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(ReusePolicies.FromEnum(pluginAttribute.ReusePluggable));
 				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
-			Ignore(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
+			DontUse(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
 				PluginType.FindAttributes<RequireContractAttribute>()
 					.SelectMany(a => a.Contracts).Select(c => new NamedContractRequirement(c))
@@ -203,27 +199,18 @@ namespace RoboContainer.Impl
 		}
 
 		// use / once
-		private IEnumerable<IConfiguredPluggable> CreatePluggables()
+		private IConfiguredPluggable[] CreatePluggables()
 		{
-			if(ExplicitlySetPluggable != null)
-			{
-				IConfiguredPluggable pluggable = TryGetConfiguredPluggable(ExplicitlySetPluggable);
-				return pluggable == null ? new IConfiguredPluggable[0] : new[] {pluggable};
-			}
-			if(CreatePluggable != null)
-				return new[] {GetConfiguredPluggableForDelegate(CreatePluggable)};
-			return
-				configuration.GetScannableTypes()
-					.Where(t => !IsIgnored(t))
-					.Select(t => TryGetConfiguredPluggable(t))
-					.Where(pluggable => pluggable != null)
-					.Where(p => contracts.All(req => p.Contracts.Any(c => c.Satisfy(req))))
-					.ToArray();
-		}
-
-		private IConfiguredPluggable GetConfiguredPluggableForDelegate(CreatePluggableDelegate<object> createPluggable)
-		{
-			return createdPluggable ?? (createdPluggable = new ConfiguredByDelegatePluggable(this, createPluggable));
+			var configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
+			if(!explicitlySpecifiedPluggables.Any() || useOthersToo)
+				return
+					configuration.GetScannableTypes()
+						.Where(t => !IsIgnored(t))
+						.Select(t => TryGetConfiguredPluggable(t))
+						.Where(pluggable => pluggable != null)
+						.Where(p => contracts.All(req => p.Contracts.Any(c => c.Satisfy(req))))
+						.Concat(configuredPluggables).ToArray();
+			return configuredPluggables.ToArray();
 		}
 
 		// use / once
@@ -234,8 +221,14 @@ namespace RoboContainer.Impl
 			if(pluggableType == null) return null;
 			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
+			return pluggableConfigs.GetOrCreate(pluggableType, () => ApplyPluginConfiguration(configuredPluggable));
+		}
+
+		private IConfiguredPluggable ApplyPluginConfiguration(IConfiguredPluggable configuredPluggable)
+		{
+			if(configuredPluggable.PluggableType == null) return configuredPluggable;
 			if(ScopeSpecified && ReusePolicy != configuredPluggable.ReusePolicy || InitializePluggable != null)
-				return pluggableConfigs.GetOrCreate(pluggableType, () => new ConfiguredByPluginPluggable(this, configuredPluggable));
+				return new ConfiguredByPluginPluggable(this, configuredPluggable);
 			return configuredPluggable;
 		}
 
@@ -256,10 +249,14 @@ namespace RoboContainer.Impl
 			if(genericDefinition.ScopeSpecified)
 				result.ReusePluggable(genericDefinition.ReusePolicy);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
-			result.CreatePluggable = genericDefinition.CreatePluggable;
-			if(genericDefinition.ExplicitlySetPluggable != null)
-				result.ExplicitlySetPluggable =
-					GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(genericDefinition.ExplicitlySetPluggable, pluginType);
+			result.explicitlySpecifiedPluggables.AddRange(
+				genericDefinition.explicitlySpecifiedPluggables
+					.Select(
+					openPluggable =>
+					openPluggable.TryGetClosedGenericPluggable(pluginType))
+					.Where(p => p!= null)
+				);
+
 			return result;
 		}
 	}
@@ -273,39 +270,21 @@ namespace RoboContainer.Impl
 			this.realConfigurator = realConfigurator;
 		}
 
-		public IPluginConfigurator<TPlugin> Ignore<TPluggable>()
+		public IPluginConfigurator<TPlugin> UseOtherPluggablesToo()
 		{
-			realConfigurator.Ignore<TPluggable>();
+			realConfigurator.UseOtherPluggablesToo();
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> Ignore(params Type[] pluggableTypes)
+		public IPluginConfigurator<TPlugin> DontUse<TPluggable>() where TPluggable : TPlugin
 		{
-			realConfigurator.Ignore(pluggableTypes);
+			realConfigurator.DontUse<TPluggable>();
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UsePluggable<TPluggable>()
+		public IPluginConfigurator<TPlugin> DontUse(params Type[] pluggableTypes)
 		{
-			realConfigurator.UsePluggable<TPluggable>();
-			return this;
-		}
-
-		public IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType)
-		{
-			realConfigurator.UsePluggable(pluggableType);
-			return this;
-		}
-
-		public IPluginConfigurator<TPlugin> UseOnly(TPlugin part)
-		{
-			realConfigurator.UseOnly(part);
-			return this;
-		}
-
-		public IPluginConfigurator<TPlugin> UseAlso(TPlugin part, params ContractDeclaration[] declaredContracts)
-		{
-			realConfigurator.UseAlso(part, declaredContracts);
+			realConfigurator.DontUse(pluggableTypes);
 			return this;
 		}
 
@@ -321,21 +300,15 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> CreatePluggableBy(CreatePluggableDelegate<TPlugin> createPluggable)
+		public IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable)
 		{
-			realConfigurator.CreatePluggableBy((container, pluginType) => createPluggable(container, pluginType));
+			realConfigurator.SetInitializer((plugin, container) => initializePluggable((TPlugin) plugin, container));
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> InitializeWith(InitializePluggableDelegate<TPlugin> initializePluggable)
+		public IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin)
 		{
-			realConfigurator.InitializeWith((plugin, container) => initializePluggable((TPlugin) plugin, container));
-			return this;
-		}
-
-		public IPluginConfigurator<TPlugin> InitializeWith(Action<TPlugin> initializePlugin)
-		{
-			return InitializeWith(
+			return SetInitializer(
 				(pluggable, container) =>
 					{
 						initializePlugin(pluggable);
@@ -346,6 +319,30 @@ namespace RoboContainer.Impl
 		public IPluginConfigurator<TPlugin> RequireContracts(params ContractRequirement[] requiredContracts)
 		{
 			realConfigurator.RequireContracts(requiredContracts);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts) where TPluggable : TPlugin
+		{
+			realConfigurator.UsePluggable(typeof(TPluggable), declaredContracts);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts)
+		{
+			realConfigurator.UsePluggable(pluggableType, declaredContracts);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, params ContractDeclaration[] declaredContracts)
+		{
+			realConfigurator.UseInstance(instance, declaredContracts);
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> UsePluggableCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable)
+		{
+			realConfigurator.UsePluggableCreatedBy((container, pluginType) => createPluggable(container, pluginType));
 			return this;
 		}
 	}

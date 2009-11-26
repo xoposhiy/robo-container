@@ -45,6 +45,11 @@ namespace RoboContainer.Impl
 			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable);
 		}
 
+		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
+		{
+			return this; // TODO Вообще-то нужно копию создавать, чтобы значение I<Foo> не попадало в I<Bar>
+		}
+
 		public IEnumerable<ContractDeclaration> Contracts
 		{
 			get { yield break; }

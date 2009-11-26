@@ -44,7 +44,8 @@
     <Compile Include="Core\IReuse.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
     <Compile Include="Impl\AbstractInstanceFactory.cs" />
-    <Compile Include="Impl\ConfiguredAsPartPluggable.cs" />
+    <Compile Include="Impl\ConfiguredInstncePluggable.cs" />
+    <Compile Include="Impl\ConfiguredTypePluggable.cs" />
     <Compile Include="Impl\ConstantInstanceFactory.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
