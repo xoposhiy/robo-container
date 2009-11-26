@@ -75,6 +75,7 @@ namespace RoboContainer.Tests.Generics
 						}
 						));
 			Assert.IsInstanceOf<Baz_of_reversed_pair<int, string>>(container.Get<IBaz_of_pair<string, int>>());
+			Assert.AreSame(container.Get<IBaz_of_pair<string, int>>(), container.Get<IBaz_of_pair<string, int>>());
 			Assert.IsInstanceOf<Baz_of_twice<string>>(container.Get<IBaz_of_pair<string, string>>());
 		}
 
