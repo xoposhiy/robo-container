@@ -4,12 +4,12 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	public class ConfiguredAsPartPluggable : IConfiguredPluggable
+	public class ConfiguredInstancePluggable : IConfiguredPluggable
 	{
 		private readonly object part;
 		private readonly ContractDeclaration[] declaredContracts;
 
-		public ConfiguredAsPartPluggable(object part, ContractDeclaration[] declaredContracts)
+		public ConfiguredInstancePluggable(object part, ContractDeclaration[] declaredContracts)
 		{
 			this.part = part;
 			this.declaredContracts = declaredContracts;
@@ -53,6 +53,11 @@ namespace RoboContainer.Impl
 		public IInstanceFactory GetFactory()
 		{
 			return new ConstantInstanceFactory(part);
+		}
+
+		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
+		{
+			return null;
 		}
 	}
 }

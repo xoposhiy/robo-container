@@ -34,6 +34,7 @@ namespace RoboContainer.Tests
 						pluggables.ShouldContainInstanceOf(expectedPluggableType);
 				}
 			}
+			Console.WriteLine(container.LastConstructionLog);
 			return configuration;
 		}
 	}

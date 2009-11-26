@@ -68,7 +68,7 @@ namespace RoboContainer.Tests.Parts
 		[Test]
 		public void can_provide_parts()
 		{
-			var container = new Container(c => c.ForPlugin<IRoot>().UseOnly(new Root()));
+			var container = new Container(c => c.ForPlugin<IRoot>().UseInstance(new Root()));
 			var part = container.Get<IPart>();
 			Assert.IsInstanceOf<Part1>(part);
 		}
@@ -77,7 +77,7 @@ namespace RoboContainer.Tests.Parts
 		public void can_provide_parts_without_detailed_configuration()
 		{
 			var root2 = new Root2();
-			var container = new Container(c => c.ForPlugin<IRoot>().UseOnly(root2));
+			var container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root2));
 			IEnumerable<IPart> parts = container.GetAll<IPart>();
 			CollectionAssert.Contains(parts, root2.APart);
 			Assert.AreEqual(3, parts.Count());
@@ -87,7 +87,7 @@ namespace RoboContainer.Tests.Parts
 		public void can_provide_several_parts()
 		{
 			var root3 = new Root3();
-			var container = new Container(c => c.ForPlugin<IRoot>().UseOnly(root3));
+			var container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3));
 			IEnumerable<IPart> parts = container.GetAll<IPart>();
 			CollectionAssert.DoesNotContain(parts, root3.APart1);
 			Assert.AreEqual(3, parts.Count());
@@ -99,7 +99,7 @@ namespace RoboContainer.Tests.Parts
 		public void parts_can_declare_contracts()
 		{
 			var root3 = new Root3();
-			var container = new Container(c => c.ForPlugin<IRoot>().UseAlso(root3, "foo"));
+			var container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UseOtherPluggablesToo());
 			IEnumerable<IRoot> roots = container.GetAll<IRoot>();
 			Assert.AreEqual(4, roots.Count());
 			Assert.AreEqual(root3, container.Get<IRoot>("foo"));

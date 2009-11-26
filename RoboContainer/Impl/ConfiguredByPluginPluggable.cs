@@ -59,6 +59,11 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = CreateFactory());
 		}
 
+		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
+		{
+			return new ConfiguredByPluginPluggable(pluginConfigurator, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType));
+		}
+
 		public IEnumerable<ContractDeclaration> Contracts
 		{
 			get { return configuredPluggable.Contracts; }
@@ -71,6 +76,7 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
+			//TODO тут какой-то ахтунг?
 			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
 				return new ByConstructorInstanceFactory(this);
 			return configuredPluggable.GetFactory();

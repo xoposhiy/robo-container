@@ -14,5 +14,6 @@ namespace RoboContainer.Impl
 		IEnumerable<IConfiguredDependency> Dependencies { get; }
 		Type[] InjectableConstructorArgsTypes { get; }
 		IInstanceFactory GetFactory();
+		IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType);
 	}
 }

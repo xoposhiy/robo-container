@@ -123,6 +123,7 @@ namespace RoboContainer.Core
 			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
 				.Select(
 				c => c.GetFactory().TryGetOrCreate(this, pluginType)
+					//TODO Логгирование логично вставить тут.
 				)
 				.Where(p => p != null).ToArray();
 			return pluggables;
