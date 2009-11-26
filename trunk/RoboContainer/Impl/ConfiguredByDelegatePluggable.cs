@@ -8,6 +8,7 @@ namespace RoboContainer.Impl
 	{
 		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
+		private ByDelegateInstanceFactory factory;
 
 		public ConfiguredByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable)
 		{
@@ -42,12 +43,12 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable);
+			return factory ?? (factory = new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable));
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return this; // TODO Вообще-то нужно копию создавать, чтобы значение I<Foo> не попадало в I<Bar>
+			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable); 
 		}
 
 		public IEnumerable<ContractDeclaration> Contracts
