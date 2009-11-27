@@ -82,7 +82,7 @@ namespace RoboContainer.Impl
 			return ReusePluggable(() => new TReuse());
 		}
 
-		public IPluginConfigurator UsePluggableCreatedBy(CreatePluggableDelegate<object> createPluggable)
+		public IPluginConfigurator UseInstanceCreatedBy(CreatePluggableDelegate<object> createPluggable)
 		{
 			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable));
 			return this;
@@ -340,9 +340,9 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UsePluggableCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable)
+		public IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable)
 		{
-			realConfigurator.UsePluggableCreatedBy((container, pluginType) => createPluggable(container, pluginType));
+			realConfigurator.UseInstanceCreatedBy((container, pluginType) => createPluggable(container, pluginType));
 			return this;
 		}
 	}

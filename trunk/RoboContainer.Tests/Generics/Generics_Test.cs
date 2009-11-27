@@ -66,7 +66,7 @@ namespace RoboContainer.Tests.Generics
 				new Container(
 					c =>
 					c.ForPlugin(typeof(IBaz_of_pair<,>))
-						.UsePluggableCreatedBy(
+						.UseInstanceCreatedBy(
 						(cont, pluginType) =>
 						{
 							Type[] typeArgs = pluginType.GetGenericArguments();
@@ -75,8 +75,25 @@ namespace RoboContainer.Tests.Generics
 						}
 						));
 			Assert.IsInstanceOf<Baz_of_reversed_pair<int, string>>(container.Get<IBaz_of_pair<string, int>>());
+			Console.WriteLine(container.LastConstructionLog);
 			Assert.AreSame(container.Get<IBaz_of_pair<string, int>>(), container.Get<IBaz_of_pair<string, int>>());
 			Assert.IsInstanceOf<Baz_of_twice<string>>(container.Get<IBaz_of_pair<string, string>>());
+		}
+
+		public void open_generics_and_constructor_with_type_arg()
+		{
+			var container = new Container();
+			Assert.IsNotNull(container.Get<GenericWithConstructor<Foo_of_string>>());
+		}
+
+		public class GenericWithConstructor<T>
+		{
+			public T Part { get; set; }
+
+			public GenericWithConstructor(T part)
+			{
+				Part = part;
+			}
 		}
 
 		[Test]
