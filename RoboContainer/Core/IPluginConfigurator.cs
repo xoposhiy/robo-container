@@ -10,7 +10,7 @@ namespace RoboContainer.Core
 		TSelf UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts) where TPluggable : TPlugin;
 		TSelf UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts);
 		TSelf UseInstance(TPlugin instance, params ContractDeclaration[] declaredContracts);
-		TSelf UsePluggableCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable);
+		TSelf UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable);
 		TSelf UseOtherPluggablesToo();
 		TSelf DontUse<TPluggable>() where TPluggable : TPlugin;
 		TSelf DontUse(params Type[] pluggableTypes);

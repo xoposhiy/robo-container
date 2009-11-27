@@ -134,7 +134,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			var container = new Container(
 				c =>
 				c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
-					.UsePluggableCreatedBy(
+					.UseInstanceCreatedBy(
 					(aContainer, pluginType) =>
 					weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
 				);
