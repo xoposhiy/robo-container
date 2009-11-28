@@ -87,7 +87,8 @@ namespace RoboContainer.Impl
 
 		private static IEnumerable<ConstructorInfo> GetExactInjectableConstructor(Type type, Type[] argsTypes)
 		{
-			return new[] { type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, argsTypes, null) };
+			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, argsTypes, null);
+			return constructorInfo == null ? Enumerable.Empty<ConstructorInfo>() : new[] { constructorInfo };
 		}
 
 		public static ConstructorInfo FindInjectableConstructor(this Type type)

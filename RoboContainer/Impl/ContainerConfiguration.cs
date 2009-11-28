@@ -60,7 +60,7 @@ namespace RoboContainer.Impl
 		// use
 		public virtual IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
 		{
-			return GetPluggableConfigurator_Internal(pluggableType);
+			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
 		public virtual bool HasAssemblies()
@@ -76,12 +76,16 @@ namespace RoboContainer.Impl
 		// config & use
 		public virtual IPluggableConfigurator GetPluggableConfigurator(Type pluggableType)
 		{
-			return GetPluggableConfigurator_Internal(pluggableType);
+			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
-		private PluggableConfigurator GetPluggableConfigurator_Internal(Type pluggableType)
+		private PluggableConfigurator GetPluggableConfiguratorWithoutCache(Type pluggableType)
 		{
-			return pluggableConfigs.GetOrCreate(pluggableType, () => PluggableConfigurator.FromAttributes(pluggableType));
+			PluggableConfigurator configuredPluggable;
+			if(pluggableType.IsGenericType &&
+			   pluggableConfigs.TryGetValue(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
+				return new PluggableConfigurator(pluggableType, configuredPluggable);
+			return PluggableConfigurator.FromAttributes(pluggableType);
 		}
 
 		private PluginConfigurator GetPluginConfiguratorWithoutCache(Type pluginType)
@@ -89,14 +93,8 @@ namespace RoboContainer.Impl
 			PluginConfigurator configuredPlugin;
 			if(pluginType.IsGenericType &&
 			   pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
-				return GetConfiguredPluginByClosingOpenGenericWithoutCache(configuredPlugin, pluginType);
+				return PluginConfigurator.FromGenericDefinition(configuredPlugin, this, pluginType);
 			return PluginConfigurator.FromAttributes(this, pluginType);
-		}
-
-		private PluginConfigurator GetConfiguredPluginByClosingOpenGenericWithoutCache(PluginConfigurator configuredPlugin,
-		                                                                               Type pluginType)
-		{
-			return PluginConfigurator.FromGenericDefinition(configuredPlugin, this, pluginType);
 		}
 
 		public class Part

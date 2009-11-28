@@ -14,6 +14,8 @@ namespace RoboContainer.Impl
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.configuredPluggable = configuredPluggable;
+			if (!(configuredPluggable.GetFactory() is ByConstructorInstanceFactory))
+				throw new ArgumentException("factory should be ByConstructorInstanceFactory", "configuredPluggable");
 		}
 
 		public Type PluggableType
@@ -28,7 +30,7 @@ namespace RoboContainer.Impl
 
 		public Func<IReuse> ReusePolicy
 		{
-			get { return pluginConfigurator.ScopeSpecified ? pluginConfigurator.ReusePolicy : configuredPluggable.ReusePolicy; }
+			get { return pluginConfigurator.ReuseSpecified ? pluginConfigurator.ReusePolicy : configuredPluggable.ReusePolicy; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -76,8 +78,8 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			//TODO тут какой-то ахтунг?
-			if(pluginConfigurator.ScopeSpecified && pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
+			if(pluginConfigurator.ReuseSpecified && 
+				pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
 				return new ByConstructorInstanceFactory(this);
 			return configuredPluggable.GetFactory();
 		}

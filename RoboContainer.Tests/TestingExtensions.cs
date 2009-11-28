@@ -8,6 +8,10 @@ namespace RoboContainer.Tests
 {
 	public static class TestingExtensions
 	{
+		public static void DontUse(this object o)
+		{
+		}
+
 		public static void ShouldBeTrue(this bool actualObject)
 		{
 			Assert.IsTrue(actualObject);

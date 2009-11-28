@@ -55,6 +55,18 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = new ByConstructorInstanceFactory(this));
 		}
 
+		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable)
+			:this(closedGenericType)
+		{
+			contracts.AddRange(genericDefinitionPluggable.Contracts);
+			dependencies = genericDefinitionPluggable.dependencies;
+			//TODO среди аргументов могут быть параметры типа, которые надо бы сконвертировать
+			InjectableConstructorArgsTypes = genericDefinitionPluggable.InjectableConstructorArgsTypes;
+			ReusePolicy = genericDefinitionPluggable.ReusePolicy;
+			Ignored = genericDefinitionPluggable.Ignored;
+			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
+		}
+
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
 			var closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
