@@ -1,7 +1,34 @@
 ﻿
+using RoboContainer.Core;
+using RoboContainer.Infection;
+
 namespace RoboContainer.Tests.Generics
 {
 	// ReSharper disable UnusedTypeParameter
+
+	public class ClassWithConstructorWithParameterTypeArg<T>
+	{
+		public T Part { get; set; }
+
+		public ClassWithConstructorWithParameterTypeArg()
+		{
+		}
+
+		public ClassWithConstructorWithParameterTypeArg(T part)
+		{
+			Part = part;
+		}
+	}
+
+	[Plugin(ReusePluggable = ReusePolicy.Never)]
+	public interface IAttributedTransient<T>
+	{
+	}
+
+	public class AttributedTransient<T> : IAttributedTransient<T>
+	{
+
+	}
 
 	public interface IFoo_of<T>
 	{

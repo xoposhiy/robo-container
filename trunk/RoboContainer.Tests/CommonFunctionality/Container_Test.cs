@@ -51,8 +51,8 @@ namespace RoboContainer.Tests.CommonFunctionality
 		public void can_select_constructor_marked_with_attribute()
 		{
 			var container = new Container();
-			var m = container.Get<Multiconstructor>();
-			Assert.AreEqual(3, m.x);
+			var m = container.Get<Multiconstructor_with_attributes>();
+			Assert.AreEqual(666, m.x);
 			Assert.IsNotNull(m.foo);
 		}
 
@@ -176,26 +176,25 @@ namespace RoboContainer.Tests.CommonFunctionality
 	{
 	}
 
-	public class Multiconstructor
+	public class Multiconstructor_with_attributes
 	{
 		public readonly Foo0 foo;
 		public readonly int x;
 
-		public Multiconstructor()
+		public Multiconstructor_with_attributes()
 		{
-			x = 1;
 		}
 
-		public Multiconstructor(int x)
+		public Multiconstructor_with_attributes(int x)
 		{
-			this.x = 2;
+			this.x = x;
 		}
 
 		[ContainerConstructor]
-		public Multiconstructor(Foo0 foo)
+		public Multiconstructor_with_attributes(Foo0 foo)
 		{
 			this.foo = foo;
-			x = 3;
+			x = 666;
 		}
 	}
 

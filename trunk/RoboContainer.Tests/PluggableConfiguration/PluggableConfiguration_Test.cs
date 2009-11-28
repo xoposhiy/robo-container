@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
@@ -51,9 +50,46 @@ namespace RoboContainer.Tests.PluggableConfiguration
 		public void can_override_constructor_selection_by_configuration()
 		{
 			var container = new Container(
-				c => c.ForPluggable<Multiconstructor>().UseConstructor(new Type[0])
+				c =>
+				{
+					c.ForPlugin<int>().UseInstance(42);
+					c.ForPluggable<Multiconstructor_with_attributes>().UseConstructor(typeof(int));
+				}
 				);
-			Assert.IsNull(container.Get<Multiconstructor>().foo);
+			Assert.AreEqual(42, container.Get<Multiconstructor_with_attributes>().x);
+			Assert.IsNull(container.Get<Multiconstructor_with_attributes>().foo);
+		}
+
+		[Test]
+		public void can_use_pluggable_with_many_constructors()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPlugin<int>().UseInstance(42);
+					c.ForPluggable<Multiconstructor>().UseConstructor(typeof(int));
+				}
+				);
+			Assert.AreEqual(42, container.Get<Multiconstructor>().x);
+		}
+	}
+
+	public class Multiconstructor
+	{
+		public readonly int x;
+
+		public Multiconstructor()
+		{
+		}
+
+		public Multiconstructor(int x)
+		{
+			this.x = x;
+		}
+		
+		public Multiconstructor(WantToBeInitialized _)
+		{
+			_.DontUse();
 		}
 	}
 

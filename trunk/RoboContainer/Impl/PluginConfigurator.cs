@@ -26,7 +26,7 @@ namespace RoboContainer.Impl
 
 		public Type PluginType { get; private set; }
 		public Func<IReuse> ReusePolicy { get; private set; }
-		public bool ScopeSpecified { get; private set; }
+		public bool ReuseSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
 		//use
@@ -167,7 +167,7 @@ namespace RoboContainer.Impl
 		private IPluginConfigurator ReusePluggable(Func<IReuse> reusePolicy)
 		{
 			ReusePolicy = reusePolicy;
-			ScopeSpecified = true;
+			ReuseSpecified = true;
 			return this;
 		}
 
@@ -227,7 +227,7 @@ namespace RoboContainer.Impl
 		private IConfiguredPluggable ApplyPluginConfiguration(IConfiguredPluggable configuredPluggable)
 		{
 			if(configuredPluggable.PluggableType == null) return configuredPluggable;
-			if(ScopeSpecified && ReusePolicy != configuredPluggable.ReusePolicy || InitializePluggable != null)
+			if(ReuseSpecified && ReusePolicy != configuredPluggable.ReusePolicy || InitializePluggable != null)
 				return new ConfiguredByPluginPluggable(this, configuredPluggable);
 			return configuredPluggable;
 		}
@@ -246,7 +246,7 @@ namespace RoboContainer.Impl
 		{
 			var result = new PluginConfigurator(containerConfiguration, pluginType);
 			result.ignoredPluggables.UnionWith(genericDefinition.ignoredPluggables);
-			if(genericDefinition.ScopeSpecified)
+			if(genericDefinition.ReuseSpecified)
 				result.ReusePluggable(genericDefinition.ReusePolicy);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
 			result.explicitlySpecifiedPluggables.AddRange(

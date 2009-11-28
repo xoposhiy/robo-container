@@ -43,6 +43,7 @@
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\IReuse.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
+    <Compile Include="Core\TypeParameters.cs" />
     <Compile Include="Impl\AbstractInstanceFactory.cs" />
     <Compile Include="Impl\ConfiguredInstncePluggable.cs" />
     <Compile Include="Impl\ConfiguredTypePluggable.cs" />

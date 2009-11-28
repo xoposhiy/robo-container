@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
-using RoboContainer.Infection;
 
 namespace RoboContainer.Tests.Generics
 {
@@ -36,7 +35,7 @@ namespace RoboContainer.Tests.Generics
 				.CheckThat(typeof(IBaz_of_pair<string, int>), typeof(Baz_of_reversed_pair<int, string>));
 			WithoutConfiguration()
 				.CheckThat(typeof(IBaz_of_pair<string, string>), typeof(Baz_of_reversed_pair<string, string>),
-						   typeof(Baz_of_twice<string>));
+				           typeof(Baz_of_twice<string>));
 		}
 
 
@@ -50,10 +49,10 @@ namespace RoboContainer.Tests.Generics
 					c.ForPlugin(typeof(IBaz_of_pair<,>)).ReusePluggable(ReusePolicy.Never)
 						.SetInitializer(
 						(pluggable, cont) =>
-						{
-							initialized++;
-							return pluggable;
-						}
+							{
+								initialized++;
+								return pluggable;
+							}
 						));
 			Assert.AreNotSame(container.Get<IBaz_of_pair<string, int>>(), container.Get<IBaz_of_pair<string, int>>());
 			Assert.AreEqual(2, initialized);
@@ -68,11 +67,11 @@ namespace RoboContainer.Tests.Generics
 					c.ForPlugin(typeof(IBaz_of_pair<,>))
 						.UseInstanceCreatedBy(
 						(cont, pluginType) =>
-						{
-							Type[] typeArgs = pluginType.GetGenericArguments();
-							if(typeArgs[0] == typeArgs[1] && typeArgs[1] == typeof(string)) return new Baz_of_twice<string>();
-							return new Baz_of_reversed_pair<int, string>();
-						}
+							{
+								Type[] typeArgs = pluginType.GetGenericArguments();
+								if(typeArgs[0] == typeArgs[1] && typeArgs[1] == typeof(string)) return new Baz_of_twice<string>();
+								return new Baz_of_reversed_pair<int, string>();
+							}
 						));
 			Assert.IsInstanceOf<Baz_of_reversed_pair<int, string>>(container.Get<IBaz_of_pair<string, int>>());
 			Console.WriteLine(container.LastConstructionLog);
@@ -100,8 +99,8 @@ namespace RoboContainer.Tests.Generics
 		public void open_generics_configuration()
 		{
 			// Можно задать правило для открытого шаблонного типа, ...
-//			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
-//				.CheckThat(typeof(IFoo_of<string>), typeof(Foo_of<string>));
+			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
+				.CheckThat(typeof(IFoo_of<string>), typeof(Foo_of<string>));
 			// ... но оно будет менее приоритетно, чем правило для закрытого шаблонного типа.
 			AfterConfigure(typeof(IFoo_of<>), typeof(Foo_of<>))
 				.Configure(typeof(IFoo_of<string>), typeof(Foo_of_string))
@@ -130,6 +129,59 @@ namespace RoboContainer.Tests.Generics
 			Assert.AreNotSame(container.Get<IAttributedTransient<string>>(), container.Get<IAttributedTransient<string>>());
 		}
 
+		[Test]
+		public void can_select_constructor_with_type_parameter()
+		{
+			var container = new Container(
+				c =>
+					{
+						c.ForPluggable(typeof(ClassWithConstructorWithParameterTypeArg<>))
+							.UseConstructor(TypeParameters.T1);
+						c.ForPlugin<int>().UseInstance(42);
+					}
+				);
+			var obj = container.Get<ClassWithConstructorWithParameterTypeArg<int>>();
+			Assert.AreEqual(42, obj.Part);
+		}
+
+		[Test]
+		public void pluggable_configuration()
+		{
+			bool initialized = false;
+			var container = new Container(
+				c =>
+					{
+						c.ForPlugin<string>().UseInstance("42");
+						c.ForPluggable(typeof(GenericClass<,>))
+							.ReuseIt(ReusePolicy.Never).SetInitializer(o => initialized = true)
+							.UseConstructor(typeof(int), typeof(string))
+							.DeclareContracts("abc").Dependency("a").UseValue(42);
+					});
+			var obj = container.Get<GenericClass<double, double>>();
+			Assert.IsTrue(initialized);
+			Assert.AreEqual("42", obj.B);
+			Assert.AreEqual(42, obj.A);
+			Assert.AreNotSame(obj, container.Get<GenericClass<double, double>>());
+		}
+
+		public class GenericClass<T1, T2>
+		{
+			public T1 t1;
+			public T2 t2;
+			public int A { get; set; }
+			public string B { get; set; }
+
+			public GenericClass()
+			{
+			}
+
+			public GenericClass(int a, string b)
+			{
+				A = a;
+				B = b;
+			}
+		}
+
 		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
 		{
 			var containerConfiguration = new ContainerConfiguration();
@@ -149,15 +201,5 @@ namespace RoboContainer.Tests.Generics
 		{
 			return new ContainerConfiguration();
 		}
-	}
-
-	[Plugin(ReusePluggable = ReusePolicy.Never)]
-	public interface IAttributedTransient<T>
-	{
-	}
-
-	public class AttributedTransient<T> : IAttributedTransient<T>
-	{
-		
 	}
 }
