@@ -31,6 +31,10 @@ namespace RoboContainer.Impl
 			return string.Empty;
 		}
 
+		public void Declined(Type pluggableType, string reason)
+		{
+		}
+
 		private class NullDisposable : IDisposable
 		{
 			public void Dispose()

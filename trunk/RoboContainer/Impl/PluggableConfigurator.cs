@@ -23,7 +23,7 @@ namespace RoboContainer.Impl
 		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable)
 			: this(closedGenericType)
 		{
-			contracts.AddRange(genericDefinitionPluggable.Contracts);
+			contracts.AddRange(genericDefinitionPluggable.ExplicitlyDeclaredContracts);
 			dependencies = genericDefinitionPluggable.dependencies;
 			InjectableConstructorArgsTypes =
 				CloseTypeParameters(genericDefinitionPluggable.InjectableConstructorArgsTypes);
@@ -49,7 +49,7 @@ namespace RoboContainer.Impl
 			get { return Dependencies; }
 		}
 
-		public IEnumerable<ContractDeclaration> Contracts
+		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
 			get { return contracts; }
 		}
@@ -69,15 +69,8 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
-			var result = new PluggableConfigurator(closedPluggableType);
-			result.contracts.AddRange(Contracts);
-			result.dependencies = dependencies;
-			result.InjectableConstructorArgsTypes = InjectableConstructorArgsTypes; //TODO среди аргументов могут быть параметры типа, которые надо бы сконвертировать
-			result.ReusePolicy = ReusePolicy;
-			result.Ignored = Ignored;
-			result.InitializePluggable = InitializePluggable;
-			return result;
+			var closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
+			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this);
 		}
 
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)

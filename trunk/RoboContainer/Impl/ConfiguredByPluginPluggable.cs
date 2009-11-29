@@ -66,9 +66,9 @@ namespace RoboContainer.Impl
 			return new ConfiguredByPluginPluggable(pluginConfigurator, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType));
 		}
 
-		public IEnumerable<ContractDeclaration> Contracts
+		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
-			get { return configuredPluggable.Contracts; }
+			get { return configuredPluggable.ExplicitlyDeclaredContracts; }
 		}
 
 		public IEnumerable<IConfiguredDependency> Dependencies

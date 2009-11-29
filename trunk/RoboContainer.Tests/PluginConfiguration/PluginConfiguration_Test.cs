@@ -31,7 +31,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 					});
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>("c", "b"));
 			Assert.IsInstanceOf<Foo1>(container.Get<IFoo>("a", "b"));
-			Assert.AreEqual(3, container.GetAll<IFoo>().Count()); //Foo0, Foo1 and Foo1 from UseAlsoPluggable
+			Assert.IsInstanceOf<Foo1>(container.Get<IFoo>()); // other pluggables
 		}
 
 		[Test]

@@ -10,10 +10,10 @@ namespace RoboContainer.Impl
 	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin
 	{
 		private readonly IContainerConfiguration configuration;
-		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
+		private readonly List<ContractRequirement> requiredContracts = new List<ContractRequirement>();
 		private IConfiguredPluggable[] pluggables;
 		private bool useOthersToo;
 
@@ -33,6 +33,11 @@ namespace RoboContainer.Impl
 		public IEnumerable<IConfiguredPluggable> GetPluggables()
 		{
 			return pluggables ?? (pluggables = CreatePluggables());
+		}
+
+		public IEnumerable<ContractRequirement> RequiredContracts
+		{
+			get { return requiredContracts; }
 		}
 
 		public IPluginConfigurator UseOtherPluggablesToo()
@@ -104,9 +109,9 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluginConfigurator RequireContracts(params ContractRequirement[] requiredContracts)
+		public IPluginConfigurator RequireContracts(params ContractRequirement[] requirements)
 		{
-			contracts.AddRange(requiredContracts);
+			requiredContracts.AddRange(requirements);
 			return this;
 		}
 
@@ -201,16 +206,34 @@ namespace RoboContainer.Impl
 		// use / once
 		private IConfiguredPluggable[] CreatePluggables()
 		{
-			var configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
+			IEnumerable<IConfiguredPluggable> configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
 			if(!explicitlySpecifiedPluggables.Any() || useOthersToo)
 				return
 					configuration.GetScannableTypes()
 						.Where(t => !IsIgnored(t))
 						.Select(t => TryGetConfiguredPluggable(t))
 						.Where(pluggable => pluggable != null)
-						.Where(p => contracts.All(req => p.Contracts.Any(c => c.Satisfy(req))))
+						.Where(FitContracts)
 						.Concat(configuredPluggables).ToArray();
 			return configuredPluggables.ToArray();
+		}
+
+		private bool FitContracts(IConfiguredPluggable p)
+		{
+			bool fitContracts = RequiredContracts.All(req => p.GetAllContracts().Any(c => c.Satisfy(req)));
+			if(!fitContracts)
+			{
+				IConstructionLogger logger = configuration.GetConfiguredLogging().GetLogger();
+				logger.Declined(
+					p.PluggableType,
+					string.Format(
+						"declared [{0}], required [{1}]",
+						p.GetAllContracts().Select(c => c.ToString()).Join(", "),
+						RequiredContracts.Select(c => c.ToString()).Join(", "))
+					);
+			}
+
+			return fitContracts;
 		}
 
 		// use / once
@@ -254,7 +277,7 @@ namespace RoboContainer.Impl
 					.Select(
 					openPluggable =>
 					openPluggable.TryGetClosedGenericPluggable(pluginType))
-					.Where(p => p!= null)
+					.Where(p => p != null)
 				);
 
 			return result;

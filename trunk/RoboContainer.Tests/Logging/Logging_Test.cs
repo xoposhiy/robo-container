@@ -68,6 +68,10 @@ namespace RoboContainer.Tests.Logging
 			return count.ToString();
 		}
 
+		public void Declined(Type pluggableType, string reason)
+		{
+		}
+
 		public void Constructed(Type pluggableType)
 		{
 		}

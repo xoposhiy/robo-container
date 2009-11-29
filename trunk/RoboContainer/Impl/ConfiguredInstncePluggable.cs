@@ -35,7 +35,7 @@ namespace RoboContainer.Impl
 			get { return null; }
 		}
 
-		public IEnumerable<ContractDeclaration> Contracts
+		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
 			get { return declaredContracts; }
 		}

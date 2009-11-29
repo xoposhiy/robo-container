@@ -102,15 +102,15 @@ namespace RoboContainer.Core
 			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
 		}
 
-		private static ContainerException NoPluggablesException(Type pluginType)
+		private ContainerException NoPluggablesException(Type pluginType)
 		{
-			return new ContainerException("Plugguble for {0} not found", pluginType.Name);
+			return new ContainerException("Plugguble for {0} not found." + Environment.NewLine + LastConstructionLog, pluginType.Name);
 		}
 
-		private static ContainerException HasManyPluggablesException(Type pluginType, IEnumerable<object> items)
+		private ContainerException HasManyPluggablesException(Type pluginType, IEnumerable<object> items)
 		{
 			return new ContainerException(
-				"Plugin {0} has many pluggables:{1}",
+				"Plugin {0} has many pluggables:{1}" + Environment.NewLine + LastConstructionLog,
 				pluginType.Name,
 				items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
 		}
@@ -151,12 +151,14 @@ namespace RoboContainer.Core
 
 		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
-			IConfiguredPluggable[] configuredPluggables = configuration.GetConfiguredPlugin(pluginType).GetPluggables().ToArray();
+			var configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
+			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] { ContractRequirement.Default };
+			IConfiguredPluggable[] configuredPluggables = configuredPlugin.GetPluggables().ToArray();
 			return configuredPluggables
 				.Where(
 				p =>
 				requiredContracts.All(
-					req => p.Contracts.Any(c => c.Satisfy(req)))).ToArray();
+					req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToArray();
 		}
 
 		private static IEnumerable<object> CreateArray(Type elementType, IEnumerable<object> elements)

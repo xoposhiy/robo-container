@@ -11,5 +11,6 @@ namespace RoboContainer.Core
 		void Reused(Type pluggableType);
 
 		string ToString();
+		void Declined(Type pluggableType, string reason);
 	}
 }

@@ -11,6 +11,11 @@ namespace RoboContainer.Core
 			this.contractName = contractName;
 		}
 
+		public override string ToString()
+		{
+			return contractName;
+		}
+
 		protected override bool Satisfy(NamedContractRequirement requirement)
 		{
 			return contractName == requirement.Name;

@@ -18,7 +18,7 @@ namespace RoboContainer.Core
 			finally
 			{
 				if(pluginType == null) text = new StringBuilder();
-				Write("Get {0}", newPluginType.Name);
+				Write("Get {0}", Format(newPluginType));
 				pluginType = newPluginType;
 				ident += "\t";
 			}
@@ -27,17 +27,17 @@ namespace RoboContainer.Core
 
 		public void Constructed(Type pluggableType)
 		{
-			Write("Constructed {0}", pluggableType.Name);
+			Write("Constructed {0}", Format(pluggableType));
 		}
 
 		public void Reused(Type pluggableType)
 		{
-			Write("Reused {0}", pluggableType == null ? "?" : pluggableType.Name);
+			Write("Reused {0}", Format(pluggableType));
 		}
 
 		public void Initialized(Type pluggableType)
 		{
-			Write("Initialized {0}", pluggableType.Name);
+			Write("Initialized {0}", Format(pluggableType));
 		}
 
 		public override string ToString()
@@ -45,9 +45,19 @@ namespace RoboContainer.Core
 			return text.ToString();
 		}
 
+		public void Declined(Type pluggableType, string reason)
+		{
+			Write("Declined {0}: {1}", Format(pluggableType), reason);
+		}
+
+		private static string Format(Type type)
+		{
+			return type == null ? "?" : type.Name;
+		}
+
 		public void ConstructionFailed(Type pluggableType)
 		{
-			Write("Can't construct {0}", pluggableType.Name);
+			Write("Can't construct {0}", Format(pluggableType));
 		}
 
 		private void Write(string message, params object[] args)
