@@ -51,7 +51,7 @@ namespace RoboContainer.Impl
 			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable); 
 		}
 
-		public IEnumerable<ContractDeclaration> Contracts
+		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
 			get { yield break; }
 		}

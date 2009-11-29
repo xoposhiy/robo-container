@@ -109,9 +109,9 @@ namespace RoboContainer.Tests.Parts
 		{
 			var root3 = new Root3();
 			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UseOtherPluggablesToo());
-			IEnumerable<IRoot> roots = container.GetAll<IRoot>();
-			Assert.AreEqual(4, roots.Count());
 			Assert.AreEqual(root3, container.Get<IRoot>("foo"));
+			IEnumerable<IRoot> roots = container.GetAll<IRoot>();
+			Assert.AreEqual(3, roots.Count());
 		}
 	}
 }

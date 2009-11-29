@@ -147,21 +147,24 @@ namespace RoboContainer.Tests.Generics
 		[Test]
 		public void pluggable_configuration()
 		{
-			bool initialized = false;
+			var initialized = false;
 			var container = new Container(
 				c =>
 					{
 						c.ForPlugin<string>().UseInstance("42");
 						c.ForPluggable(typeof(GenericClass<,>))
-							.ReuseIt(ReusePolicy.Never).SetInitializer(o => initialized = true)
+							.ReuseIt(ReusePolicy.Never)
+							.SetInitializer(o => initialized = true)
 							.UseConstructor(typeof(int), typeof(string))
-							.DeclareContracts("abc").Dependency("a").UseValue(42);
+							.DeclareContracts("abc")
+							.Dependency("a").UseValue(42);
 					});
-			var obj = container.Get<GenericClass<double, double>>();
+			var obj = container.Get<GenericClass<double, double>>("abc");
 			Assert.IsTrue(initialized);
 			Assert.AreEqual("42", obj.B);
 			Assert.AreEqual(42, obj.A);
-			Assert.AreNotSame(obj, container.Get<GenericClass<double, double>>());
+			Assert.AreNotSame(obj, container.Get<GenericClass<double, double>>("abc"));
+			Assert.IsNull(container.TryGet<GenericClass<double, double>>());
 		}
 
 		public class GenericClass<T1, T2>

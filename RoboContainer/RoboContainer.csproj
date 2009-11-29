@@ -31,9 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -52,6 +55,7 @@
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
     <Compile Include="Impl\PartDescription.cs" />
+    <Compile Include="Impl\StringExtensions.cs" />
     <Compile Include="Infection\ContainerConstructorAttribute.cs" />
     <Compile Include="Infection\DeclareContractAttribute.cs" />
     <Compile Include="Infection\DontUsePluggableAttribute.cs" />
