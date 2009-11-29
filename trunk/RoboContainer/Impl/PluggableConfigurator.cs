@@ -20,17 +20,29 @@ namespace RoboContainer.Impl
 			ReusePolicy = ReusePolicies.Always;
 		}
 
+		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable)
+			: this(closedGenericType)
+		{
+			contracts.AddRange(genericDefinitionPluggable.Contracts);
+			dependencies = genericDefinitionPluggable.dependencies;
+			InjectableConstructorArgsTypes =
+				CloseTypeParameters(genericDefinitionPluggable.InjectableConstructorArgsTypes);
+			ReusePolicy = genericDefinitionPluggable.ReusePolicy;
+			Ignored = genericDefinitionPluggable.Ignored;
+			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
+		}
+
 		protected DependencyConfigurator[] Dependencies
 		{
 			get { return dependencies ?? (dependencies = CreateDependencies()); }
 		}
 
-		public Type[] InjectableConstructorArgsTypes { get; private set; }
-
 		private ConstructorInfo InjectableConstructor
 		{
 			get { return injectableConstructor ?? (injectableConstructor = PluggableType.GetInjectableConstructor(InjectableConstructorArgsTypes)); }
 		}
+
+		public Type[] InjectableConstructorArgsTypes { get; private set; }
 
 		IEnumerable<IConfiguredDependency> IConfiguredPluggable.Dependencies
 		{
@@ -55,21 +67,9 @@ namespace RoboContainer.Impl
 			return factory ?? (factory = new ByConstructorInstanceFactory(this));
 		}
 
-		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable)
-			:this(closedGenericType)
-		{
-			contracts.AddRange(genericDefinitionPluggable.Contracts);
-			dependencies = genericDefinitionPluggable.dependencies;
-			//TODO среди аргументов могут быть параметры типа, которые надо бы сконвертировать
-			InjectableConstructorArgsTypes = genericDefinitionPluggable.InjectableConstructorArgsTypes;
-			ReusePolicy = genericDefinitionPluggable.ReusePolicy;
-			Ignored = genericDefinitionPluggable.Ignored;
-			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
-		}
-
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			var closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
+			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
 			var result = new PluggableConfigurator(closedPluggableType);
 			result.contracts.AddRange(Contracts);
 			result.dependencies = dependencies;
@@ -125,16 +125,31 @@ namespace RoboContainer.Impl
 		{
 			return SetInitializer(
 				(pluggable, container) =>
-				{
-					initializePluggable(pluggable);
-					return pluggable;
-				});
+					{
+						initializePluggable(pluggable);
+						return pluggable;
+					});
 		}
 
 		public IPluggableConfigurator DeclareContracts(params ContractDeclaration[] contractsDeclaration)
 		{
 			contracts.AddRange(contractsDeclaration);
 			return this;
+		}
+
+		private Type[] CloseTypeParameters(IEnumerable<Type> types)
+		{
+			if(types == null) return null;
+			return
+				types.Select(
+					type =>
+						{
+							if(type.DeclaringType != typeof(TypeParameters)) return type;
+							string typeParameterSuffix = type.Name.Substring(1);
+							int typeParameterIndex = int.Parse(typeParameterSuffix) - 1;
+							return PluggableType.GetGenericArguments()[typeParameterIndex];
+						})
+					.ToArray();
 		}
 
 		private DependencyConfigurator[] CreateDependencies()
@@ -214,7 +229,7 @@ namespace RoboContainer.Impl
 
 		public IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable)
 		{
-			pluggableConfigurator.SetInitializer((pluggable, container) => initializePluggable((TPluggable)pluggable, container));
+			pluggableConfigurator.SetInitializer((pluggable, container) => initializePluggable((TPluggable) pluggable, container));
 			return this;
 		}
 
@@ -222,10 +237,10 @@ namespace RoboContainer.Impl
 		{
 			return SetInitializer(
 				(pluggable, container) =>
-				{
-					initializePluggable(pluggable);
-					return pluggable;
-				});
+					{
+						initializePluggable(pluggable);
+						return pluggable;
+					});
 		}
 
 		public IPluggableConfigurator<TPluggable> DeclareContracts(params ContractDeclaration[] contractsDeclaration)
