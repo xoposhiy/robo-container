@@ -2,7 +2,8 @@
 
 = Основные принципы конфигурирования =
 
-Основная задача, которую приходится решать контейнеру — это определение того, какие объекты (pluggables) подходят для запрошенного типа (plugin). Влиять на это можно с помощью конфигурирования на двух уровнях: на уровне plugin и на уровне pluggable.
+Основная задача, которую приходится решать контейнеру — это определение того, какие объекты (pluggables) подходят для запрошенного типа (plugin). 
+Влиять на это можно с помощью конфигурирования на двух уровнях: на уровне plugin и на уровне pluggable.
 
 На каждом уровне конфигурирование можно производить с помощью атрибутов, а можно с помощью динамического конфигурирования с помощью параметра конструктора контейнера.
 
@@ -10,7 +11,9 @@
 
 ==Приоритеты==
 
-Все аспекты конфигурирования делятся на дополныемые и перекрываемые в зависимости от того, как конфигурирование на разных уровнях влияют друг на друга. Дополняемые аспекты суммируются по всем видам конфигурирования, в то время как для перекрываемых аспектов используется результат конфигурирования на наиболее приоритетном уровне.
+Все аспекты конфигурирования делятся на дополныемые и перекрываемые в зависимости от того, как конфигурирование на разных уровнях влияют друг на друга.
+Дополняемые аспекты суммируются по всем видам конфигурирования, в то время как для перекрываемых аспектов используется результат конфигурирования 
+на наиболее приоритетном уровне.
 
 Ниже перечислены уровни конфигурирования в порядке возрастания приоритетности:
 
@@ -60,8 +63,8 @@ ILoggingConfigurator Logging { get; }
 
 ==Конфигурирование на уровне plugin==
 
-TODO: пояснительный текст
-
+Результат такого конфигурирования действует сразу на все pluggable, которые могут быть возвращены при запросе заданного plugin-а.
+Такое конфигурирование можно произвести при помощи метода `IContainerConfigurator.ForPlugin`. Он возвращает следующий интерфейс:
 <wiki:comment>[IGenericPluginConfigurator.interface</wiki:comment>
 {{{
 IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(ContractDeclaration[] declaredContracts);
@@ -76,13 +79,15 @@ IPluginConfigurator<TPlugin> ReusePluggable<TReuse>();
 IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
 IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable);
 IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin);
-
 }}}
 <wiki:comment></wiki:comment>
 
+//TODO samples
+
 ==Конфигурирование на уровне pluggable==
 
-TODO: пояснительный текст
+Для каждого конкретного типа, который мог бы выступать в роли pluggable, можно сконфигурировать то, как он будет создаваться, 
+инициализироваться, какие для него будут определены контракты и нужно ли рассматривать этот тип при автоматическом поиске pluggable.
 
 <wiki:comment>[IGenericPluggableConfigurator.interface</wiki:comment>
 {{{
@@ -97,8 +102,12 @@ IDependencyConfigurator Dependency(String dependencyName);
 
 }}}
 <wiki:comment></wiki:comment>
+TODO Sample
 
-TODO: пояснительный текст
+Кроме того, при конфигурировании pluggable, можно задать некотоую специфику о необходимых этому pluggable зависимостях.
+Зависимости — это, например, параметры конструктора. Соответственно, имена зависимостей — это имена этих самых параметров.
+Получить конфигуратор зависимости можно с помощью метода `IPluggableConfigurator.Dependency`. 
+Интерфейс конфигуратора зависимостей выглядит так:
 
 <wiki:comment>[IDependencyConfigurator.interface</wiki:comment>
 {{{
@@ -106,6 +115,10 @@ IDependencyConfigurator RequireContract(String[] requiredContracts);
 IDependencyConfigurator UseValue(Object o);
 IDependencyConfigurator UsePluggable(Type pluggableType);
 IDependencyConfigurator UsePluggable<TPluggable>();
-
 }}}
 <wiki:comment></wiki:comment>
+
+С помощью этого конфигуратора можно явно указать, какое значение использовать для этой зависимости, либо какой pluggable, 
+либо указать список требуемых контрактов, если вы решили положиться на автоматику.
+
+TODO Sample
