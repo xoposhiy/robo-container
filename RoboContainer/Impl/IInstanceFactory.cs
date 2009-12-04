@@ -7,5 +7,6 @@ namespace RoboContainer.Impl
 	{
 		Type InstanceType { get; }
 		object TryGetOrCreate(Container container, Type typeToCreate);
+		IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator);
 	}
 }

@@ -6,12 +6,14 @@ namespace RoboContainer.Impl
 {
 	public abstract class AbstractInstanceFactory : IInstanceFactory
 	{
+		private readonly Func<IReuse> createReuseSlot;
 		private readonly InitializePluggableDelegate<object> initializePluggable;
 		private readonly IReuse reuseValueSlot;
 
 		protected AbstractInstanceFactory(Type pluggableType, Func<IReuse> createReuseSlot, InitializePluggableDelegate<object> initializePluggable)
 		{
 			reuseValueSlot = createReuseSlot();
+			this.createReuseSlot = createReuseSlot;
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 		}
@@ -27,6 +29,28 @@ namespace RoboContainer.Impl
 			}
 			return reuseValueSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
 		}
+
+		public IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		{
+			if(reusePolicy != null && reusePolicy != createReuseSlot || initializator != null)
+				return DoCreateByPrototype(reusePolicy, CombineInitializators(initializator, initializePluggable));
+			return this;
+		}
+
+		private static InitializePluggableDelegate<object> CombineInitializators(InitializePluggableDelegate<object> pluginInitializator, InitializePluggableDelegate<object> pluggableInitializator)
+		{
+			if(pluggableInitializator == null || pluginInitializator == null)
+				return pluggableInitializator ?? pluginInitializator;
+			return
+				(pluggable, container) =>
+					{
+						pluggableInitializator(pluggable, container);
+						pluginInitializator(pluggable, container);
+						return pluggable;
+					};
+		}
+
+		protected abstract IInstanceFactory DoCreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator);
 
 		private object TryConstructAndLog(Container container, Type typeToCreate)
 		{

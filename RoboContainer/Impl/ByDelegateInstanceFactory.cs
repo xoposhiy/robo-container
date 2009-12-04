@@ -16,6 +16,11 @@ namespace RoboContainer.Impl
 			this.createPluggable = createPluggable;
 		}
 
+		protected override IInstanceFactory DoCreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		{
+			return new ByDelegateInstanceFactory(reusePolicy, initializator, createPluggable);
+		}
+
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
 			return createPluggable(container, pluginToCreate);

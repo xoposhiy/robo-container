@@ -10,9 +10,19 @@ namespace RoboContainer.Impl
 		private readonly IConfiguredPluggable configuration;
 
 		public ByConstructorInstanceFactory(IConfiguredPluggable configuration)
-			: base(configuration.PluggableType, configuration.ReusePolicy, configuration.InitializePluggable)
+			: this(configuration, configuration.ReusePolicy, configuration.InitializePluggable)
+		{
+		}
+
+		public ByConstructorInstanceFactory(IConfiguredPluggable configuration, Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+			: base(configuration.PluggableType, reusePolicy, initializator)
 		{
 			this.configuration = configuration;
+		}
+
+		protected override IInstanceFactory DoCreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		{
+			return new ByConstructorInstanceFactory(configuration, reusePolicy, initializator);
 		}
 
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
