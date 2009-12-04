@@ -40,7 +40,9 @@ var container = new Container(
 <wiki:comment></wiki:comment>
 В этом примере `c` — это объект специального интерфейса, через который можно конфигурировать контейнер. Что происходит в этом примере?
 
-Сначала конфигурируется plugin. Следующей строкой конфигурируется pluggable. Затем типы, с которыми будет работать контейнер ограничиваются только сборками RoboContainer'а. И, наконец, отключается логгирование.
+Сначала конфигурируется plugin. 
+Следующей строкой конфигурируется pluggable. 
+Затем типы, с которыми будет работать контейнер ограничиваются только сборками `RoboContainer`'а. И, наконец, отключается логгирование.
   
 Полный список методов интерфейса представлен ниже:
 
@@ -79,10 +81,26 @@ IPluginConfigurator<TPlugin> ReusePluggable<TReuse>();
 IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
 IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable);
 IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin);
+
 }}}
 <wiki:comment></wiki:comment>
 
-//TODO samples
+<wiki:comment>[Configuration.Plugin</wiki:comment>
+{{{
+
+var explicitlySpecifiedPluggable = new Pluggable();
+var container = new Container(
+	c =>
+	c.ForPlugin<IPlugin>()
+		.UseInstance(explicitlySpecifiedPluggable)
+		.UseOtherPluggablesToo()
+		.ReusePluggable(ReusePolicy.Never)
+	);
+IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
+CollectionAssert.Contains(pluggables, explicitlySpecifiedPluggable);
+Assert.AreEqual(2, pluggables.Count());
+}}}
+<wiki:comment></wiki:comment>
 
 ==Конфигурирование на уровне pluggable==
 
@@ -115,6 +133,7 @@ IDependencyConfigurator RequireContract(String[] requiredContracts);
 IDependencyConfigurator UseValue(Object o);
 IDependencyConfigurator UsePluggable(Type pluggableType);
 IDependencyConfigurator UsePluggable<TPluggable>();
+
 }}}
 <wiki:comment></wiki:comment>
 

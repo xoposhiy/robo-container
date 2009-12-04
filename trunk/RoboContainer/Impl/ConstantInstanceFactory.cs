@@ -22,5 +22,10 @@ namespace RoboContainer.Impl
 			container.ConstructionLogger.Reused(instance.GetType());
 			return instance;
 		}
+
+		public IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		{
+			return this;
+		}
 	}
 }

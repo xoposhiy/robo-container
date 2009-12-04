@@ -14,8 +14,6 @@ namespace RoboContainer.Impl
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.configuredPluggable = configuredPluggable;
-			if (!(configuredPluggable.GetFactory() is ByConstructorInstanceFactory))
-				throw new ArgumentException("factory should be ByConstructorInstanceFactory", "configuredPluggable");
 		}
 
 		public Type PluggableType
@@ -80,7 +78,7 @@ namespace RoboContainer.Impl
 		{
 			if(pluginConfigurator.ReuseSpecified && 
 				pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
-				return new ByConstructorInstanceFactory(this);
+				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable);
 			return configuredPluggable.GetFactory();
 		}
 	}
