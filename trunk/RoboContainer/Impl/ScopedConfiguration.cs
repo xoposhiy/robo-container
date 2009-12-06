@@ -23,6 +23,11 @@ namespace RoboContainer.Impl
 			return base.GetScannableTypes().Union(parent.GetScannableTypes());
 		}
 
+		public override IEnumerable<Type> GetScannableTypes(Type pluginType)
+		{
+			return base.GetScannableTypes(pluginType).Union(parent.GetScannableTypes(pluginType));
+		}
+
 		public override bool HasConfiguredPluggable(Type pluggableType)
 		{
 			return base.HasConfiguredPluggable(pluggableType) || parent.HasConfiguredPluggable(pluggableType);

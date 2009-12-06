@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
@@ -15,6 +16,7 @@ namespace RoboContainer.Impl
 			new Dictionary<Type, PluggableConfigurator>();
 
 		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
+		private TypesMap typesMap;
 
 		public IConfiguredLogging GetConfiguredLogging()
 		{
@@ -23,12 +25,23 @@ namespace RoboContainer.Impl
 
 		public void ScanAssemblies(IEnumerable<Assembly> assembliesToScan)
 		{
-			assemblies.AddRange(assembliesToScan);
+			foreach(var assembly in assembliesToScan)
+				if (!assemblies.Contains(assembly)) assemblies.Add(assembly);
 		}
 
 		public virtual IEnumerable<Type> GetScannableTypes()
 		{
 			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
+		}
+
+		public virtual IEnumerable<Type> GetScannableTypes(Type pluginType)
+		{
+			if(pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
+				return GetScannableTypes(pluginType.GetGenericTypeDefinition());
+			//using(new Logger("GetScannableTypes("+pluginType.Name+")", Console.WriteLine))
+			return 
+				(typesMap ?? (typesMap = new TypesMap(GetScannableTypes())))
+				.GetInheritors(pluginType);
 		}
 
 		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
@@ -107,6 +120,26 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
+		}
+	}
+
+	public class Logger : IDisposable
+	{
+		private readonly string actionname;
+		private readonly Action<string> log;
+		private Stopwatch sw;
+
+		public Logger(string actionname, Action<string> log)
+		{
+			this.actionname = actionname;
+			this.log = log;
+			sw = Stopwatch.StartNew();
+		}
+
+		public void Dispose()
+		{
+			sw.Stop();
+			log(actionname + " " + sw.ElapsedMilliseconds + " ms");
 		}
 	}
 }

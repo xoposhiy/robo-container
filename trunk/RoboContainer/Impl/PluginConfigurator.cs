@@ -208,13 +208,16 @@ namespace RoboContainer.Impl
 		{
 			IEnumerable<IConfiguredPluggable> configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
 			if(!explicitlySpecifiedPluggables.Any() || useOthersToo)
+			{
+				var scannableTypes = configuration.GetScannableTypes(PluginType);
 				return
-					configuration.GetScannableTypes()
+					scannableTypes
 						.Where(t => !IsIgnored(t))
 						.Select(t => TryGetConfiguredPluggable(t))
 						.Where(pluggable => pluggable != null)
 						.Where(FitContracts)
 						.Concat(configuredPluggables).ToArray();
+			}
 			return configuredPluggables.ToArray();
 		}
 
