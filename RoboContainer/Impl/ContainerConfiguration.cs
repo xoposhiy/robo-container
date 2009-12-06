@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
@@ -38,7 +37,7 @@ namespace RoboContainer.Impl
 		{
 			if(pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
 				return GetScannableTypes(pluginType.GetGenericTypeDefinition());
-			//using(new Logger("GetScannableTypes("+pluginType.Name+")", Console.WriteLine))
+			//using(new DurationLogger("GetScannableTypes("+pluginType.Name+")", Console.WriteLine))
 			return 
 				(typesMap ?? (typesMap = new TypesMap(GetScannableTypes())))
 				.GetInheritors(pluginType);
@@ -120,26 +119,6 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
-		}
-	}
-
-	public class Logger : IDisposable
-	{
-		private readonly string actionname;
-		private readonly Action<string> log;
-		private Stopwatch sw;
-
-		public Logger(string actionname, Action<string> log)
-		{
-			this.actionname = actionname;
-			this.log = log;
-			sw = Stopwatch.StartNew();
-		}
-
-		public void Dispose()
-		{
-			sw.Stop();
-			log(actionname + " " + sw.ElapsedMilliseconds + " ms");
 		}
 	}
 }
