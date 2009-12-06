@@ -52,6 +52,7 @@
     <Compile Include="Impl\ConfiguredTypePluggable.cs" />
     <Compile Include="Impl\ConstantInstanceFactory.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
+    <Compile Include="Impl\DurationLogger.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
     <Compile Include="Impl\PartDescription.cs" />
