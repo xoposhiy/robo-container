@@ -6,8 +6,8 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredInstancePluggable : IConfiguredPluggable
 	{
-		private object part;
 		private readonly ContractDeclaration[] declaredContracts;
+		private object part;
 
 		public ConfiguredInstancePluggable(object part, ContractDeclaration[] declaredContracts)
 		{
@@ -63,7 +63,7 @@ namespace RoboContainer.Impl
 		public void Dispose()
 		{
 			var disp = part as IDisposable;
-			if (disp != null) disp.Dispose();
+			if(disp != null) disp.Dispose();
 			part = null;
 		}
 	}

@@ -69,8 +69,13 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			var closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
+			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
 			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this);
+		}
+
+		public void Dispose()
+		{
+			DisposeUtils.Dispose(ref factory);
 		}
 
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)
@@ -179,11 +184,6 @@ namespace RoboContainer.Impl
 				PluggableType.FindAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts).Select(c => new NamedContractDeclaration(c))
 					.ToArray());
-		}
-
-		public void Dispose()
-		{
-			DisposeUtils.Dispose(ref factory);
 		}
 	}
 

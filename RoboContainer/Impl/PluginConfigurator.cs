@@ -40,6 +40,14 @@ namespace RoboContainer.Impl
 			get { return requiredContracts; }
 		}
 
+		public void Dispose()
+		{
+			if(pluggables != null) pluggables.ForEach(p => p.Dispose());
+			pluggables = null;
+			pluggableConfigs.Values.ForEach(p => p.Dispose());
+			pluggableConfigs.Clear();
+		}
+
 		public IPluginConfigurator UseOtherPluggablesToo()
 		{
 			useOthersToo = true;
@@ -209,7 +217,7 @@ namespace RoboContainer.Impl
 			IEnumerable<IConfiguredPluggable> configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
 			if(!explicitlySpecifiedPluggables.Any() || useOthersToo)
 			{
-				var scannableTypes = configuration.GetScannableTypes(PluginType);
+				IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
 				return
 					scannableTypes
 						.Where(t => !IsIgnored(t))
@@ -263,7 +271,7 @@ namespace RoboContainer.Impl
 		{
 			return
 				configuration.GetConfiguredPluggable(pluggableType).Ignored ||
-				IsPluggableIgnored(pluggableType);
+					IsPluggableIgnored(pluggableType);
 		}
 
 		public static PluginConfigurator FromGenericDefinition(
@@ -279,19 +287,11 @@ namespace RoboContainer.Impl
 				genericDefinition.explicitlySpecifiedPluggables
 					.Select(
 					openPluggable =>
-					openPluggable.TryGetClosedGenericPluggable(pluginType))
+						openPluggable.TryGetClosedGenericPluggable(pluginType))
 					.Where(p => p != null)
 				);
 
 			return result;
-		}
-
-		public void Dispose()
-		{
-			if (pluggables != null) pluggables.ForEach(p => p.Dispose());
-			pluggables = null;
-			pluggableConfigs.Values.ForEach(p => p.Dispose());
-			pluggableConfigs.Clear();
 		}
 	}
 

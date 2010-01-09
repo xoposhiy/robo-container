@@ -24,7 +24,7 @@ namespace RoboContainer.Impl
 		}
 
 		public static TResult FindAttribute<TAttribute, TResult>(this MemberInfo memberInfo,
-																 Func<TAttribute, TResult> convertAttribute)
+			Func<TAttribute, TResult> convertAttribute)
 			where TAttribute : Attribute
 		{
 			TAttribute att = memberInfo.FindAttributes<TAttribute>().SingleOrDefault();
@@ -87,8 +87,8 @@ namespace RoboContainer.Impl
 
 		private static IEnumerable<ConstructorInfo> GetExactInjectableConstructor(Type type, Type[] argsTypes)
 		{
-			var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, argsTypes, null);
-			return constructorInfo == null ? Enumerable.Empty<ConstructorInfo>() : new[] { constructorInfo };
+			ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, argsTypes, null);
+			return constructorInfo == null ? Enumerable.Empty<ConstructorInfo>() : new[] {constructorInfo};
 		}
 
 		public static ConstructorInfo FindInjectableConstructor(this Type type)

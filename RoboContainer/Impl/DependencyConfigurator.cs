@@ -10,9 +10,9 @@ namespace RoboContainer.Impl
 	public class DependencyConfigurator : IDependencyConfigurator, IConfiguredDependency
 	{
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
+		private Type pluggableType;
 		private object value;
 		private bool valueSpecified;
-		private Type pluggableType;
 
 		public IEnumerable<ContractRequirement> Contracts
 		{
@@ -32,7 +32,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator RequireContract(params string[] requiredContracts)
 		{
-			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement)new NamedContractRequirement(r)));
+			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement) new NamedContractRequirement(r)));
 			return this;
 		}
 

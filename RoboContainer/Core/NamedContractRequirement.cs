@@ -7,11 +7,11 @@
 			Name = name;
 		}
 
+		public string Name { get; private set; }
+
 		public override string ToString()
 		{
 			return Name;
 		}
-
-		public string Name { get; private set; }
 	}
 }

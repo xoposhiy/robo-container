@@ -45,7 +45,7 @@ namespace RoboContainer.Impl
 									pluginConfigurator.InitializePluggable
 								:
 									(o, container) =>
-									pluginConfigurator.InitializePluggable(configuredPluggable.InitializePluggable(o, container), container);
+										pluginConfigurator.InitializePluggable(configuredPluggable.InitializePluggable(o, container), container);
 			}
 		}
 
@@ -74,17 +74,17 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Dependencies; }
 		}
 
-		private IInstanceFactory CreateFactory()
-		{
-			if(pluginConfigurator.ReuseSpecified && 
-				pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
-				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable);
-			return configuredPluggable.GetFactory();
-		}
-
 		public void Dispose()
 		{
 			DisposeUtils.Dispose(ref factory);
+		}
+
+		private IInstanceFactory CreateFactory()
+		{
+			if(pluginConfigurator.ReuseSpecified &&
+				pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
+				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable);
+			return configuredPluggable.GetFactory();
 		}
 	}
 }

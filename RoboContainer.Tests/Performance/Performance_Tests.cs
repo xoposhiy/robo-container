@@ -11,6 +11,7 @@ namespace RoboContainer.Tests.Performance
 {
 	[TestFixture]
 	[Category("performance")]
+	[Explicit]
 	public class Performance_Tests
 	{
 		private static void Time(string description, double ethalonMillis, Action action)

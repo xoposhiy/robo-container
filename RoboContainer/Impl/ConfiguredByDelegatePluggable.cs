@@ -48,7 +48,7 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable); 
+			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable);
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts

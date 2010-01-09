@@ -9,8 +9,13 @@ namespace RoboContainer.Core
 
 	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, IDisposable where TReuse : IReuse, new()
 	{
-		private IContainer container;
 		private readonly IReuse reuseSlot = new TReuse();
+		private IContainer container;
+
+		public void Dispose()
+		{
+			reuseSlot.Dispose();
+		}
 
 		void IInitializablePluggable.Initialize(IContainer aContainer)
 		{
@@ -25,11 +30,6 @@ namespace RoboContainer.Core
 		public TPlugin Get()
 		{
 			return (TPlugin) (reuseSlot.Value ?? (reuseSlot.Value = container.Get<TPlugin>()));
-		}
-
-		public void Dispose()
-		{
-			reuseSlot.Dispose();
 		}
 	}
 }

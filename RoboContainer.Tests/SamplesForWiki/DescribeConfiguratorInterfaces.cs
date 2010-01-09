@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using RoboContainer.Core;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.SamplesForWiki
 {
