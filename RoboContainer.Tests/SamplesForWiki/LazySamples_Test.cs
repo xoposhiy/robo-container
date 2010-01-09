@@ -19,9 +19,12 @@ namespace RoboContainer.Tests.SamplesForWiki
 
 		public class SomeLogic
 		{
-			private readonly Lazy<Database> db;
+			// Reuse.Always означает, что несколько последовательных вызовов db.Get()
+			// будут возвращать один и тот же объект Database
+			private readonly Lazy<Database, Reuse.Always> db;
+			// есть ещё вариант Lazy<Database> — это синоним Lazy<Database, Reuse.Never>
 
-			public SomeLogic(Lazy<Database> db)
+			public SomeLogic(Lazy<Database, Reuse.Always> db)
 			{
 				this.db = db;
 			}
@@ -32,12 +35,12 @@ namespace RoboContainer.Tests.SamplesForWiki
 				{
 					// только тут контейнер создает реализацию Database
 					Database database = db.Get();
-					// ... do something with database
+					// делаем что-то с database
 					database.DontUse(); //hide
 				}
 				else
 				{
-					// do something without database
+					// делаем что-то без использования database
 					useDb.DontUse(); //hide
 				}
 			}
