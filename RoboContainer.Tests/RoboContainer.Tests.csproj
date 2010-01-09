@@ -74,6 +74,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="SamplesForWiki\IncludeSamplesIntoWikiPages_Test.cs" />
+    <Compile Include="SamplesForWiki\LazySamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="SamplesForWiki\QuickStart\QuickStart_Tests.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
