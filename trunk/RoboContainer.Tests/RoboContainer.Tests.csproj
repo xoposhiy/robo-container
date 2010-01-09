@@ -63,6 +63,9 @@
     <Compile Include="Performance\Performance_Tests.cs" />
     <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />
     <Compile Include="PluginConfiguration\PluginConfiguration_Test.cs" />
+    <Compile Include="SamplesForWiki\CollectionSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="SamplesForWiki\ConfigurationSamples_Test.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
