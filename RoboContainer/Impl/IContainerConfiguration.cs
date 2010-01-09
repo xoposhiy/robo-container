@@ -5,7 +5,7 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	public interface IContainerConfiguration
+	public interface IContainerConfiguration : IDisposable
 	{
 		IContainerConfigurator Configurator { get; }
 		bool HasAssemblies();

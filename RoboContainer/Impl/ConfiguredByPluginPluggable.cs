@@ -81,5 +81,10 @@ namespace RoboContainer.Impl
 				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable);
 			return configuredPluggable.GetFactory();
 		}
+
+		public void Dispose()
+		{
+			DisposeUtils.Dispose(ref factory);
+		}
 	}
 }

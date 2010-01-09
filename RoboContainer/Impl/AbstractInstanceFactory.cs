@@ -71,5 +71,10 @@ namespace RoboContainer.Impl
 		}
 
 		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate);
+		
+		public void Dispose()
+		{
+			reuseValueSlot.Dispose();
+		}
 	}
 }

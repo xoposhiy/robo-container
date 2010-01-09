@@ -29,10 +29,7 @@ namespace RoboContainer.Tests
 				if (expectedPluggableTypes.Length == 0)
 					pluggables.ShouldBeEmpty();
 				else
-				{
-					foreach (Type expectedPluggableType in expectedPluggableTypes)
-						pluggables.ShouldContainInstanceOf(expectedPluggableType);
-				}
+					expectedPluggableTypes.ForEach(pluggables.ShouldContainInstanceOf);
 			}
 			Console.WriteLine(container.LastConstructionLog);
 			return configuration;

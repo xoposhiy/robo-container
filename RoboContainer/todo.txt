@@ -12,10 +12,13 @@
 + Расширяемый Reuse policy
 + Переработка Lazy. Reuse policy!!!
 + Переработка AddPart и экспорта частей.
++ IDisposable
 
 Документация
 
-IDisposable
+Hierarchy Reuse Scope
+
+Owner
 
 Thread safety
 

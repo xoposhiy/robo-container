@@ -51,6 +51,8 @@
     <Compile Include="Impl\ConfiguredInstncePluggable.cs" />
     <Compile Include="Impl\ConfiguredTypePluggable.cs" />
     <Compile Include="Impl\ConstantInstanceFactory.cs" />
+    <Compile Include="Impl\DisposeUtils.cs" />
+    <Compile Include="Impl\EnumerableExtensions.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\DurationLogger.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />

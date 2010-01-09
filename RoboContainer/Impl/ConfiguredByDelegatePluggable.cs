@@ -60,5 +60,10 @@ namespace RoboContainer.Impl
 		{
 			get { throw new NotSupportedException(); }
 		}
+
+		public void Dispose()
+		{
+			DisposeUtils.Dispose(ref factory);
+		}
 	}
 }

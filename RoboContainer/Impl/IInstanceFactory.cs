@@ -3,7 +3,7 @@ using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
-	public interface IInstanceFactory
+	public interface IInstanceFactory : IDisposable
 	{
 		Type InstanceType { get; }
 		object TryGetOrCreate(Container container, Type typeToCreate);
