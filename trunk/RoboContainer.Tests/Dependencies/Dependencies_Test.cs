@@ -20,6 +20,14 @@ namespace RoboContainer.Tests.Dependencies
 			Assert.IsInstanceOf<Part0>(container.Get<Multiparam>().part);
 		}
 
+		[Test]
+		public void can_configure_dependencies_for_multiconstructor_pluggable()
+		{
+			var container = new Container(
+				c => c.ForPluggable<MultiConstructor>().Dependency("x").UseValue(42));
+			Assert.NotNull(container.Get<MultiConstructor>());
+		}
+
 		public interface IPart { }
 		public class Part0 : IPart { }
 		public class Part1 : IPart { }
@@ -33,6 +41,17 @@ namespace RoboContainer.Tests.Dependencies
 			{
 				this.fortyTwo = fortyTwo;
 				this.part = part;
+			}
+		}
+
+		public class MultiConstructor
+		{
+			public MultiConstructor()
+			{
+			}
+
+			public MultiConstructor(int x)
+			{
 			}
 		}
 	}

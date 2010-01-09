@@ -3,5 +3,16 @@
 `RoboContainer` позволяет указывать в качестве сервисов и реализаций открытые дженерики, то есть классы с не указанными параметрами типа.
 
 Пример демонстрирует эту возможность:
-<wiki:comment>[Configuration.FirstSample</wiki:comment>
+<wiki:comment>[Generics.Sample</wiki:comment>
+{{{
+
+var container = new Container(
+	(IContainerConfigurator c) =>
+		{
+			c.ForPlugin<IPlugin>().UsePluggable<Pluggable>();
+			c.ForPluggable<Pluggable>().ReuseIt(ReusePolicy.Never);
+			c.ScanLoadedAssemblies(assembly => (assembly.FullName + "").Contains("RoboContainer"));
+			c.Logging.Disable();
+		});
+}}}
 <wiki:comment></wiki:comment>
