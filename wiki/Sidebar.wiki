@@ -1,5 +1,6 @@
   * [DIContainers DI container — это...]
   * [QuickStart Пятиминутное введение]
+  * [HowToLearn Как знакомиться с `RoboContainer`?]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
   * [Generics Поддержка generics]
