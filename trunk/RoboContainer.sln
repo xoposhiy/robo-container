@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{981825CD-8
 		..\wiki\Configuration.wiki = ..\wiki\Configuration.wiki
 		..\wiki\DIContainers.wiki = ..\wiki\DIContainers.wiki
 		..\wiki\Generics.wiki = ..\wiki\Generics.wiki
+		..\wiki\Lazy.wiki = ..\wiki\Lazy.wiki
 		..\wiki\QuickStart.wiki = ..\wiki\QuickStart.wiki
 		..\wiki\RoboConcept.wiki = ..\wiki\RoboConcept.wiki
 		..\wiki\Sidebar.wiki = ..\wiki\Sidebar.wiki
