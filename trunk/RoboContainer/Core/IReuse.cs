@@ -11,52 +11,55 @@ namespace RoboContainer.Core
 		object Value { get; set; }
 	}
 
-	public class ReuseAlways : IReuse
+	public static class Reuse
 	{
-		public object Value { get; set; }
-
-		public void Dispose()
+		public class Always : IReuse
 		{
-			var disp = Value as IDisposable;
-			if(disp != null) disp.Dispose();
-			Value = null;
-		}
-	}
+			public object Value { get; set; }
 
-	public class ReuseNever : IReuse
-	{
-		public object Value
-		{
-			get { return null; }
-			set { }
-		}
-
-		public void Dispose()
-		{
-		}
-	}
-
-	public class ReuseInSameThread : IReuse
-	{
-		private readonly IDictionary<int, object> threadSlot = new Dictionary<int, object>();
-
-		public object Value
-		{
-			get
+			public void Dispose()
 			{
-				lock(threadSlot)
-				{
-					object obj;
-					return threadSlot.TryGetValue(Thread.CurrentThread.ManagedThreadId, out obj) ? obj : null;
-				}
+				var disp = Value as IDisposable;
+				if(disp != null) disp.Dispose();
+				Value = null;
 			}
-			set { lock(threadSlot) threadSlot[Thread.CurrentThread.ManagedThreadId] = value; }
 		}
 
-		public void Dispose()
+		public class Never : IReuse
 		{
-			threadSlot.Values.OfType<IDisposable>().ForEach(v => v.Dispose());
-			threadSlot.Clear();
+			public object Value
+			{
+				get { return null; }
+				set { }
+			}
+
+			public void Dispose()
+			{
+			}
+		}
+
+		public class InSameThread : IReuse
+		{
+			private readonly IDictionary<int, object> threadSlot = new Dictionary<int, object>();
+
+			public object Value
+			{
+				get
+				{
+					lock(threadSlot)
+					{
+						object obj;
+						return threadSlot.TryGetValue(Thread.CurrentThread.ManagedThreadId, out obj) ? obj : null;
+					}
+				}
+				set { lock(threadSlot) threadSlot[Thread.CurrentThread.ManagedThreadId] = value; }
+			}
+
+			public void Dispose()
+			{
+				threadSlot.Values.OfType<IDisposable>().ForEach(v => v.Dispose());
+				threadSlot.Clear();
+			}
 		}
 	}
 }
