@@ -61,6 +61,10 @@ namespace RoboContainer.Tests.SamplesForWiki
 				{
 					string sampleName = match.Groups["sampleName"].Value;
 					string sampleText = match.Groups["sampleText"].Value;
+					var sampleTextLines = 
+						sampleText.Split(new[] {"\r\n"}, StringSplitOptions.None)
+						.Where(line => !line.EndsWith("//hide")).ToArray();
+					sampleText = string.Join("\r\n", sampleTextLines);
 					Console.WriteLine(sampleText);
 					sampleText = MinimizeIdentation(sampleText);
 					Console.WriteLine(sampleText);

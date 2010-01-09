@@ -29,8 +29,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 					.ReusePluggable(ReusePolicy.Never)
 				);
 			IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
-			//]
-			WriteAndHighlight(container.LastConstructionLog, "Constructed Pluggable", "Reused Pluggable");
+			WriteAndHighlight(container.LastConstructionLog, "Constructed Pluggable", "Reused Pluggable"); //hide
 			CollectionAssert.Contains(pluggables, explicitlySpecifiedPluggable);
 			Assert.AreEqual(2, pluggables.Count());
 			//]
