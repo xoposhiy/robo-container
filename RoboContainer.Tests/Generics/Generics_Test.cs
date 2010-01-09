@@ -134,12 +134,24 @@ namespace RoboContainer.Tests.Generics
 		{
 			var container = new Container(
 				c =>
-					{
-						c.ForPluggable(typeof(ClassWithConstructorWithParameterTypeArg<>))
-							.UseConstructor(TypeParameters.T1);
-						c.ForPlugin<int>().UseInstance(42);
-					}
+				{
+					c.ForPluggable(typeof(ClassWithConstructorWithParameterTypeArg<>))
+						.UseConstructor(TypeParameters.T1);
+					c.ForPlugin<int>().UseInstance(42);
+				}
 				);
+			var obj = container.Get<ClassWithConstructorWithParameterTypeArg<int>>();
+			Assert.AreEqual(42, obj.Part);
+		}
+
+		[Test]
+		public void can_configure_dependencies_for_generic_types()
+		{
+			var container = new Container(
+				c => 
+					c.ForPluggable(typeof(ClassWithConstructorWithParameterTypeArg<>))
+						.UseConstructor(TypeParameters.T1)
+						.Dependency("part").UseValue(42));
 			var obj = container.Get<ClassWithConstructorWithParameterTypeArg<int>>();
 			Assert.AreEqual(42, obj.Part);
 		}
