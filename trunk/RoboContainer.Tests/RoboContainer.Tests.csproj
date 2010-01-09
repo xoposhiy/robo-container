@@ -54,6 +54,7 @@
     <Compile Include="ContainerTestingExtensions.cs" />
     <Compile Include="Contracts\Contracts_Test.cs" />
     <Compile Include="Dependencies\Dependencies_Test.cs" />
+    <Compile Include="Disposing\Disposing_Test.cs" />
     <Compile Include="Generics\Generics_Test.cs" />
     <Compile Include="Generics\TestClasses.cs" />
     <Compile Include="Laziness\Lazy_Test.cs" />

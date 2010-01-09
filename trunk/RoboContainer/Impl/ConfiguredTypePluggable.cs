@@ -67,5 +67,10 @@ namespace RoboContainer.Impl
 		{
 			return new ConfiguredTypePluggable(() => ConfiguredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), additionalDeclaredContracts);
 		}
+
+		public void Dispose()
+		{
+			DisposeUtils.Dispose(ref configuredPluggable);
+		}
 	}
 }

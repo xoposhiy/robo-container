@@ -180,6 +180,11 @@ namespace RoboContainer.Impl
 					.SelectMany(a => a.Contracts).Select(c => new NamedContractDeclaration(c))
 					.ToArray());
 		}
+
+		public void Dispose()
+		{
+			DisposeUtils.Dispose(ref factory);
+		}
 	}
 
 	public class PluggableConfigurator<TPluggable> : IPluggableConfigurator<TPluggable>

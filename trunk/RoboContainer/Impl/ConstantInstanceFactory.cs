@@ -5,7 +5,7 @@ namespace RoboContainer.Impl
 {
 	public class ConstantInstanceFactory : IInstanceFactory
 	{
-		private readonly object instance;
+		private object instance;
 
 		public ConstantInstanceFactory(object instance)
 		{
@@ -26,6 +26,13 @@ namespace RoboContainer.Impl
 		public IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
 		{
 			return this;
+		}
+
+		public void Dispose()
+		{
+			var disp = instance as IDisposable;
+			if (disp != null) disp.Dispose();
+			instance = null;
 		}
 	}
 }

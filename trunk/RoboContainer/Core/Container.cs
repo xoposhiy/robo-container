@@ -169,5 +169,10 @@ namespace RoboContainer.Core
 				castedArray.SetValue(elementsArray[i], i);
 			yield return castedArray;
 		}
+
+		public void Dispose()
+		{
+			configuration.Dispose();
+		}
 	}
 }

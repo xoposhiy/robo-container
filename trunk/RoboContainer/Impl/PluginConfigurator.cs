@@ -7,7 +7,7 @@ using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
-	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin
+	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin, IDisposable
 	{
 		private readonly IContainerConfiguration configuration;
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
@@ -284,6 +284,14 @@ namespace RoboContainer.Impl
 				);
 
 			return result;
+		}
+
+		public void Dispose()
+		{
+			if (pluggables != null) pluggables.ForEach(p => p.Dispose());
+			pluggables = null;
+			pluggableConfigs.Values.ForEach(p => p.Dispose());
+			pluggableConfigs.Clear();
 		}
 	}
 

@@ -105,8 +105,6 @@ var container = new Container(
 		.ReusePluggable(ReusePolicy.Never)
 	);
 IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
-CollectionAssert.Contains(pluggables, explicitlySpecifiedPluggable);
-Assert.AreEqual(2, pluggables.Count());
 }}}
 <wiki:comment></wiki:comment>
 

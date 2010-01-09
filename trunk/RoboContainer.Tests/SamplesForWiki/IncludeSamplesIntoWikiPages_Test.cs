@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.SamplesForWiki
 {
@@ -42,14 +43,8 @@ namespace RoboContainer.Tests.SamplesForWiki
 				return;
 			}
 			IDictionary<string, string> samples = LoadSamples();
-			foreach (var sample in samples)
-			{
-				Console.WriteLine(sample.Key);
-				Console.WriteLine(sample.Value);
-				Console.WriteLine();
-			}
-			foreach(var pageFile in wikiDirectory.GetFiles("*.wiki"))
-				ProcessPage(pageFile, samples);
+			samples.ForEach(sample => Console.WriteLine(sample.Key + Environment.NewLine + sample.Value + Environment.NewLine));
+			wikiDirectory.GetFiles("*.wiki").ForEach(pageFile => ProcessPage(pageFile, samples));
 		}
 
 		private readonly Regex sampleRegex = new Regex(@"//\[(?<sampleName>[^\s]+)[\r\n]+(?<sampleText>.+?)\r\n\s*//]", RegexOptions.Singleline);

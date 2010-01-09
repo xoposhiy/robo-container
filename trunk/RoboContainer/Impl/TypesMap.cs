@@ -11,8 +11,7 @@ namespace RoboContainer.Impl
 		public TypesMap(IEnumerable<Type> types)
 		{
 			dic = new Dictionary<Type, IList<Type>>();
-			foreach(var type in types)
-				ProcessType(NormalizeGenericType(type));
+			types.ForEach(type => ProcessType(NormalizeGenericType(type)));
 		}
 
 		private static Type NormalizeGenericType(Type type)
@@ -29,7 +28,6 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<Type> GetInheritors(Type baseTypeOrInterface)
 		{
-			var t = dic.Keys.ToArray()[50];
 			return Inheritors(baseTypeOrInterface);
 		}
 

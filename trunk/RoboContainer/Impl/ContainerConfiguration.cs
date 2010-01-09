@@ -24,8 +24,7 @@ namespace RoboContainer.Impl
 
 		public void ScanAssemblies(IEnumerable<Assembly> assembliesToScan)
 		{
-			foreach(var assembly in assembliesToScan)
-				if (!assemblies.Contains(assembly)) assemblies.Add(assembly);
+			assembliesToScan.Exclude(assemblies.Contains).ForEach(assemblies.Add);
 		}
 
 		public virtual IEnumerable<Type> GetScannableTypes()
@@ -66,7 +65,7 @@ namespace RoboContainer.Impl
 
 		public virtual bool HasConfiguredPlugin(Type pluginType)
 		{
-			return pluginConfigs.ContainsKey(pluginType);
+			return pluginConfigs.ContainsKey(pluginType) || pluggableConfigs.ContainsKey(pluginType);
 		}
 
 		// use
@@ -119,6 +118,14 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
+		}
+
+		public void Dispose()
+		{
+			pluggableConfigs.Values.ForEach(c => c.Dispose());
+			pluggableConfigs.Clear();
+			pluginConfigs.Values.ForEach(c => c.Dispose());
+			pluginConfigs.Clear();
 		}
 	}
 }

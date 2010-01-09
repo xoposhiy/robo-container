@@ -1,4 +1,5 @@
-﻿using RoboContainer.Infection;
+﻿using System;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Core
 {
@@ -6,7 +7,7 @@ namespace RoboContainer.Core
 	{
 	}
 
-	public class Lazy<TPlugin, TReuse> : IInitializablePluggable where TReuse : IReuse, new()
+	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, IDisposable where TReuse : IReuse, new()
 	{
 		private IContainer container;
 		private readonly IReuse reuseSlot = new TReuse();
@@ -24,6 +25,11 @@ namespace RoboContainer.Core
 		public TPlugin Get()
 		{
 			return (TPlugin) (reuseSlot.Value ?? (reuseSlot.Value = container.Get<TPlugin>()));
+		}
+
+		public void Dispose()
+		{
+			reuseSlot.Dispose();
 		}
 	}
 }

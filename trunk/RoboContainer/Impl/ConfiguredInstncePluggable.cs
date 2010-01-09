@@ -6,7 +6,7 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredInstancePluggable : IConfiguredPluggable
 	{
-		private readonly object part;
+		private object part;
 		private readonly ContractDeclaration[] declaredContracts;
 
 		public ConfiguredInstancePluggable(object part, ContractDeclaration[] declaredContracts)
@@ -58,6 +58,13 @@ namespace RoboContainer.Impl
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
 			return null;
+		}
+
+		public void Dispose()
+		{
+			var disp = part as IDisposable;
+			if (disp != null) disp.Dispose();
+			part = null;
 		}
 	}
 }

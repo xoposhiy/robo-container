@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RoboContainer.Core
 {
-	public interface IContainer
+	public interface IContainer : IDisposable
 	{
 		TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts);
 		TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts);

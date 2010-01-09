@@ -23,7 +23,6 @@ var container = new Container(
 			c.ForPluggable<Pluggable>().ReuseIt(ReusePolicy.Never);
 			c.ScanLoadedAssemblies(assembly => (assembly.FullName + "").Contains("RoboContainer"));
 			c.Logging.Disable();
-			// Ещё много всякого конфигурирования.
 		});
 }}}
 <wiki:comment></wiki:comment>

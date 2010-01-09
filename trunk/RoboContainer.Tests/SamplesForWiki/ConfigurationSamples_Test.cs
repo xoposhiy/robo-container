@@ -1,13 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.SamplesForWiki
 {
 	[TestFixture]
 	public class ConfigurationSamples_Test
 	{
+		private static void WriteAndHighlight(string log, params string[] expectedLines)
+		{
+			Console.WriteLine(log);
+			expectedLines.ForEach(expectedLine => StringAssert.Contains(expectedLine, log));
+		}
+
 		[Test]
 		public void ConfigurePlugin()
 		{
@@ -21,6 +29,8 @@ namespace RoboContainer.Tests.SamplesForWiki
 					.ReusePluggable(ReusePolicy.Never)
 				);
 			IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
+			//]
+			WriteAndHighlight(container.LastConstructionLog, "Constructed Pluggable", "Reused Pluggable");
 			CollectionAssert.Contains(pluggables, explicitlySpecifiedPluggable);
 			Assert.AreEqual(2, pluggables.Count());
 			//]

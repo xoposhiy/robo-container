@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RoboContainer.Impl
 {
-	public interface IConfiguredPluggable
+	public interface IConfiguredPluggable : IDisposable
 	{
 		Type PluggableType { get; }
 		bool Ignored { get; }

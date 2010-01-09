@@ -45,7 +45,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 		private static void DescribeInterface(Type type)
 		{
 			var outputFilename = GetSimpleTypename(type) + ".interface.txt";
-			StringBuilder desc = new StringBuilder();
+			var desc = new StringBuilder();
 			foreach(var memberInfo in type.GetMembers())
 			{
 				string memberDescription = "unknown " + memberInfo.Name;

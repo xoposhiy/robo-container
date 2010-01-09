@@ -43,8 +43,7 @@ namespace RoboContainer.Impl
 
 		public void ScanTypesWith(ScannerDelegate scanner)
 		{
-			foreach(Type type in configuration.GetScannableTypes())
-				scanner(this, type);
+			configuration.GetScannableTypes().ForEach(type => scanner(this, type));
 		}
 
 		public IPluggableConfigurator ForPluggable(Type pluggableType)
