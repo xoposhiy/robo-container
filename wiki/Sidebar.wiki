@@ -5,6 +5,7 @@
   * [Generics Поддержка generics]
   * [Collections Поддержка коллекций]
   * [Lazy Ленивое инжектирование]
+  * [IDisposable IDisposable]
   * [Contracts Контракты]
   * [BestPractices Советы]
   * [Roadmap Что в планах]
