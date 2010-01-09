@@ -31,7 +31,7 @@ namespace RoboContainer.Impl
 		public void Dispose()
 		{
 			var disp = instance as IDisposable;
-			if (disp != null) disp.Dispose();
+			if(disp != null) disp.Dispose();
 			instance = null;
 		}
 	}

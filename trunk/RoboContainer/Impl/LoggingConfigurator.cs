@@ -9,6 +9,12 @@ namespace RoboContainer.Impl
 		private IConstructionLogger logger = new ConstructionLogger();
 		private Func<bool> whenDisable;
 
+		public IConstructionLogger GetLogger()
+		{
+			if(whenDisable == null || !whenDisable()) return logger;
+			return nullLogger;
+		}
+
 		public ILoggingConfigurator Disable()
 		{
 			return DisableWhen(() => true);
@@ -30,12 +36,6 @@ namespace RoboContainer.Impl
 		{
 			logger = new TConstructionLogger();
 			return this;
-		}
-
-		public IConstructionLogger GetLogger()
-		{
-			if(whenDisable == null || !whenDisable()) return logger;
-			return nullLogger;
 		}
 	}
 }

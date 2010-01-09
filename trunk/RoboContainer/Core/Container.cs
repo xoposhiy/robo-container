@@ -102,6 +102,11 @@ namespace RoboContainer.Core
 			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
 		}
 
+		public void Dispose()
+		{
+			configuration.Dispose();
+		}
+
 		private ContainerException NoPluggablesException(Type pluginType)
 		{
 			return new ContainerException("Plugguble for {0} not found." + Environment.NewLine + LastConstructionLog, pluginType.Name);
@@ -151,14 +156,14 @@ namespace RoboContainer.Core
 
 		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
-			var configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
-			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] { ContractRequirement.Default };
+			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
+			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {ContractRequirement.Default};
 			IConfiguredPluggable[] configuredPluggables = configuredPlugin.GetPluggables().ToArray();
 			return configuredPluggables
 				.Where(
 				p =>
-				requiredContracts.All(
-					req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToArray();
+					requiredContracts.All(
+						req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToArray();
 		}
 
 		private static IEnumerable<object> CreateArray(Type elementType, IEnumerable<object> elements)
@@ -168,11 +173,6 @@ namespace RoboContainer.Core
 			for(int i = 0; i < elementsArray.Length; i++)
 				castedArray.SetValue(elementsArray[i], i);
 			yield return castedArray;
-		}
-
-		public void Dispose()
-		{
-			configuration.Dispose();
 		}
 	}
 }

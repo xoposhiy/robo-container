@@ -40,13 +40,13 @@ namespace RoboContainer.Impl
 
 		public override IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
 		{
-			if (base.HasConfiguredPluggable(pluggableType)) return base.GetConfiguredPluggable(pluggableType);
+			if(base.HasConfiguredPluggable(pluggableType)) return base.GetConfiguredPluggable(pluggableType);
 			return parent.GetConfiguredPluggable(pluggableType);
 		}
 
 		public override IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
 		{
-			if (base.HasConfiguredPlugin(pluginType)) return base.GetConfiguredPlugin(pluginType);
+			if(base.HasConfiguredPlugin(pluginType)) return base.GetConfiguredPlugin(pluginType);
 			return parent.GetConfiguredPlugin(pluginType);
 		}
 	}

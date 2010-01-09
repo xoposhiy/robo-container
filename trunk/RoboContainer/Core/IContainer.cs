@@ -5,6 +5,7 @@ namespace RoboContainer.Core
 {
 	public interface IContainer : IDisposable
 	{
+		string LastConstructionLog { get; }
 		TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts);
 		TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts);
 		IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts);
@@ -14,6 +15,5 @@ namespace RoboContainer.Core
 		IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts);
 		IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts);
 		IContainer With(Action<IContainerConfigurator> configure);
-		string LastConstructionLog { get; }
 	}
 }

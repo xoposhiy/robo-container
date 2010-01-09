@@ -22,7 +22,7 @@ namespace RoboContainer.Impl
 		private void ProcessType(Type normalizedType)
 		{
 			if(!normalizedType.Constructable()) return;
-			foreach(var baseTypeOrInterface in normalizedType.GetBaseTypes().Concat(normalizedType.GetInterfaces()))
+			foreach(Type baseTypeOrInterface in normalizedType.GetBaseTypes().Concat(normalizedType.GetInterfaces()))
 				Inheritors(NormalizeGenericType(baseTypeOrInterface)).Add(normalizedType);
 		}
 

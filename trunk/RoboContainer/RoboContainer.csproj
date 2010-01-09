@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
+    <Compile Include="Core\ILoggingConfigurator.cs" />
     <Compile Include="Core\IReuse.cs" />
     <Compile Include="Core\NamedContractDeclaration.cs" />
     <Compile Include="Core\TypeParameters.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Impl\EnumerableExtensions.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
     <Compile Include="Impl\DurationLogger.cs" />
+    <Compile Include="Impl\IGenericPluggableConfigurator.cs" />
+    <Compile Include="Impl\IGenericPluginConfigurator.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />
     <Compile Include="Impl\NullConstructionLogger.cs" />
     <Compile Include="Impl\PartDescription.cs" />

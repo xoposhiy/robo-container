@@ -37,9 +37,9 @@ namespace RoboContainer.Impl
 			if(pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
 				return GetScannableTypes(pluginType.GetGenericTypeDefinition());
 			//using(new DurationLogger("GetScannableTypes("+pluginType.Name+")", Console.WriteLine))
-			return 
+			return
 				(typesMap ?? (typesMap = new TypesMap(GetScannableTypes())))
-				.GetInheritors(pluginType);
+					.GetInheritors(pluginType);
 		}
 
 		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
@@ -90,11 +90,19 @@ namespace RoboContainer.Impl
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
+		public void Dispose()
+		{
+			pluggableConfigs.Values.ForEach(c => c.Dispose());
+			pluggableConfigs.Clear();
+			pluginConfigs.Values.ForEach(c => c.Dispose());
+			pluginConfigs.Clear();
+		}
+
 		private PluggableConfigurator GetPluggableConfiguratorWithoutCache(Type pluggableType)
 		{
 			PluggableConfigurator configuredPluggable;
 			if(pluggableType.IsGenericType &&
-			   pluggableConfigs.TryGetValue(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
+				pluggableConfigs.TryGetValue(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
 				return new PluggableConfigurator(pluggableType, configuredPluggable);
 			return PluggableConfigurator.FromAttributes(pluggableType);
 		}
@@ -103,7 +111,7 @@ namespace RoboContainer.Impl
 		{
 			PluginConfigurator configuredPlugin;
 			if(pluginType.IsGenericType &&
-			   pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
+				pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
 				return PluginConfigurator.FromGenericDefinition(configuredPlugin, this, pluginType);
 			return PluginConfigurator.FromAttributes(this, pluginType);
 		}
@@ -118,14 +126,6 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
-		}
-
-		public void Dispose()
-		{
-			pluggableConfigs.Values.ForEach(c => c.Dispose());
-			pluggableConfigs.Clear();
-			pluginConfigs.Values.ForEach(c => c.Dispose());
-			pluginConfigs.Clear();
 		}
 	}
 }

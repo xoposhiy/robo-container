@@ -8,7 +8,7 @@ namespace RoboContainer.Impl
 		private readonly CreatePluggableDelegate<object> createPluggable;
 
 		public ByDelegateInstanceFactory(
-			Func<IReuse> scope, 
+			Func<IReuse> scope,
 			InitializePluggableDelegate<object> initializePluggable,
 			CreatePluggableDelegate<object> createPluggable)
 			: base(null, scope, initializePluggable)

@@ -5,7 +5,7 @@ namespace RoboContainer.Impl
 {
 	public interface IConfiguredPlugin
 	{
-		IEnumerable<IConfiguredPluggable> GetPluggables();
 		IEnumerable<ContractRequirement> RequiredContracts { get; }
+		IEnumerable<IConfiguredPluggable> GetPluggables();
 	}
 }

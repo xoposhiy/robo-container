@@ -22,7 +22,7 @@ namespace RoboContainer.Impl
 
 		public object TryGetOrCreate(Container container, Type typeToCreate)
 		{
-			if (reuseValueSlot.Value != null)
+			if(reuseValueSlot.Value != null)
 			{
 				container.ConstructionLogger.Reused(reuseValueSlot.Value.GetType());
 				return reuseValueSlot.Value;
@@ -35,6 +35,11 @@ namespace RoboContainer.Impl
 			if(reusePolicy != null && reusePolicy != createReuseSlot || initializator != null)
 				return DoCreateByPrototype(reusePolicy, CombineInitializators(initializator, initializePluggable));
 			return this;
+		}
+
+		public void Dispose()
+		{
+			reuseValueSlot.Dispose();
 		}
 
 		private static InitializePluggableDelegate<object> CombineInitializators(InitializePluggableDelegate<object> pluginInitializator, InitializePluggableDelegate<object> pluggableInitializator)
@@ -54,9 +59,9 @@ namespace RoboContainer.Impl
 
 		private object TryConstructAndLog(Container container, Type typeToCreate)
 		{
-			var constructionLog = container.ConstructionLogger;
+			IConstructionLogger constructionLog = container.ConstructionLogger;
 			object result = TryConstruct(container, typeToCreate);
-			if (result == null) constructionLog.ConstructionFailed(InstanceType);
+			if(result == null) constructionLog.ConstructionFailed(InstanceType);
 			else constructionLog.Constructed(result.GetType());
 			return result;
 		}
@@ -71,10 +76,5 @@ namespace RoboContainer.Impl
 		}
 
 		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate);
-		
-		public void Dispose()
-		{
-			reuseValueSlot.Dispose();
-		}
 	}
 }

@@ -8,6 +8,7 @@ namespace RoboContainer.Core
 
 	public interface IContainerConfigurator
 	{
+		ILoggingConfigurator Logging { get; }
 		void ScanAssemblies(params Assembly[] assembliesToScan);
 		void ScanAssemblies(IEnumerable<Assembly> assembliesToScan);
 		void ScanCallingAssembly();
@@ -21,14 +22,5 @@ namespace RoboContainer.Core
 
 		IPluginConfigurator<TPlugin> ForPlugin<TPlugin>();
 		IPluginConfigurator ForPlugin(Type pluginType);
-
-		ILoggingConfigurator Logging { get; }
-	}
-
-	public interface ILoggingConfigurator
-	{
-		ILoggingConfigurator Disable();
-		ILoggingConfigurator DisableWhen(Func<bool> whenDisable);
-		ILoggingConfigurator UseLogger(IConstructionLogger logger);
 	}
 }

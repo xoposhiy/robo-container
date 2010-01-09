@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RoboContainer.Core
+﻿namespace RoboContainer.Core
 {
 	public abstract class ContractDeclaration
 	{
@@ -9,19 +7,7 @@ namespace RoboContainer.Core
 			Default = new DefaultContractDeclaration();
 		}
 
-		private class DefaultContractDeclaration : ContractDeclaration
-		{
-			public override bool Satisfy(ContractRequirement requirement)
-			{
-				return requirement == ContractRequirement.Default;
-			}
-			
-			public override string ToString()
-			{
-				return "DEFAULT";
-			}
-
-		}
+		public static ContractDeclaration Default { get; private set; }
 
 		public abstract bool Satisfy(ContractRequirement requirement);
 
@@ -30,6 +16,17 @@ namespace RoboContainer.Core
 			return new NamedContractDeclaration(contractName);
 		}
 
-		public static ContractDeclaration Default { get; private set; }
+		private class DefaultContractDeclaration : ContractDeclaration
+		{
+			public override bool Satisfy(ContractRequirement requirement)
+			{
+				return requirement == ContractRequirement.Default;
+			}
+
+			public override string ToString()
+			{
+				return "DEFAULT";
+			}
+		}
 	}
 }

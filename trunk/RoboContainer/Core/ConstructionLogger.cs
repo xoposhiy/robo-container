@@ -50,19 +50,19 @@ namespace RoboContainer.Core
 			Write("Declined {0}: {1}", Format(pluggableType), reason);
 		}
 
-		private static string Format(Type type)
-		{
-			return type == null ? "?" : type.Name;
-		}
-
 		public void ConstructionFailed(Type pluggableType)
 		{
 			Write("Can't construct {0}", Format(pluggableType));
 		}
 
+		private static string Format(Type type)
+		{
+			return type == null ? "?" : type.Name;
+		}
+
 		private void Write(string message, params object[] args)
 		{
-			if (text == null)
+			if(text == null)
 				throw new InvalidOperationException("You should call StartConstruction first");
 			text.AppendFormat(ident + message, args).AppendLine();
 		}

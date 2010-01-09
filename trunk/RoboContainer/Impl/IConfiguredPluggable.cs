@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using RoboContainer.Core;
 using System.Linq;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
@@ -22,7 +22,7 @@ namespace RoboContainer.Impl
 	{
 		public static IEnumerable<ContractDeclaration> GetAllContracts(this IConfiguredPluggable configuredPluggable)
 		{
-			var cs = configuredPluggable.ExplicitlyDeclaredContracts;
+			IEnumerable<ContractDeclaration> cs = configuredPluggable.ExplicitlyDeclaredContracts;
 			return !cs.Any() ? new[] {ContractDeclaration.Default} : cs;
 		}
 	}
