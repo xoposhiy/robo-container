@@ -1,0 +1,7 @@
+#summary Конфигурирование сервиса вида IGeneric<> без указания конкретного параметра generic-а
+
+`RoboContainer` позволяет указывать в качестве сервисов и реализаций открытые дженерики, то есть классы с не указанными параметрами типа.
+
+Пример демонстрирует эту возможность:
+<wiki:comment>[Configuration.FirstSample</wiki:comment>
+<wiki:comment></wiki:comment>
