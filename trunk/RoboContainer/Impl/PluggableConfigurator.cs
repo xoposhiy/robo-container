@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
@@ -10,9 +9,8 @@ namespace RoboContainer.Impl
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
 		private readonly List<ContractDeclaration> contracts = new List<ContractDeclaration>();
-		private DependencyConfigurator[] dependencies;
+		private readonly IList<DependencyConfigurator> dependencies = new List<DependencyConfigurator>();
 		private IInstanceFactory factory;
-		private ConstructorInfo injectableConstructor;
 
 		private PluggableConfigurator(Type pluggableType)
 		{
@@ -32,21 +30,11 @@ namespace RoboContainer.Impl
 			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
 		}
 
-		protected DependencyConfigurator[] Dependencies
-		{
-			get { return dependencies ?? (dependencies = CreateDependencies()); }
-		}
-
-		private ConstructorInfo InjectableConstructor
-		{
-			get { return injectableConstructor ?? (injectableConstructor = PluggableType.GetInjectableConstructor(InjectableConstructorArgsTypes)); }
-		}
-
 		public Type[] InjectableConstructorArgsTypes { get; private set; }
 
 		IEnumerable<IConfiguredDependency> IConfiguredPluggable.Dependencies
 		{
-			get { return Dependencies; }
+			get { return dependencies.Cast<IConfiguredDependency>(); }
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
@@ -104,8 +92,13 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
-			int index = GetParameterIndex(dependencyName);
-			return Dependencies[index] ?? (Dependencies[index] = new DependencyConfigurator());
+			var dep = dependencies.SingleOrDefault(d => d.Name == dependencyName);
+			if (dep == null)
+			{
+				dep = new DependencyConfigurator(dependencyName);
+				dependencies.Add(dep);
+			}
+			return dep;
 		}
 
 		public IPluggableConfigurator SetInitializer(InitializePluggableDelegate<object> initializePluggable)
@@ -148,23 +141,6 @@ namespace RoboContainer.Impl
 							return PluggableType.GetGenericArguments()[typeParameterIndex];
 						})
 					.ToArray();
-		}
-
-		private DependencyConfigurator[] CreateDependencies()
-		{
-			ParameterInfo[] parameterInfos = InjectableConstructor.GetParameters();
-			var dependencyConfigurators = new DependencyConfigurator[parameterInfos.Length];
-			for(int i = 0; i < dependencyConfigurators.Length; i++)
-				dependencyConfigurators[i] = DependencyConfigurator.FromAttributes(parameterInfos[i]);
-			return dependencyConfigurators;
-		}
-
-		private int GetParameterIndex(string dependencyName)
-		{
-			ParameterInfo[] constructorParameters = InjectableConstructor.GetParameters();
-			for(int i = 0; i < constructorParameters.Length; i++)
-				if(constructorParameters[i].Name == dependencyName) return i;
-			throw new ContainerException("У конструктора типа {0} нет параметра с именем {1}", PluggableType, dependencyName);
 		}
 
 		public static PluggableConfigurator FromAttributes(Type pluggableType)
