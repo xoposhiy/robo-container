@@ -22,8 +22,6 @@ Owner
 
 Thread safety
 
-Определять тип делегата CreateBy
-
 BuildContext
 
 container.AssertConfigurationIsValid();

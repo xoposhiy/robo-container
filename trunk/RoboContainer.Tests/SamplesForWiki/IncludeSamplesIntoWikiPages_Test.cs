@@ -124,8 +124,8 @@ namespace RoboContainer.Tests.SamplesForWiki
 	{
 		private readonly string input;
 		private readonly StringBuilder result;
-		private int index = 0;
-		private int lastReplacedTextEndIndex = 0;
+		private int index;
+		private int lastReplacedTextEndIndex;
 
 		public PageProcessor(string input)
 		{

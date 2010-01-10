@@ -5,6 +5,7 @@ using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
 
+// ReSharper disable RedundantLambdaParameterType
 namespace RoboContainer.Tests.SamplesForWiki
 {
 	[TestFixture]

@@ -37,9 +37,9 @@ namespace RoboContainer.Impl
 
 		public string Name { get; set; }
 
-		public IDependencyConfigurator RequireContract(params string[] requiredContracts)
+		public IDependencyConfigurator RequireContracts(params ContractRequirement[] requiredContracts)
 		{
-			contracts.AddRange(requiredContracts.Select(r => (ContractRequirement) new NamedContractRequirement(r)));
+			contracts.AddRange(requiredContracts);
 			return this;
 		}
 
@@ -66,7 +66,7 @@ namespace RoboContainer.Impl
 		{
 			var config = new DependencyConfigurator(parameterInfo.Name);
 			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
-			config.RequireContract(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
+			config.RequireContracts(requirementAttributes.SelectMany(att => att.Contracts).Select(c => (ContractRequirement) c).ToArray());
 			return config;
 		}
 	}

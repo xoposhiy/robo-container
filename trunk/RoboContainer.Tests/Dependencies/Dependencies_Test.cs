@@ -33,7 +33,7 @@ namespace RoboContainer.Tests.Dependencies
 		public void combine_attributes_and_direct_configuration()
 		{
 			var container = new Container(
-				c => c.ForPluggable<ParamWithContract>().Dependency("param").RequireContract("c2"));
+				c => c.ForPluggable<ParamWithContract>().Dependency("param").RequireContracts("c2"));
 			Assert.IsInstanceOf<Param>(container.Get<ParamWithContract>().param);
 		}
 

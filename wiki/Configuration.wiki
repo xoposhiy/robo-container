@@ -79,7 +79,7 @@ ILoggingConfigurator Logging { get; }
 IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, ContractDeclaration[] declaredContracts);
-IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable);
+IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseOtherPluggablesToo();
 IPluginConfigurator<TPlugin> DontUse<TPluggable>();
 IPluginConfigurator<TPlugin> DontUse(Type[] pluggableTypes);
@@ -139,7 +139,7 @@ IDependencyConfigurator Dependency(String dependencyName);
 
 <wiki:comment>[IDependencyConfigurator.interface</wiki:comment>
 {{{
-IDependencyConfigurator RequireContract(String[] requiredContracts);
+IDependencyConfigurator RequireContracts(ContractRequirement[] requiredContracts);
 IDependencyConfigurator UseValue(Object o);
 IDependencyConfigurator UsePluggable(Type pluggableType);
 IDependencyConfigurator UsePluggable<TPluggable>();

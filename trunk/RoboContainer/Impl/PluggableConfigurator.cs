@@ -93,7 +93,7 @@ namespace RoboContainer.Impl
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
 			var dep = dependencies.SingleOrDefault(d => d.Name == dependencyName);
-			if (dep == null)
+			if(dep == null)
 			{
 				dep = new DependencyConfigurator(dependencyName);
 				dependencies.Add(dep);

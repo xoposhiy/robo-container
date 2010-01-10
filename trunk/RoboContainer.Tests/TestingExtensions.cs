@@ -8,6 +8,9 @@ namespace RoboContainer.Tests
 {
 	public static class TestingExtensions
 	{
+		/// <summary>
+		/// Нужен для избавления от предупреждений о неиспользуемых переменных, параметрах, полей.
+		/// </summary>
 		public static void DontUse(this object o)
 		{
 		}
