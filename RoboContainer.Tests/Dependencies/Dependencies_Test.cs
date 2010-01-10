@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RoboContainer.Core;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Tests.Dependencies
 {
@@ -24,8 +25,16 @@ namespace RoboContainer.Tests.Dependencies
 		public void can_configure_dependencies_for_multiconstructor_pluggable()
 		{
 			var container = new Container(
-				c => c.ForPluggable<MultiConstructor>().Dependency("x").UseValue(42));
+				c => c.ForPluggable<MultiConstructor>().UseConstructor(typeof(int)).Dependency("x").UseValue(42));
 			Assert.NotNull(container.Get<MultiConstructor>());
+		}
+
+		[Test]
+		public void combine_attributes_and_direct_configuration()
+		{
+			var container = new Container(
+				c => c.ForPluggable<ParamWithContract>().Dependency("param").RequireContract("c2"));
+			Assert.IsInstanceOf<Param>(container.Get<ParamWithContract>().param);
 		}
 
 		public interface IPart { }
@@ -44,6 +53,22 @@ namespace RoboContainer.Tests.Dependencies
 			}
 		}
 
+
+		public interface IParam{}
+		
+		[DeclareContract("c1", "c2")]
+		public class Param : IParam {}
+
+		public class ParamWithContract
+		{
+			public IParam param;
+
+			public ParamWithContract([RequireContract("c1")]IParam param)
+			{
+				this.param = param;
+			}
+		}
+
 		public class MultiConstructor
 		{
 			public MultiConstructor()
@@ -52,6 +77,7 @@ namespace RoboContainer.Tests.Dependencies
 
 			public MultiConstructor(int x)
 			{
+				x.DontUse();
 			}
 		}
 	}

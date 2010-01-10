@@ -25,6 +25,12 @@ namespace RoboContainer.Impl
 			return new ByConstructorInstanceFactory(configuration, reusePolicy, initializator);
 		}
 
+		private bool TryGetActualArg(Container container, ParameterInfo formalArg, out object actualArg)
+		{
+			var dep = configuration.Dependencies.SingleOrDefault(d => d.Name == formalArg.Name) ?? DependencyConfigurator.FromAttributes(formalArg);
+			return dep.TryGetValue(formalArg.ParameterType, container, out actualArg);
+		}
+
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
 			IDisposable session = container.ConstructionLogger.StartConstruction(InstanceType);
@@ -33,13 +39,11 @@ namespace RoboContainer.Impl
 			var actualArgs = new object[formalArgs.Length];
 			for(int i = 0; i < actualArgs.Length; i++)
 			{
-				object actualArg;
-				if(!configuration.Dependencies.ElementAt(i).TryGetValue(formalArgs[i], container, out actualArg))
+				if(!TryGetActualArg(container, formalArgs[i], out actualArgs[i]))
 				{
 					session.Dispose();
 					return null;
 				}
-				actualArgs[i] = actualArg;
 			}
 			object pluggable = constructorInfo.Invoke(actualArgs);
 			session.Dispose();

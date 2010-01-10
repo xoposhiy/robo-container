@@ -61,8 +61,8 @@ namespace RoboContainer.Tests.CommonFunctionality
 		{
 			var container = new Container();
 			var m = container.Get<IHasNotInjectableImpls>();
-			Assert.IsInstanceOf<InjectableImpl>(m);
 			Console.WriteLine(container.LastConstructionLog);
+			Assert.IsInstanceOf<InjectableImpl>(m);
 		}
 
 		[Test]

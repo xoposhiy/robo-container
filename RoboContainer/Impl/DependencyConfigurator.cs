@@ -14,21 +14,28 @@ namespace RoboContainer.Impl
 		private object value;
 		private bool valueSpecified;
 
+		public DependencyConfigurator(string name)
+		{
+			Name = name;
+		}
+
 		public IEnumerable<ContractRequirement> Contracts
 		{
 			get { return contracts; }
 		}
 
-		public bool TryGetValue(ParameterInfo parameter, Container container, out object result)
+		public bool TryGetValue(Type dependencyType, Container container, out object result)
 		{
 			if(valueSpecified)
 			{
 				result = value;
 				return true;
 			}
-			result = container.TryGet(pluggableType ?? parameter.ParameterType, contracts.ToArray());
+			result = container.TryGet(pluggableType ?? dependencyType, contracts.ToArray());
 			return result != null;
 		}
+
+		public string Name { get; set; }
 
 		public IDependencyConfigurator RequireContract(params string[] requiredContracts)
 		{
@@ -57,7 +64,7 @@ namespace RoboContainer.Impl
 
 		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
 		{
-			var config = new DependencyConfigurator();
+			var config = new DependencyConfigurator(parameterInfo.Name);
 			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
 			config.RequireContract(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
 			return config;
