@@ -6,14 +6,16 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredByDelegatePluggable : IConfiguredPluggable
 	{
+		private readonly ContractDeclaration[] declaredContracts;
 		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
 		private ByDelegateInstanceFactory factory;
 
-		public ConfiguredByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable)
+		public ConfiguredByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable, ContractDeclaration[] declaredContracts)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.createPluggable = createPluggable;
+			this.declaredContracts = declaredContracts;
 		}
 
 		public Type PluggableType
@@ -48,12 +50,12 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable);
+			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable, declaredContracts);
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
-			get { yield break; }
+			get { return declaredContracts; }
 		}
 
 		public IEnumerable<IConfiguredDependency> Dependencies

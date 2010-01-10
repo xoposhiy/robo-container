@@ -41,7 +41,7 @@ namespace RoboContainer.Tests.Contracts
 				c =>
 				{
 					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast");
-					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContract("fast");
+					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
 
 				});
 			var plugin = container.Get<PluginWithDeclaredContract>();
@@ -58,7 +58,7 @@ namespace RoboContainer.Tests.Contracts
 					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast", "hidden");
 					c.ForPluggable<PluggableWithContracts2>().DeclareContracts("fast");
 					c.ForPluggable<PluggableWithContracts3>().DeclareContracts("hidden");
-					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContract("fast");
+					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
 
 				});
 			var plugin = container.Get<PluginWithDeclaredContract>();

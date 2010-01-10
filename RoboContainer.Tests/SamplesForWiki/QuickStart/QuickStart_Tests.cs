@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Linq;
 using RoboContainer.Core;
 
+// ReSharper disable SuggestUseVarKeywordEvident
 namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 {
 	[TestFixture]

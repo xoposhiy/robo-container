@@ -111,6 +111,7 @@ namespace RoboContainer.Tests.CommonFunctionality
 	{
 		public NotInjectableImpl1(string s)
 		{
+			s.DontUse();
 		}
 	}
 	public class NotInjectableImpl2 : IHasNotInjectableImpls
@@ -123,6 +124,7 @@ namespace RoboContainer.Tests.CommonFunctionality
 	{
 		public NotInjectableImpl3(IHasNoImpls part)
 		{
+			part.DontUse();
 		}
 	}
 
@@ -141,18 +143,23 @@ namespace RoboContainer.Tests.CommonFunctionality
 		public Multiconstructor2(Foo0 foo)
 		{
 			good = true;
+			foo.DontUse();
 		}
 
 		public Multiconstructor2(int a)
 		{
+			a.DontUse();
 		}
 
 		public Multiconstructor2(int[] a)
 		{
+			a.DontUse();
 		}
 
 		public Multiconstructor2(Foo0 foo, string name)
 		{
+			foo.DontUse();
+			name.DontUse();
 		}
 	}
 

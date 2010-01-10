@@ -1,24 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
+	/// <summary>Контейнер. Главный класс библиотеки, с которого нужно начинать ее использование.</summary>
 	public class Container : IContainer
 	{
 		private readonly IContainerConfiguration configuration;
 
+		/// <summary>
+		/// Если контейнер не нуждается в конфигурировании, подойдет этот конструктор. Иначе, используйте одну из его перегрузок.
+		/// </summary>
 		public Container()
 			: this(c => { })
 		{
 		}
 
+		/// <summary>
+		/// Основной конструктор контейнера. 
+		/// Используйте делегат <paramref name="configure"/>, чтобы сконфигурировать контейнер.
+		/// </summary>
 		public Container(Action<IContainerConfigurator> configure)
 			: this(CreateConfiguration(configure))
 		{
 		}
 
+		/// <summary>
+		/// Конфигурация контейнера хранит все состояние контейнера.
+		/// Обычно лучше использовать конструктор, принимающий конфигурирующий делегат.
+		/// </summary>
 		public Container(IContainerConfiguration configuration)
 		{
 			this.configuration = configuration;
@@ -28,20 +41,43 @@ namespace RoboContainer.Core
 				configuration.Configurator.ScanCallingAssembly();
 		}
 
-		public IConstructionLogger ConstructionLogger
-		{
-			get { return configuration.GetConfiguredLogging().GetLogger(); }
-		}
+		#region Typed overloads
 
+		[DebuggerStepThrough]
 		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			return (TPlugin) Get(typeof(TPlugin), requiredContracts);
 		}
 
+		[DebuggerStepThrough]
 		public TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			object tryGet = TryGet(typeof(TPlugin), requiredContracts);
 			return (TPlugin) (tryGet ?? default(TPlugin)); // may be default(TPlugin) != null
+		}
+
+		[DebuggerStepThrough]
+		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
+		{
+			return GetPluggableTypesFor(typeof(TPlugin), requiredContracts);
+		}
+
+		[DebuggerStepThrough]
+		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
+		{
+			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Позволяет получить доступ к подсистеме логгирования контейнера. 
+		/// Если только вы не собираетесь дорабатывать внутренности контейнера, вам это свойство использовать не нужно.
+		/// Получить доступ к логу последней сессии работы контейнера можно с помощью свойства <see cref="LastConstructionLog"/>.
+		/// </summary>
+		public IConstructionLogger ConstructionLogger
+		{
+			get { return configuration.GetConfiguredLogging().GetLogger(); }
 		}
 
 		public object Get(Type pluginType, params ContractRequirement[] requiredContracts)
@@ -75,11 +111,6 @@ namespace RoboContainer.Core
 			}
 		}
 
-		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
-		{
-			return GetPluggableTypesFor(typeof(TPlugin), requiredContracts);
-		}
-
 		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
@@ -92,16 +123,21 @@ namespace RoboContainer.Core
 			return new Container(childConfiguration);
 		}
 
+		/// <summary>
+		/// Логу последней сессии работы контейнера.
+		/// Может быть полезно в отладочных целях, когда контейнер возвращает не то, что вы ожидали.
+		/// </summary>
 		public string LastConstructionLog
 		{
 			get { return ConstructionLogger.ToString(); }
 		}
 
-		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
-		{
-			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
-		}
-
+		/// <summary>
+		/// Вызывает <see cref="IDisposable.Dispose"/> у всех созданных контейнером реализаций, 
+		/// только если при конфигурировании у них не был установлен режим повторного использования реализаций <see cref="ReusePolicies.Never"/>.
+		/// <para>Для дочерних контейнеров, созданных методом <see cref="With"/>, <see cref="IDisposable.Dispose"/>
+		/// не вызывается у тех объектов, чье создание было деллегировано родительскому контейнеру.</para>
+		/// </summary>
 		public void Dispose()
 		{
 			configuration.Dispose();

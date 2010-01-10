@@ -3,11 +3,19 @@ using RoboContainer.Infection;
 
 namespace RoboContainer.Core
 {
+	/// <summary>
+	/// Класс для поддержки ленивого инжектирования зависимостей.
+	/// Каждый вызов метода Lazy{TPlugin}.Get()"/> переадресуется контейнеру. 
+	/// </summary>
 	public class Lazy<TPlugin> : Lazy<TPlugin, Reuse.Never>
 	{
 	}
 
-	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, ILazy<TPlugin>, IDisposable where TReuse : IReuse, new()
+	/// <summary>
+	/// Класс для поддержки ленивого инжектирования зависимостей.
+	/// Кэширование результата работы метода <see cref="Lazy{TPlugin, TReuse}.Get"/> определяется параметром <typeparam name="TReuse"/>.
+	/// </summary>
+	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, IDisposable where TReuse : IReuse, new()
 	{
 		private readonly IReuse reuseSlot = new TReuse();
 		private IContainer container;
@@ -31,10 +39,5 @@ namespace RoboContainer.Core
 		{
 			return (TPlugin) (reuseSlot.Value ?? (reuseSlot.Value = container.Get<TPlugin>()));
 		}
-	}
-
-	public interface ILazy<TPlugin>
-	{
-		TPlugin Get();
 	}
 }

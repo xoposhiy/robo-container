@@ -6,13 +6,24 @@ using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
+	/// <summary>
+	/// Интерфейс, определяющий политику повторного использования объектов.
+	/// </summary>
 	public interface IReuse : IDisposable
 	{
+		/// <summary>
+		/// Возвращает значение отличное от null, если в текущем контексте нужно повторно использовать объект.
+		/// Если свойство вернуло null, то предполагается, что будет создан новый объект, после чего присвоен этому свойству.
+		/// </summary>
 		object Value { get; set; }
 	}
 
 	public static class Reuse
 	{
+		/// <summary>
+		/// Политика повторного использования объектов. 
+		/// Всегда использовать одно и то же значение.
+		/// </summary>
 		public class Always : IReuse
 		{
 			public object Value { get; set; }
@@ -25,6 +36,10 @@ namespace RoboContainer.Core
 			}
 		}
 
+		/// <summary>
+		/// Политика повторного использования объектов. 
+		/// Никогда не использовать значение повторно — каждый раз создавать новый объект.
+		/// </summary>
 		public class Never : IReuse
 		{
 			public object Value
@@ -38,6 +53,10 @@ namespace RoboContainer.Core
 			}
 		}
 
+		/// <summary>
+		/// Политика повторного использования объектов. 
+		/// Для каждого потока использовать только одно значение, в разных потоках — разные.
+		/// </summary>
 		public class InSameThread : IReuse
 		{
 			private readonly IDictionary<int, object> threadSlot = new Dictionary<int, object>();

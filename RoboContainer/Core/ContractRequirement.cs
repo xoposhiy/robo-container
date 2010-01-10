@@ -1,5 +1,9 @@
 ﻿namespace RoboContainer.Core
 {
+	/// <summary>
+	/// Абстрактный класс, представляющий собой определение требования контракта.
+	/// Имеет неявный оператор приведения типов, конвертирующий строку в экземпляр <see cref="NamedContractRequirement"/>.
+	/// </summary>
 	public abstract class ContractRequirement
 	{
 		static ContractRequirement()
