@@ -10,7 +10,12 @@
 
 Кроме тестов, есть ещё один источник знаний о работе контейнера — лог, который ведет контейнер. Его всегда можно получить так:
 <wiki:comment>[Logging.ShowMeTheLog</wiki:comment>
-//TODO
+{{{
+
+var container = new Container();
+var someObj = container.Get<SomeType>();
+Console.WriteLine(container.LastConstructionLog);
+}}}
 <wiki:comment></wiki:comment>
 
 И, конечно, контейнер снабжается файлом с xml-документацией (TODO). Если файл `RoboContainer.dll.xml` будет находиться рядом с `RoboContainer.dll`, то `VisualStudio` будет показывать документацию из него в своих подсказках.
