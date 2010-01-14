@@ -37,6 +37,11 @@ namespace RoboContainer.Core
 			this.configuration = configuration;
 			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Never);
 			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,>)).UsePluggable(typeof(Factory<,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,>)).UsePluggable(typeof(Factory<,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,>)).UsePluggable(typeof(Factory<,,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,,>)).UsePluggable(typeof(Factory<,,,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,,,>)).UsePluggable(typeof(Factory<,,,,,>)).ReusePluggable(ReusePolicy.Never);
 			if(!configuration.HasAssemblies())
 				configuration.Configurator.ScanCallingAssembly();
 		}
@@ -158,15 +163,22 @@ namespace RoboContainer.Core
 
 		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
-			Type elementType;
-			if(IsCollection(pluginType, out elementType))
-				return CreateArray(elementType, GetAll(elementType, requiredContracts));
-			object[] pluggables = GetConfiguredPluggables(pluginType, requiredContracts)
+			IEnumerable<object> pluggables = 
+				TryGetCollections(pluginType, requiredContracts)
+			?? GetConfiguredPluggables(pluginType, requiredContracts)
 				.Select(
 				c => c.GetFactory().TryGetOrCreate(this, pluginType)
 				)
-				.Where(p => p != null).ToArray();
+				.Where(p => p != null).ToList();
 			return pluggables;
+		}
+
+		private IEnumerable<object> TryGetCollections(Type pluginType, ContractRequirement[] requiredContracts)
+		{
+			Type elementType;
+			if(IsCollection(pluginType, out elementType))
+				return CreateArray(elementType, GetAll(elementType, requiredContracts));
+			return null;
 		}
 
 		private static IContainerConfiguration CreateConfiguration(Action<IContainerConfigurator> configure)
