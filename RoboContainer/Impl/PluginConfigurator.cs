@@ -7,7 +7,7 @@ using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
-	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin, IDisposable
+	public class PluginConfigurator : IPluginConfigurator, IConfiguredPlugin
 	{
 		private readonly IContainerConfiguration configuration;
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
@@ -21,18 +21,40 @@ namespace RoboContainer.Impl
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
-			ReusePolicy = ReusePolicies.Always;
+			ReusePolicy = new Reuse.Always();
 		}
 
 		public Type PluginType { get; private set; }
-		public Func<IReuse> ReusePolicy { get; private set; }
+		public IReusePolicy ReusePolicy { get; private set; }
 		public bool ReuseSpecified { get; private set; }
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables()
 		{
-			return pluggables ?? (pluggables = CreatePluggables());
+			return pluggables ?? (pluggables = this.CreatePluggables());
+		}
+
+		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables()
+		{
+			return explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
+		}
+
+		public bool UseAutoFoundPluggables
+		{
+			get { return useOthersToo; }
+		}
+
+		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables()
+		{
+			if(explicitlySpecifiedPluggables.Any() && !useOthersToo) return Enumerable.Empty<IConfiguredPluggable>();
+			IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
+			return
+				scannableTypes
+					.Exclude(IsIgnored)
+					.Select(t => TryGetConfiguredPluggable(t))
+					.Where(pluggable => pluggable != null)
+					.Where(FitContracts);
 		}
 
 		public IEnumerable<ContractRequirement> RequiredContracts
@@ -87,17 +109,19 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator ReusePluggable(ReusePolicy reusePolicy)
 		{
-			return ReusePluggable(ReusePolicies.FromEnum(reusePolicy));
+			return ReusePluggable(Reuse.FromEnum(reusePolicy));
 		}
 
-		public IPluginConfigurator ReusePluggable<TReuse>() where TReuse : IReuse, new()
+		public IPluginConfigurator ReusePluggable(IReusePolicy reusePolicy)
 		{
-			return ReusePluggable(() => new TReuse());
+			ReusePolicy = reusePolicy;
+			ReuseSpecified = true;
+			return this;
 		}
 
 		public IPluginConfigurator UseInstanceCreatedBy(CreatePluggableDelegate<object> createPluggable, params ContractDeclaration[] declaredContracts)
 		{
-			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable, declaredContracts));
+			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable, declaredContracts, configuration));
 			return this;
 		}
 
@@ -177,13 +201,6 @@ namespace RoboContainer.Impl
 					() => propertyInfo.GetValue(part, null));
 		}
 
-		private IPluginConfigurator ReusePluggable(Func<IReuse> reusePolicy)
-		{
-			ReusePolicy = reusePolicy;
-			ReuseSpecified = true;
-			return this;
-		}
-
 		public bool IsPluggableIgnored(Type pluggableType)
 		{
 			return ignoredPluggables.Contains(pluggableType);
@@ -201,7 +218,7 @@ namespace RoboContainer.Impl
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
 			if(pluginAttribute != null)
 			{
-				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(ReusePolicies.FromEnum(pluginAttribute.ReusePluggable));
+				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(Reuse.FromEnum(pluginAttribute.ReusePluggable));
 				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
 			DontUse(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
@@ -211,22 +228,29 @@ namespace RoboContainer.Impl
 					.ToArray());
 		}
 
-		// use / once
-		private IConfiguredPluggable[] CreatePluggables()
+		private IConfiguredPluggable ApplyPluginConfiguration(IConfiguredPluggable configuredPluggable)
 		{
-			IEnumerable<IConfiguredPluggable> configuredPluggables = explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
-			if(!explicitlySpecifiedPluggables.Any() || useOthersToo)
-			{
-				IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
-				return
-					scannableTypes
-						.Where(t => !IsIgnored(t))
-						.Select(t => TryGetConfiguredPluggable(t))
-						.Where(pluggable => pluggable != null)
-						.Where(FitContracts)
-						.Concat(configuredPluggables).ToArray();
-			}
-			return configuredPluggables.ToArray();
+			if(configuredPluggable.PluggableType == null) return configuredPluggable;
+			return new ConfiguredByPluginPluggable(this, configuredPluggable, configuration);
+		}
+
+		// use / once
+		private bool IsIgnored(Type pluggableType)
+		{
+			return
+				configuration.GetConfiguredPluggable(pluggableType).Ignored ||
+					IsPluggableIgnored(pluggableType);
+		}
+
+		// use / once
+		private IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
+		{
+			if(!pluggableType.Constructable()) return null;
+			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, PluginType);
+			if(pluggableType == null) return null;
+			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
+			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
+			return pluggableConfigs.GetOrCreate(pluggableType, () => ApplyPluginConfiguration(configuredPluggable));
 		}
 
 		private bool FitContracts(IConfiguredPluggable p)
@@ -243,35 +267,7 @@ namespace RoboContainer.Impl
 						RequiredContracts.Select(c => c.ToString()).Join(", "))
 					);
 			}
-
 			return fitContracts;
-		}
-
-		// use / once
-		private IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
-		{
-			if(!pluggableType.Constructable()) return null;
-			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, PluginType);
-			if(pluggableType == null) return null;
-			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
-			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			return pluggableConfigs.GetOrCreate(pluggableType, () => ApplyPluginConfiguration(configuredPluggable));
-		}
-
-		private IConfiguredPluggable ApplyPluginConfiguration(IConfiguredPluggable configuredPluggable)
-		{
-			if(configuredPluggable.PluggableType == null) return configuredPluggable;
-			if(ReuseSpecified && ReusePolicy != configuredPluggable.ReusePolicy || InitializePluggable != null)
-				return new ConfiguredByPluginPluggable(this, configuredPluggable);
-			return configuredPluggable;
-		}
-
-		// use / once
-		private bool IsIgnored(Type pluggableType)
-		{
-			return
-				configuration.GetConfiguredPluggable(pluggableType).Ignored ||
-					IsPluggableIgnored(pluggableType);
 		}
 
 		public static PluginConfigurator FromGenericDefinition(
@@ -328,9 +324,9 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> ReusePluggable<TReuse>() where TReuse : IReuse, new()
+		public IPluginConfigurator<TPlugin> ReusePluggable(IReusePolicy reusePolicy)
 		{
-			realConfigurator.ReusePluggable<TReuse>();
+			realConfigurator.ReusePluggable(reusePolicy);
 			return this;
 		}
 
@@ -380,4 +376,5 @@ namespace RoboContainer.Impl
 			return this;
 		}
 	}
+
 }

@@ -7,13 +7,15 @@ namespace RoboContainer.Impl
 	public class ConfiguredByPluginPluggable : IConfiguredPluggable
 	{
 		private readonly IConfiguredPluggable configuredPluggable;
+		private readonly IContainerConfiguration configuration;
 		private readonly PluginConfigurator pluginConfigurator;
 		private IInstanceFactory factory;
 
-		public ConfiguredByPluginPluggable(PluginConfigurator pluginConfigurator, IConfiguredPluggable configuredPluggable)
+		public ConfiguredByPluginPluggable(PluginConfigurator pluginConfigurator, IConfiguredPluggable configuredPluggable, IContainerConfiguration configuration)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.configuredPluggable = configuredPluggable;
+			this.configuration = configuration;
 		}
 
 		public Type PluggableType
@@ -26,9 +28,14 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.Ignored; }
 		}
 
-		public Func<IReuse> ReusePolicy
+		public IReusePolicy ReusePolicy
 		{
 			get { return pluginConfigurator.ReuseSpecified ? pluginConfigurator.ReusePolicy : configuredPluggable.ReusePolicy; }
+		}
+
+		public bool ReuseSpecified
+		{
+			get { return pluginConfigurator.ReuseSpecified || configuredPluggable.ReuseSpecified; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -61,7 +68,7 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByPluginPluggable(pluginConfigurator, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType));
+			return new ConfiguredByPluginPluggable(pluginConfigurator, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), configuration);
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
@@ -76,14 +83,14 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			DisposeUtils.Dispose(ref factory);
+			if(factory == configuredPluggable.GetFactory()) factory = null; // Не трогаем чужие фабрики.
+			else DisposeUtils.Dispose(ref factory);
 		}
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(pluginConfigurator.ReuseSpecified &&
-				pluginConfigurator.ReusePolicy != configuredPluggable.ReusePolicy || pluginConfigurator.InitializePluggable != null)
-				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable);
+			if(pluginConfigurator.ReuseSpecified || pluginConfigurator.InitializePluggable != null)
+				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable, configuration);
 			return configuredPluggable.GetFactory();
 		}
 	}

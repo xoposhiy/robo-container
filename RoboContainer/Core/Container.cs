@@ -35,15 +35,6 @@ namespace RoboContainer.Core
 		public Container(IContainerConfiguration configuration)
 		{
 			this.configuration = configuration;
-			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,>)).UsePluggable(typeof(Factory<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,>)).UsePluggable(typeof(Factory<,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,>)).UsePluggable(typeof(Factory<,,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,,>)).UsePluggable(typeof(Factory<,,,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,,,>)).UsePluggable(typeof(Factory<,,,,,>)).ReusePluggable(ReusePolicy.Never);
-			if(!configuration.HasAssemblies())
-				configuration.Configurator.ScanCallingAssembly();
 		}
 
 		#region Typed overloads
@@ -70,7 +61,7 @@ namespace RoboContainer.Core
 		[DebuggerStepThrough]
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToArray();
+			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToList();
 		}
 
 		#endregion
@@ -123,8 +114,9 @@ namespace RoboContainer.Core
 
 		public IContainer With(Action<IContainerConfigurator> configure)
 		{
-			var childConfiguration = new ScopedConfiguration(configuration);
+			var childConfiguration = new ChildConfiguration(configuration);
 			configure(childConfiguration.Configurator);
+			//TODO check generics...
 			return new Container(childConfiguration);
 		}
 
@@ -139,7 +131,7 @@ namespace RoboContainer.Core
 
 		/// <summary>
 		/// Вызывает <see cref="IDisposable.Dispose"/> у всех созданных контейнером реализаций, 
-		/// только если при конфигурировании у них не был установлен режим повторного использования реализаций <see cref="ReusePolicies.Never"/>.
+		/// только если при конфигурировании у них не был установлен режим повторного использования реализаций <see cref="ReusePolicy.Never"/>.
 		/// <para>Для дочерних контейнеров, созданных методом <see cref="With"/>, <see cref="IDisposable.Dispose"/>
 		/// не вызывается у тех объектов, чье создание было деллегировано родительскому контейнеру.</para>
 		/// </summary>
@@ -163,13 +155,13 @@ namespace RoboContainer.Core
 
 		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
-			IEnumerable<object> pluggables = 
+			IEnumerable<object> pluggables =
 				TryGetCollections(pluginType, requiredContracts)
-			?? GetConfiguredPluggables(pluginType, requiredContracts)
-				.Select(
-				c => c.GetFactory().TryGetOrCreate(this, pluginType)
-				)
-				.Where(p => p != null).ToList();
+					?? GetConfiguredPluggables(pluginType, requiredContracts)
+						.Select(
+							c => c.GetFactory().TryGetOrCreate(this, pluginType)
+						)
+						.Where(p => p != null).ToList();
 			return pluggables;
 		}
 
@@ -185,6 +177,15 @@ namespace RoboContainer.Core
 		{
 			var configuration = new ContainerConfiguration();
 			configure(configuration.Configurator);
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,>)).UsePluggable(typeof(Factory<,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,>)).UsePluggable(typeof(Factory<,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,>)).UsePluggable(typeof(Factory<,,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,,>)).UsePluggable(typeof(Factory<,,,,>)).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Factory<,,,,,>)).UsePluggable(typeof(Factory<,,,,,>)).ReusePluggable(ReusePolicy.Never);
+			if(!configuration.HasAssemblies())
+				configuration.Configurator.ScanCallingAssembly();
 			return configuration;
 		}
 
@@ -206,12 +207,12 @@ namespace RoboContainer.Core
 		{
 			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
 			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {ContractRequirement.Default};
-			IConfiguredPluggable[] configuredPluggables = configuredPlugin.GetPluggables().ToArray();
+			var configuredPluggables = configuredPlugin.GetPluggables().ToList();
 			return configuredPluggables
 				.Where(
-				p =>
-					requiredContracts.All(
-						req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToArray();
+					p =>
+						requiredContracts.All(
+							req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToList();
 		}
 
 		private static IEnumerable<object> CreateArray(Type elementType, IEnumerable<object> elements)

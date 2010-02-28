@@ -32,7 +32,7 @@ namespace RoboContainer.Tests.Laziness
 		[Test]
 		public void singletone_lazy_of_perRequest()
 		{
-			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().ReuseIt<Reuse.Never>());
+			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().ReuseIt(ReusePolicy.Never));
 			container.GetAll<Lazy<ShouldBeLazy, Reuse.Always>>();
 			Console.WriteLine(container.LastConstructionLog);
 			var lazy1 = container.Get<Lazy<ShouldBeLazy, Reuse.Always>>();

@@ -7,15 +7,21 @@ namespace RoboContainer.Impl
 	public class ConfiguredByDelegatePluggable : IConfiguredPluggable
 	{
 		private readonly ContractDeclaration[] declaredContracts;
+		private readonly IContainerConfiguration configuration;
 		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
 		private ByDelegateInstanceFactory factory;
 
-		public ConfiguredByDelegatePluggable(PluginConfigurator pluginConfigurator, CreatePluggableDelegate<object> createPluggable, ContractDeclaration[] declaredContracts)
+		public ConfiguredByDelegatePluggable(
+			PluginConfigurator pluginConfigurator, 
+			CreatePluggableDelegate<object> createPluggable, 
+			ContractDeclaration[] declaredContracts, 
+			IContainerConfiguration configuration)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.createPluggable = createPluggable;
 			this.declaredContracts = declaredContracts;
+			this.configuration = configuration;
 		}
 
 		public Type PluggableType
@@ -28,9 +34,14 @@ namespace RoboContainer.Impl
 			get { return false; }
 		}
 
-		public Func<IReuse> ReusePolicy
+		public IReusePolicy ReusePolicy
 		{
 			get { return pluginConfigurator.ReusePolicy; }
+		}
+
+		public bool ReuseSpecified
+		{
+			get { return pluginConfigurator.ReuseSpecified; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
@@ -45,12 +56,12 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable));
+			return factory ?? (factory = new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable, configuration));
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable, declaredContracts);
+			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable, declaredContracts, configuration);
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts

@@ -15,9 +15,9 @@ namespace RoboContainer.Core
 	/// Класс для поддержки ленивого инжектирования зависимостей.
 	/// Кэширование результата работы метода <see cref="Lazy{TPlugin, TReuse}.Get"/> определяется параметром <typeparam name="TReuse"/>.
 	/// </summary>
-	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, IDisposable where TReuse : IReuse, new()
+	public class Lazy<TPlugin, TReuse> : IInitializablePluggable, IDisposable where TReuse : IReusePolicy, new()
 	{
-		private readonly IReuse reuseSlot = new TReuse();
+		private readonly IReuseSlot reuseSlot = new TReuse().CreateSlot();
 		private IContainer container;
 
 		public void Dispose()

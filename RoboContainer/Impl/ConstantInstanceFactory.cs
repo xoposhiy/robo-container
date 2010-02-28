@@ -23,7 +23,7 @@ namespace RoboContainer.Impl
 			return instance;
 		}
 
-		public IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		public IInstanceFactory CreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration)
 		{
 			return this;
 		}

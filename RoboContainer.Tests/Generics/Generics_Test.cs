@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using RoboContainer.Core;
-using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.Generics
 {
@@ -197,24 +196,20 @@ namespace RoboContainer.Tests.Generics
 			}
 		}
 
-		public static ContainerConfiguration AfterConfigure(Type pluginType, Type pluggableType)
+		public static Action<IContainerConfigurator> AfterConfigure(Type pluginType, Type pluggableType)
 		{
-			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
-			return containerConfiguration;
+			return c => c.ForPlugin(pluginType).UsePluggable(pluggableType);
 		}
 
-		public static ContainerConfiguration ConfigureAndCheckThat(Type pluginType, Type pluggableType)
+		public static Action<IContainerConfigurator> ConfigureAndCheckThat(Type pluginType, Type pluggableType)
 		{
-			var containerConfiguration = new ContainerConfiguration();
-			containerConfiguration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
-			containerConfiguration.CheckThat(pluginType, pluggableType);
-			return containerConfiguration;
+			Action<IContainerConfigurator> containerConfiguration = c => c.ForPlugin(pluginType).UsePluggable(pluggableType);
+			return containerConfiguration.CheckThat(pluginType, pluggableType);
 		}
 
-		public static ContainerConfiguration WithoutConfiguration()
+		public static Action<IContainerConfigurator> WithoutConfiguration()
 		{
-			return new ContainerConfiguration();
+			return c => { };
 		}
 	}
 }
