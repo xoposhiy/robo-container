@@ -6,34 +6,37 @@ namespace RoboContainer.Impl
 {
 	public abstract class AbstractInstanceFactory : IInstanceFactory
 	{
-		private readonly Func<IReuse> createReuseSlot;
+		private readonly IReusePolicy reusePolicy;
 		private readonly InitializePluggableDelegate<object> initializePluggable;
-		private readonly IReuse reuseValueSlot;
+		private readonly IReuseSlot reuseValueSlot;
 
-		protected AbstractInstanceFactory(Type pluggableType, Func<IReuse> createReuseSlot, InitializePluggableDelegate<object> initializePluggable)
+		protected AbstractInstanceFactory(Type pluggableType, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializePluggable, IContainerConfiguration configuration)
 		{
-			reuseValueSlot = createReuseSlot();
-			this.createReuseSlot = createReuseSlot;
+			reuseValueSlot = reusePolicy.CreateSlot();
+			this.reusePolicy = reusePolicy;
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
+			Configuration = configuration;
 		}
 
 		public Type InstanceType { get; protected set; }
+		public IContainerConfiguration Configuration { get; private set; }
 
-		public object TryGetOrCreate(Container container, Type typeToCreate)
+		public object TryGetOrCreate(Container not_used, Type typeToCreate)
 		{
 			if(reuseValueSlot.Value != null)
 			{
-				container.ConstructionLogger.Reused(reuseValueSlot.Value.GetType());
+				Configuration.GetConfiguredLogging().GetLogger().Reused(reuseValueSlot.Value.GetType());
 				return reuseValueSlot.Value;
 			}
+			var container = new Container(Configuration);
 			return reuseValueSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
 		}
 
-		public IInstanceFactory CreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		public IInstanceFactory CreateByPrototype(IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
 		{
-			if(reusePolicy != null && reusePolicy != createReuseSlot || initializator != null)
-				return DoCreateByPrototype(reusePolicy, CombineInitializators(initializator, initializePluggable));
+			if(newReusePolicy != null && !newReusePolicy.Equals(reusePolicy) || newInitializator != null || Configuration != configuration)
+				return DoCreateByPrototype(newReusePolicy, CombineInitializators(newInitializator, initializePluggable), configuration);
 			return this;
 		}
 
@@ -55,7 +58,7 @@ namespace RoboContainer.Impl
 					};
 		}
 
-		protected abstract IInstanceFactory DoCreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator);
+		protected abstract IInstanceFactory DoCreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
 		private object TryConstructAndLog(Container container, Type typeToCreate)
 		{

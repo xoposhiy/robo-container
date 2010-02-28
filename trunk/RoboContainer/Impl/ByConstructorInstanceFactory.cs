@@ -7,36 +7,37 @@ namespace RoboContainer.Impl
 {
 	public class ByConstructorInstanceFactory : AbstractInstanceFactory
 	{
-		private readonly IConfiguredPluggable configuration;
+		private readonly IConfiguredPluggable pluggable;
 
-		public ByConstructorInstanceFactory(IConfiguredPluggable configuration)
-			: this(configuration, configuration.ReusePolicy, configuration.InitializePluggable)
+		public ByConstructorInstanceFactory(IConfiguredPluggable pluggable, IContainerConfiguration configuration)
+			: this(pluggable, pluggable.ReusePolicy, pluggable.InitializePluggable, configuration)
 		{
 		}
 
-		public ByConstructorInstanceFactory(IConfiguredPluggable configuration, Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
-			: base(configuration.PluggableType, reusePolicy, initializator)
+		public ByConstructorInstanceFactory(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration)
+			: base(pluggable.PluggableType, reusePolicy, initializator, configuration)
 		{
-			this.configuration = configuration;
+			this.pluggable = pluggable;
 		}
 
-		protected override IInstanceFactory DoCreateByPrototype(Func<IReuse> reusePolicy, InitializePluggableDelegate<object> initializator)
+		protected override IInstanceFactory DoCreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration)
 		{
-			return new ByConstructorInstanceFactory(configuration, reusePolicy, initializator);
+			return new ByConstructorInstanceFactory(pluggable, reusePolicy, initializator, configuration);
 		}
 
 		private bool TryGetActualArg(Container container, ParameterInfo formalArg, out object actualArg)
 		{
-			var dep = configuration.Dependencies.SingleOrDefault(d => d.Name == formalArg.Name) ?? DependencyConfigurator.FromAttributes(formalArg);
+			var dep = pluggable.Dependencies.SingleOrDefault(d => d.Name == formalArg.Name) ?? DependencyConfigurator.FromAttributes(formalArg);
 			return dep.TryGetValue(formalArg.ParameterType, container, out actualArg);
 		}
 
-		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
+		protected override object TryCreatePluggable(Container not_used, Type pluginToCreate)
 		{
-			IDisposable session = container.ConstructionLogger.StartConstruction(InstanceType);
-			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(configuration.InjectableConstructorArgsTypes);
+			IDisposable session = Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType);
+			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(pluggable.InjectableConstructorArgsTypes);
 			ParameterInfo[] formalArgs = constructorInfo.GetParameters();
 			var actualArgs = new object[formalArgs.Length];
+			var container = new Container(Configuration);
 			for(int i = 0; i < actualArgs.Length; i++)
 			{
 				if(!TryGetActualArg(container, formalArgs[i], out actualArgs[i]))
@@ -45,9 +46,9 @@ namespace RoboContainer.Impl
 					return null;
 				}
 			}
-			object pluggable = constructorInfo.Invoke(actualArgs);
+			object createdPluggable = constructorInfo.Invoke(actualArgs);
 			session.Dispose();
-			return pluggable;
+			return createdPluggable;
 		}
 	}
 }

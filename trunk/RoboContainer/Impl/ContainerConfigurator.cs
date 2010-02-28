@@ -38,7 +38,7 @@ namespace RoboContainer.Impl
 
 		public void ScanLoadedAssemblies(Func<Assembly, bool> shouldScan)
 		{
-			ScanAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(shouldScan).ToArray());
+			ScanAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(shouldScan).ToList());
 		}
 
 		public void ScanTypesWith(ScannerDelegate scanner)

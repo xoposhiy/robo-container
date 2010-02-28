@@ -18,11 +18,11 @@ namespace RoboContainer.Tests.PluggableConfiguration
 					.SetInitializer(
 					(o, cont) =>
 					{
-						o.Container = cont;
+						o.initialized = true;
 						return o;
 					}
 					));
-			Assert.AreSame(container.Get<WantToBeInitialized>().Container, container);
+			Assert.IsTrue(container.Get<WantToBeInitialized>().initialized);
 		}
 
 		[Test]
@@ -95,7 +95,7 @@ namespace RoboContainer.Tests.PluggableConfiguration
 
 	public class WantToBeInitialized
 	{
-		public Container Container;
+		public bool initialized;
 	}
 
 	[IgnoredPluggable]

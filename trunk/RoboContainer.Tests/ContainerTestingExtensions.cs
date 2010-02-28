@@ -8,25 +8,29 @@ namespace RoboContainer.Tests
 {
 	public static class ContainerTestingExtensions
 	{
-		public static ContainerConfiguration Configure(
-			this ContainerConfiguration configuration, Type pluginType,
+		public static Action<IContainerConfigurator> Configure(
+			this Action<IContainerConfigurator> configuration, Type pluginType,
 			Type pluggableType)
 		{
-			configuration.Configurator.ForPlugin(pluginType).UsePluggable(pluggableType);
-			return configuration;
+			return
+				c =>
+					{
+						configuration(c);
+						c.ForPlugin(pluginType).UsePluggable(pluggableType);
+					};
 		}
 
-		public static ContainerConfiguration CheckThat(
-			this ContainerConfiguration configuration, Type requestedPluginType,
+		public static Action<IContainerConfigurator> CheckThat(
+			this Action<IContainerConfigurator> configuration, Type requestedPluginType,
 			params Type[] expectedPluggableTypes)
 		{
 			var container = new Container(configuration);
-			if (expectedPluggableTypes.Length == 1)
+			if(expectedPluggableTypes.Length == 1)
 				container.Get(requestedPluginType).ShouldBeInstanceOf(expectedPluggableTypes.Single());
 			else
 			{
 				IEnumerable<object> pluggables = container.GetAll(requestedPluginType);
-				if (expectedPluggableTypes.Length == 0)
+				if(expectedPluggableTypes.Length == 0)
 					pluggables.ShouldBeEmpty();
 				else
 					expectedPluggableTypes.ForEach(pluggables.ShouldContainInstanceOf);

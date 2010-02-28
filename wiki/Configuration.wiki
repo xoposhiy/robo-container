@@ -84,7 +84,7 @@ IPluginConfigurator<TPlugin> UseOtherPluggablesToo();
 IPluginConfigurator<TPlugin> DontUse<TPluggable>();
 IPluginConfigurator<TPlugin> DontUse(Type[] pluggableTypes);
 IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy);
-IPluginConfigurator<TPlugin> ReusePluggable<TReuse>();
+IPluginConfigurator<TPlugin> ReusePluggable(IReusePolicy reusePolicy);
 IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
 IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable);
 IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin);
@@ -121,7 +121,7 @@ Assert.AreEqual(2, pluggables.Count());
 {{{
 IPluggableConfigurator<TPluggable> DeclareContracts(ContractDeclaration[] contractsDeclaration);
 IPluggableConfigurator<TPluggable> ReuseIt(ReusePolicy reusePolicy);
-IPluggableConfigurator<TPluggable> ReuseIt<TReuse>();
+IPluggableConfigurator<TPluggable> ReuseIt(IReusePolicy reusePolicy);
 IPluggableConfigurator<TPluggable> DontUseIt();
 IPluggableConfigurator<TPluggable> UseConstructor(Type[] argsTypes);
 IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable);

@@ -16,7 +16,7 @@ namespace RoboContainer.Tests.Disposing
 				disposeCount++;
 			}
 		}
-		
+
 		public class Bar : IDisposable
 		{
 			public Bar(int a)
@@ -76,14 +76,22 @@ namespace RoboContainer.Tests.Disposing
 		public void dispose_objects_of_child_container_on_child_container_dispose()
 		{
 			Bar.disposeCount = 0;
-			using(var container = new Container())
+			using(var container = new Container(c => c.ForPluggable<Bar>().ReuseIt(ReusePolicy.Never)))
 			{
-				using(var childContainer = container.With(c => c.ForPluggable<Bar>().Dependency("a").UseValue(42)))
+				using(var childContainer = container.With(
+					c =>
+						{
+							c.ForPlugin<int>().UseInstance(42);
+							c.ForPlugin<Bar>().UsePluggable<Bar>();
+							c.ForPluggable<Bar>().ReuseIt(ReusePolicy.Always);
+						}))
+				{
 					childContainer.Get<Bar>();
+					Console.WriteLine(childContainer.LastConstructionLog);
+				}
 				Assert.AreEqual(1, Bar.disposeCount);
 			}
 			Assert.AreEqual(1, Bar.disposeCount);
 		}
-
 	}
 }

@@ -12,20 +12,23 @@ namespace RoboContainer.Impl
 		private readonly IList<DependencyConfigurator> dependencies = new List<DependencyConfigurator>();
 		private IInstanceFactory factory;
 
-		private PluggableConfigurator(Type pluggableType)
+		private PluggableConfigurator(Type pluggableType, IContainerConfiguration configuration)
 		{
 			PluggableType = pluggableType;
-			ReusePolicy = ReusePolicies.Always;
+			Configuration = configuration;
+			ReusePolicy = new Reuse.Always();
+			ReuseSpecified = false;
 		}
 
-		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable)
-			: this(closedGenericType)
+		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable, IContainerConfiguration configuration)
+			: this(closedGenericType, configuration)
 		{
 			contracts.AddRange(genericDefinitionPluggable.ExplicitlyDeclaredContracts);
 			dependencies = genericDefinitionPluggable.dependencies;
 			InjectableConstructorArgsTypes =
 				CloseTypeParameters(genericDefinitionPluggable.InjectableConstructorArgsTypes);
 			ReusePolicy = genericDefinitionPluggable.ReusePolicy;
+			ReuseSpecified = genericDefinitionPluggable.ReuseSpecified;
 			Ignored = genericDefinitionPluggable.Ignored;
 			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
 		}
@@ -43,22 +46,25 @@ namespace RoboContainer.Impl
 		}
 
 		public Type PluggableType { get; private set; }
+		public IContainerConfiguration Configuration { get; private set; }
 
 		public bool Ignored { get; private set; }
 
-		public Func<IReuse> ReusePolicy { get; private set; }
+		public IReusePolicy ReusePolicy { get; private set; }
+
+		public bool ReuseSpecified { get; private set; }
 
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = new ByConstructorInstanceFactory(this));
+			return factory ?? (factory = new ByConstructorInstanceFactory(this, Configuration));
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
 			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
-			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this);
+			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this, Configuration);
 		}
 
 		public void Dispose()
@@ -68,13 +74,13 @@ namespace RoboContainer.Impl
 
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)
 		{
-			ReusePolicy = ReusePolicies.FromEnum(reusePolicy);
-			return this;
+			return ReuseIt(Reuse.FromEnum(reusePolicy));
 		}
 
-		public IPluggableConfigurator ReuseIt<TReuse>() where TReuse : IReuse, new()
+		public IPluggableConfigurator ReuseIt(IReusePolicy reusePolicy)
 		{
-			ReusePolicy = () => new TReuse();
+			ReusePolicy = reusePolicy;
+			ReuseSpecified = true;
 			return this;
 		}
 
@@ -143,9 +149,9 @@ namespace RoboContainer.Impl
 					.ToArray();
 		}
 
-		public static PluggableConfigurator FromAttributes(Type pluggableType)
+		public static PluggableConfigurator FromAttributes(Type pluggableType, IContainerConfiguration configuration)
 		{
-			var pluggableConfigurator = new PluggableConfigurator(pluggableType);
+			var pluggableConfigurator = new PluggableConfigurator(pluggableType, configuration);
 			pluggableConfigurator.FillFromAttributes();
 			return pluggableConfigurator;
 		}
@@ -178,9 +184,9 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluggableConfigurator<TPluggable> ReuseIt<TReuse>() where TReuse : IReuse, new()
+		public IPluggableConfigurator<TPluggable> ReuseIt(IReusePolicy reusePolicy)
 		{
-			pluggableConfigurator.ReuseIt<TReuse>();
+			pluggableConfigurator.ReuseIt(reusePolicy);
 			return this;
 		}
 

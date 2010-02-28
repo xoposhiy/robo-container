@@ -36,7 +36,6 @@ namespace RoboContainer.Impl
 		{
 			if(pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
 				return GetScannableTypes(pluginType.GetGenericTypeDefinition());
-			//using(new DurationLogger("GetScannableTypes("+pluginType.Name+")", Console.WriteLine))
 			return
 				(typesMap ?? (typesMap = new TypesMap(GetScannableTypes())))
 					.GetInheritors(pluginType);
@@ -90,7 +89,7 @@ namespace RoboContainer.Impl
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			pluggableConfigs.Values.ForEach(c => c.Dispose());
 			pluggableConfigs.Clear();
@@ -103,8 +102,8 @@ namespace RoboContainer.Impl
 			PluggableConfigurator configuredPluggable;
 			if(pluggableType.IsGenericType &&
 				pluggableConfigs.TryGetValue(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
-				return new PluggableConfigurator(pluggableType, configuredPluggable);
-			return PluggableConfigurator.FromAttributes(pluggableType);
+				return new PluggableConfigurator(pluggableType, configuredPluggable, this);
+			return PluggableConfigurator.FromAttributes(pluggableType, this);
 		}
 
 		private PluginConfigurator GetPluginConfiguratorWithoutCache(Type pluginType)

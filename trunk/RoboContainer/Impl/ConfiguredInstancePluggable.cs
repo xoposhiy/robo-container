@@ -25,9 +25,14 @@ namespace RoboContainer.Impl
 			get { return false; }
 		}
 
-		public Func<IReuse> ReusePolicy
+		public IReusePolicy ReusePolicy
 		{
-			get { return ReusePolicies.Always; }
+			get { return new Reuse.Always(); }
+		}
+
+		public bool ReuseSpecified
+		{
+			get { return true; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
