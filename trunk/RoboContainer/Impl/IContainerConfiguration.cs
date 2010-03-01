@@ -22,4 +22,5 @@ namespace RoboContainer.Impl
 		IPluginConfigurator GetPluginConfigurator(Type pluginType);
 		ILoggingConfigurator GetLoggingConfigurator();
 	}
+
 }
