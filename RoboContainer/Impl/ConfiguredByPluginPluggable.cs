@@ -8,12 +8,21 @@ namespace RoboContainer.Impl
 	{
 		private readonly IConfiguredPluggable configuredPluggable;
 		private readonly IContainerConfiguration configuration;
-		private readonly PluginConfigurator pluginConfigurator;
+		private readonly IConfiguredPlugin configuredPlugin;
+		private readonly InitializePluggableDelegate<object> initializePluggable;
 		private IInstanceFactory factory;
 
-		public ConfiguredByPluginPluggable(PluginConfigurator pluginConfigurator, IConfiguredPluggable configuredPluggable, IContainerConfiguration configuration)
+		public ConfiguredByPluginPluggable(IConfiguredPlugin configuredPlugin, IConfiguredPluggable configuredPluggable, IContainerConfiguration configuration)
 		{
-			this.pluginConfigurator = pluginConfigurator;
+			this.configuredPlugin = configuredPlugin;
+			this.configuredPluggable = configuredPluggable;
+			this.configuration = configuration;
+		}
+
+		public ConfiguredByPluginPluggable(CombinedConfiguredPlugin configuredPlugin, InitializePluggableDelegate<object> initializePluggable, IConfiguredPluggable configuredPluggable, IContainerConfiguration configuration)
+		{
+			this.configuredPlugin = configuredPlugin;
+			this.initializePluggable = initializePluggable;
 			this.configuredPluggable = configuredPluggable;
 			this.configuration = configuration;
 		}
@@ -30,29 +39,30 @@ namespace RoboContainer.Impl
 
 		public IReusePolicy ReusePolicy
 		{
-			get { return pluginConfigurator.ReuseSpecified ? pluginConfigurator.ReusePolicy : configuredPluggable.ReusePolicy; }
+			get { return configuredPlugin.ReuseSpecified ? configuredPlugin.ReusePolicy : configuredPluggable.ReusePolicy; }
 		}
 
 		public bool ReuseSpecified
 		{
-			get { return pluginConfigurator.ReuseSpecified || configuredPluggable.ReuseSpecified; }
+			get { return configuredPlugin.ReuseSpecified || configuredPluggable.ReuseSpecified; }
 		}
 
 		public InitializePluggableDelegate<object> InitializePluggable
 		{
 			get
 			{
+				var pluginInitializator = initializePluggable ?? configuredPlugin.InitializePluggable;
 				return
-					pluginConfigurator.InitializePluggable == null
+					pluginInitializator == null
 						?
 							configuredPluggable.InitializePluggable
 						:
 							configuredPluggable.InitializePluggable == null
 								?
-									pluginConfigurator.InitializePluggable
+									pluginInitializator
 								:
 									(o, container) =>
-										pluginConfigurator.InitializePluggable(configuredPluggable.InitializePluggable(o, container), container);
+										pluginInitializator(configuredPluggable.InitializePluggable(o, container), container);
 			}
 		}
 
@@ -68,7 +78,7 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByPluginPluggable(pluginConfigurator, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), configuration);
+			return new ConfiguredByPluginPluggable(configuredPlugin, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), configuration);
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
@@ -89,8 +99,9 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(pluginConfigurator.ReuseSpecified || pluginConfigurator.InitializePluggable != null)
-				return configuredPluggable.GetFactory().CreateByPrototype(pluginConfigurator.ReusePolicy, pluginConfigurator.InitializePluggable, configuration);
+			var pluginInitializator = initializePluggable ?? configuredPlugin.InitializePluggable;
+			if(configuredPlugin.ReuseSpecified || pluginInitializator != null)
+				return configuredPluggable.GetFactory().CreateByPrototype(configuredPlugin.ReusePolicy, pluginInitializator, configuration);
 			return configuredPluggable.GetFactory();
 		}
 	}

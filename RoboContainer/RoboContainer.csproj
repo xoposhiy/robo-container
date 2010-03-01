@@ -60,6 +60,7 @@
     <Compile Include="Impl\AbstractInstanceFactory.cs" />
     <Compile Include="Impl\ChildConfiguredPluggable.cs" />
     <Compile Include="Impl\CombinedConfiguredPluggable.cs" />
+    <Compile Include="Impl\CombinedConfiguredPlugin.cs" />
     <Compile Include="Impl\CommonReusePolicy.cs" />
     <Compile Include="Impl\ConfiguredInstancePluggable.cs" />
     <Compile Include="Impl\ConfiguredTypePluggable.cs" />
