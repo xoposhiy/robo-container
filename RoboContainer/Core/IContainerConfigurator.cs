@@ -76,4 +76,23 @@ namespace RoboContainer.Core
 		/// </summary>
 		IPluginConfigurator ForPlugin(Type pluginType);
 	}
+
+	public static class ContainerConfigurationExtensions
+	{
+		public static void Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value)
+		{
+			configurator.ForPlugin<TPlugin>().UseInstance(value);
+		}
+
+		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator) where TPluggable : TPlugin
+		{
+			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>();
+		}
+
+		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, ReusePolicy reusePolicy) where TPluggable : TPlugin
+		{
+			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>().ReusePluggable(reusePolicy);
+		}
+	}
+
 }
