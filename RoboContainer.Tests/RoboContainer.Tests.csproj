@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="Arrays\Arrays_Test.cs" />
     <Compile Include="CommonFunctionality\Container_Test.cs" />
+    <Compile Include="Configuration\ExternalConfiguration_Test.cs" />
+    <Compile Include="Configuration\RoboConfig_Test.cs" />
     <Compile Include="ContainerTestingExtensions.cs" />
     <Compile Include="Contracts\Contracts_Test.cs" />
     <Compile Include="Dependencies\Dependencies_Test.cs" />
@@ -93,6 +95,12 @@
       <Project>{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}</Project>
       <Name>RoboContainer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Configuration\ConfigSample.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="XmlConfigurator\configuration.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

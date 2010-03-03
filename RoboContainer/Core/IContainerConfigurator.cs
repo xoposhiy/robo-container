@@ -18,6 +18,8 @@ namespace RoboContainer.Core
 	/// </summary>
 	public interface IContainerConfigurator
 	{
+		IExternalConfigurator ConfigureBy { get; }
+
 		/// <summary>
 		/// Конфигурирование подсистемы логгирования.
 		/// </summary>
@@ -75,6 +77,13 @@ namespace RoboContainer.Core
 		/// Конфигурирование создания реализаций сервиса <paramref name="pluginType"/>.
 		/// </summary>
 		IPluginConfigurator ForPlugin(Type pluginType);
+	}
+
+	public interface IExternalConfigurator
+	{
+		void AppConfigSection(string sectionName);
+		void AppConfig();
+		void XmlFile(string filename);
 	}
 
 	public static class ContainerConfigurationExtensions

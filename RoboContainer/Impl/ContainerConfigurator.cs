@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using RoboConfig;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
@@ -66,6 +67,11 @@ namespace RoboContainer.Impl
 			return configuration.GetPluginConfigurator(pluginType);
 		}
 
+		public IExternalConfigurator ConfigureBy
+		{
+			get { return new ExternalConfigurator(this); }
+		}
+
 		public ILoggingConfigurator Logging
 		{
 			get { return configuration.GetLoggingConfigurator(); }
@@ -84,6 +90,31 @@ namespace RoboContainer.Impl
 				frames
 					.Select(f => f.GetMethod().DeclaringType.Assembly)
 					.First(a => a != thisAssembly);
+		}
+	}
+
+	public class ExternalConfigurator : IExternalConfigurator
+	{
+		private readonly ContainerConfigurator configurator;
+
+		public ExternalConfigurator(ContainerConfigurator configurator)
+		{
+			this.configurator = configurator;
+		}
+
+		public void AppConfigSection(string sectionName)
+		{
+			XmlConfigurator.FromAppConfig(sectionName).ApplyConfigTo(configurator);
+		}
+
+		public void AppConfig()
+		{
+			AppConfigSection("robocontainer");
+		}
+
+		public void XmlFile(string filename)
+		{
+			XmlConfigurator.FromFile(filename).ApplyConfigTo(configurator);
 		}
 	}
 }
