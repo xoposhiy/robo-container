@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<ForPlugin pluginType="RoboContainer.Core.IContainer, RoboContainer">
+		<UsePluggable pluggableType="RoboContainer.Core.Container, RoboContainer" declaredContracts="a,b,c" />
+		<UseOtherPluggablesToo/>
+		<DontUse>
+			<pluggableTypes>
+				<item value="RoboContainer.Core.FakeContainer, RoboContainer"/>
+			</pluggableTypes>
+		</DontUse>
+		<ReusePluggable reusePolicy="Always"/>
+		<RequireContracts requiredContracts="x" />
+	</ForPlugin>
+	
+</config>

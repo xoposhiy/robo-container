@@ -43,18 +43,20 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IDependencyConfigurator UseValue(object aValue)
+		// ReSharper disable ParameterHidesMember
+		public IDependencyConfigurator UseValue(object value)
 		{
-			value = aValue;
+			this.value = value;
 			valueSpecified = true;
 			return this;
 		}
 
-		public IDependencyConfigurator UsePluggable(Type aPluggableType)
+		public IDependencyConfigurator UsePluggable(Type pluggableType)
 		{
-			pluggableType = aPluggableType;
+			this.pluggableType = pluggableType;
 			return this;
 		}
+		// ReSharper restore ParameterHidesMember
 
 		public IDependencyConfigurator UsePluggable<TPluggable>()
 		{

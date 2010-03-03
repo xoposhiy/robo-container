@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -49,6 +50,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RoboConfig\ArrayDeserializer.cs" />
+    <Compile Include="RoboConfig\Configurator.cs" />
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\Factory.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
@@ -121,6 +124,12 @@
     <Compile Include="Core\Lazy.cs" />
     <Compile Include="Core\NamedContractRequirement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoboConfig\DeserializerOf.cs" />
+    <Compile Include="RoboConfig\EnumDeserializer.cs" />
+    <Compile Include="RoboConfig\IActionsReader.cs" />
+    <Compile Include="RoboConfig\IDeserializer.cs" />
+    <Compile Include="RoboConfig\XmlActionsReader.cs" />
+    <Compile Include="RoboConfig\XmlConfigurator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />
