@@ -26,7 +26,7 @@ namespace RoboContainer.Tests.Logging
 		[Test]
 		public void LastConstructionLog()
 		{
-			var container = new Container();
+			var container = new Container(c => c.Logging.UseLogger(new ConstructionLogger(false)));
 			container.Get<IExportFileScreen>();
 			Console.WriteLine(container.LastConstructionLog);
 			Assert.AreEqual(

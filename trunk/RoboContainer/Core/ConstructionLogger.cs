@@ -5,9 +5,20 @@ namespace RoboContainer.Core
 {
 	public class ConstructionLogger : IConstructionLogger
 	{
+		private readonly bool showTime;
 		private string ident = "";
 		private Type pluginType;
 		private StringBuilder text;
+
+		public ConstructionLogger(bool showTime)
+		{
+			this.showTime = showTime;
+		}
+
+		public ConstructionLogger()
+			: this(true)
+		{
+		}
 
 		public IDisposable StartConstruction(Type newPluginType)
 		{
@@ -64,7 +75,8 @@ namespace RoboContainer.Core
 		{
 			if(text == null)
 				throw new InvalidOperationException("You should call StartConstruction first");
-			text.AppendFormat(ident + message, args).AppendLine();
+			string time = showTime ? (DateTime.Now.ToString("HH:mm:ss.fff") + "  ") : "";
+			text.AppendFormat(time + ident + message, args).AppendLine();
 		}
 
 		public class SessionFinisher : IDisposable
