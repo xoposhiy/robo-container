@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RoboContainer.Core;
 
@@ -23,6 +24,11 @@ namespace RoboContainer.Impl
 			get { return parent.RequiredContracts.Union(child.RequiredContracts); }
 		}
 
+		public bool IsPluggableIgnored(Type pluggableType)
+		{
+			return child.IsPluggableIgnored(pluggableType) || parent.IsPluggableIgnored(pluggableType);
+		}
+
 		public InitializePluggableDelegate<object> InitializePluggable
 		{
 			get { return child.InitializePluggable ?? parent.InitializePluggable; }
@@ -41,16 +47,9 @@ namespace RoboContainer.Impl
 				.Select(p => new ConfiguredByPluginPluggable(this, parent.InitializePluggable, p, configuration) as IConfiguredPluggable);
 		}
 
-		public bool UseAutoFoundPluggables
+		public bool? AutoSearch
 		{
-			get
-			{
-				bool parentHasExplicits = parent.GetExplicitlySpecifiedPluggables().Any();
-				bool childHasExplicits = child.GetExplicitlySpecifiedPluggables().Any();
-				return !parentHasExplicits && !childHasExplicits
-					|| (parentHasExplicits && parent.UseAutoFoundPluggables)
-						|| (childHasExplicits && child.UseAutoFoundPluggables);
-			}
+			get { return child.AutoSearch ?? parent.AutoSearch; }
 		}
 
 		public bool ReuseSpecified
@@ -63,15 +62,13 @@ namespace RoboContainer.Impl
 			get { return child.ReuseSpecified ? child.ReusePolicy : parent.ReusePolicy; }
 		}
 
-		//TODO Учитывать DontUse, ReusePolicy и SetInitializer child конфигурации.
 		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables()
 		{
 			IConstructionLogger logger = configuration.GetConfiguredLogging().GetLogger();
-			if(UseAutoFoundPluggables)
-				return parent.GetAutoFoundPluggables()
-					.Where(p => p.ByContractsFilter(RequiredContracts, logger))
-					.Select(p => new ChildConfiguredPluggable(p, configuration) as IConfiguredPluggable);
-			return Enumerable.Empty<IConfiguredPluggable>();
+			return parent.GetAutoFoundPluggables()
+				.Exclude(p => p.Ignored || child.IsPluggableIgnored(p.PluggableType))
+				.Where(p => p.ByContractsFilterWithLogging(RequiredContracts, logger))
+				.Select(p => new ChildConfiguredPluggable(p, configuration) as IConfiguredPluggable);
 		}
 
 		public void Dispose()

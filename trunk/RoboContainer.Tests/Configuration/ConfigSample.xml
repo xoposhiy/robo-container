@@ -3,7 +3,7 @@
 	
 	<ForPlugin pluginType="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests">
 		<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests"/>
-		<UseOtherPluggablesToo/>
+		<UseAutoFoundPluggables/>
 		<DontUse>
 			<pluggableTypes item="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
 			<pluggableTypes item="RoboContainer.Tests.Configuration.Component3, RoboContainer.Tests"/>

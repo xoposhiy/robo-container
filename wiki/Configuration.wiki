@@ -61,10 +61,13 @@ void ScanCallingAssembly();
 void ScanLoadedAssemblies();
 void ScanLoadedAssemblies(Func<Assembly, Boolean> shouldScan);
 void ScanTypesWith(ScannerDelegate scanner);
+void ScanLoadedCompanyAssemblies();
+void ScanLoadedCompanyAssemblies(String companyPrefix);
 IPluggableConfigurator ForPluggable(Type pluggableType);
 IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>();
 IPluginConfigurator<TPlugin> ForPlugin<TPlugin>();
 IPluginConfigurator ForPlugin(Type pluginType);
+IExternalConfigurator ConfigureBy { get; }
 ILoggingConfigurator Logging { get; }
 
 }}}
@@ -80,7 +83,8 @@ IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(ContractDeclaration[] decl
 IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, ContractDeclaration[] declaredContracts);
-IPluginConfigurator<TPlugin> UseOtherPluggablesToo();
+IPluginConfigurator<TPlugin> UseAutoFoundPluggables();
+IPluginConfigurator<TPlugin> DontUseAutoFoundPluggables();
 IPluginConfigurator<TPlugin> DontUse<TPluggable>();
 IPluginConfigurator<TPlugin> DontUse(Type[] pluggableTypes);
 IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy);
@@ -102,7 +106,7 @@ var container = new Container(
 	c =>
 	c.ForPlugin<IPlugin>()
 		.UseInstance(explicitlySpecifiedPluggable)
-		.UseOtherPluggablesToo()
+		.UseAutoFoundPluggables()
 		.ReusePluggable(ReusePolicy.Never)
 	);
 IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();

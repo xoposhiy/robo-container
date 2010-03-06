@@ -88,7 +88,8 @@
     </Compile>
     <Compile Include="TestingExtensions.cs" />
     <Compile Include="Threading\Threading_Test.cs" />
-    <Compile Include="With\With_Test.cs" />
+    <Compile Include="With\PluggableConfig_Test.cs" />
+    <Compile Include="With\PluginConfig_Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RoboContainer\RoboContainer.csproj">

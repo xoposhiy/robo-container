@@ -14,7 +14,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		public void also_use_value_for_concrete_types()
 		{
 			var specialValue = new Foo1();
-			var container = new Container(c => c.ForPlugin<Foo1>().UseInstance(specialValue).UseOtherPluggablesToo());
+			var container = new Container(c => c.ForPlugin<Foo1>().UseInstance(specialValue).UseAutoFoundPluggables());
 			IEnumerable<Foo1> foos = container.GetAll<Foo1>();
 			CollectionAssert.Contains(foos, specialValue);
 			Assert.AreEqual(2, foos.Count());
@@ -27,7 +27,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 				c =>
 					{
 						c.ForPluggable<Foo0>().DeclareContracts("b", "c");
-						c.ForPlugin<IFoo>().UsePluggable<Foo1>("a", "b").UseOtherPluggablesToo();
+						c.ForPlugin<IFoo>().UsePluggable<Foo1>("a", "b").UseAutoFoundPluggables();
 					});
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>("c", "b"));
 			Assert.IsInstanceOf<Foo1>(container.Get<IFoo>("a", "b"));
@@ -39,7 +39,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		{
 			var specialValue1 = new Foo1();
 			var specialValue2 = new Foo1();
-			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(specialValue1).UseInstance(specialValue2).UseOtherPluggablesToo());
+			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(specialValue1).UseInstance(specialValue2).UseAutoFoundPluggables());
 			IEnumerable<IFoo> foos = container.GetAll<IFoo>();
 			CollectionAssert.Contains(foos, specialValue1);
 			CollectionAssert.Contains(foos, specialValue2);
@@ -49,7 +49,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		public void can_also_use_value()
 		{
 			var specialValue = new Foo1();
-			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(specialValue).UseOtherPluggablesToo());
+			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(specialValue).UseAutoFoundPluggables());
 			IEnumerable<IFoo> foos = container.GetAll<IFoo>();
 			CollectionAssert.Contains(foos, specialValue);
 		}
