@@ -15,7 +15,7 @@ namespace RoboContainer.Impl
 		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private readonly List<ContractRequirement> requiredContracts = new List<ContractRequirement>();
 		private IConfiguredPluggable[] pluggables;
-		private bool useOthersToo;
+		private bool? autoSearch;
 
 		public PluginConfigurator(IContainerConfiguration configuration, Type pluginType)
 		{
@@ -40,14 +40,13 @@ namespace RoboContainer.Impl
 			return explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
 		}
 
-		public bool UseAutoFoundPluggables
+		public bool? AutoSearch
 		{
-			get { return useOthersToo; }
+			get { return autoSearch; }
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables()
 		{
-			if(explicitlySpecifiedPluggables.Any() && !useOthersToo) return Enumerable.Empty<IConfiguredPluggable>();
 			IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
 			return
 				scannableTypes
@@ -70,9 +69,15 @@ namespace RoboContainer.Impl
 			pluggableConfigs.Clear();
 		}
 
-		public IPluginConfigurator UseOtherPluggablesToo()
+		public IPluginConfigurator UseAutoFoundPluggables()
 		{
-			useOthersToo = true;
+			autoSearch = true;
+			return this;
+		}
+
+		public IPluginConfigurator DontUseAutoFoundPluggables()
+		{
+			autoSearch = false;
 			return this;
 		}
 
@@ -96,6 +101,7 @@ namespace RoboContainer.Impl
 		{
 			CheckPluggablility(pluggableType);
 			explicitlySpecifiedPluggables.Add(new ConfiguredTypePluggable(() => configuration.GetConfiguredPluggable(pluggableType), declaredContracts));
+			autoSearch = false;
 			return this;
 		}
 
@@ -103,6 +109,7 @@ namespace RoboContainer.Impl
 		{
 			CheckPluggablility(part.GetType());
 			explicitlySpecifiedPluggables.Add(new ConfiguredInstancePluggable(part, declaredContracts));
+			autoSearch = false;
 			UseProvidedParts(part);
 			return this;
 		}
@@ -122,6 +129,7 @@ namespace RoboContainer.Impl
 		public IPluginConfigurator UseInstanceCreatedBy(CreatePluggableDelegate<object> createPluggable, params ContractDeclaration[] declaredContracts)
 		{
 			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable, declaredContracts, configuration));
+			autoSearch = false;
 			return this;
 		}
 
@@ -173,7 +181,7 @@ namespace RoboContainer.Impl
 					IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
 					object providedPart = partDescription.Part();
 					pluginConfigurator.UseInstance(providedPart);
-					if(!partDescription.UseOnlyThis) pluginConfigurator.UseOtherPluggablesToo();
+					if(!partDescription.UseOnlyThis) pluginConfigurator.UseAutoFoundPluggables();
 				}
 				catch(ContainerException e)
 				{
@@ -279,6 +287,7 @@ namespace RoboContainer.Impl
 			if(genericDefinition.ReuseSpecified)
 				result.ReusePluggable(genericDefinition.ReusePolicy);
 			result.InitializePluggable = genericDefinition.InitializePluggable;
+			result.autoSearch = genericDefinition.AutoSearch;
 			result.explicitlySpecifiedPluggables.AddRange(
 				genericDefinition.explicitlySpecifiedPluggables
 					.Select(
@@ -300,9 +309,15 @@ namespace RoboContainer.Impl
 			this.realConfigurator = realConfigurator;
 		}
 
-		public IPluginConfigurator<TPlugin> UseOtherPluggablesToo()
+		public IPluginConfigurator<TPlugin> UseAutoFoundPluggables()
 		{
-			realConfigurator.UseOtherPluggablesToo();
+			realConfigurator.UseAutoFoundPluggables();
+			return this;
+		}
+
+		public IPluginConfigurator<TPlugin> DontUseAutoFoundPluggables()
+		{
+			realConfigurator.DontUseAutoFoundPluggables();
 			return this;
 		}
 

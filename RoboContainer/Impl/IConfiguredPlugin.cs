@@ -7,9 +7,10 @@ namespace RoboContainer.Impl
 	public interface IConfiguredPlugin : IDisposable
 	{
 		IEnumerable<ContractRequirement> RequiredContracts { get; }
-		bool UseAutoFoundPluggables { get; }
+		bool? AutoSearch { get; }
 		bool ReuseSpecified { get; }
 		IReusePolicy ReusePolicy { get; }
+		bool IsPluggableIgnored(Type pluggableType);
 		InitializePluggableDelegate<object> InitializePluggable { get; }
 		IEnumerable<IConfiguredPluggable> GetPluggables();
 		IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables();

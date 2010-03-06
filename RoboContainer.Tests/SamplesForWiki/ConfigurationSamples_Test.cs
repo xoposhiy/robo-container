@@ -26,7 +26,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 				c =>
 				c.ForPlugin<IPlugin>()
 					.UseInstance(explicitlySpecifiedPluggable)
-					.UseOtherPluggablesToo()
+					.UseAutoFoundPluggables()
 					.ReusePluggable(ReusePolicy.Never)
 				);
 			IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();

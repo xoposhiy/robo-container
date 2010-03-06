@@ -23,7 +23,10 @@ namespace RoboContainer.Impl
 	{
 		public static IConfiguredPluggable[] CreatePluggables(this IConfiguredPlugin plugin)
 		{
-			return plugin.GetExplicitlySpecifiedPluggables().Concat(plugin.GetAutoFoundPluggables()).ToArray();
+			var explicitlySpecifiedPluggables = plugin.GetExplicitlySpecifiedPluggables();
+			if(plugin.AutoSearch.GetValueOrDefault(true))
+				explicitlySpecifiedPluggables = explicitlySpecifiedPluggables.Concat(plugin.GetAutoFoundPluggables());
+			return explicitlySpecifiedPluggables.ToArray();
 		}
 
 		public static IEnumerable<ContractDeclaration> GetAllContracts(this IConfiguredPluggable configuredPluggable)
@@ -31,8 +34,8 @@ namespace RoboContainer.Impl
 			IEnumerable<ContractDeclaration> cs = configuredPluggable.ExplicitlyDeclaredContracts;
 			return !cs.Any() ? new[] {ContractDeclaration.Default} : cs;
 		}
-		
-		public static bool ByContractsFilter(this IConfiguredPluggable p,
+
+		public static bool ByContractsFilterWithLogging(this IConfiguredPluggable p,
 			IEnumerable<ContractRequirement> requiredContracts, IConstructionLogger logger)
 		{
 			bool fitContracts = requiredContracts.All(req => p.GetAllContracts().Any(c => c.Satisfy(req)));
@@ -48,6 +51,5 @@ namespace RoboContainer.Impl
 			}
 			return fitContracts;
 		}
-	
 	}
 }

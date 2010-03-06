@@ -108,7 +108,7 @@ namespace RoboContainer.Tests.Parts
 		public void parts_can_declare_contracts()
 		{
 			var root3 = new Root3();
-			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UseOtherPluggablesToo());
+			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UseAutoFoundPluggables());
 			Assert.AreEqual(root3, container.Get<IRoot>("foo"));
 			IEnumerable<IRoot> roots = container.GetAll<IRoot>();
 			Assert.AreEqual(3, roots.Count());

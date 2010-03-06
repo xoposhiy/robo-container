@@ -155,13 +155,14 @@ namespace RoboContainer.Core
 
 		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
 		{
-			IEnumerable<object> pluggables =
-				TryGetCollections(pluginType, requiredContracts)
-					?? GetConfiguredPluggables(pluginType, requiredContracts)
-						.Select(
-							c => c.GetFactory().TryGetOrCreate(this, pluginType)
-						)
-						.Where(p => p != null).ToList();
+			IEnumerable<object> pluggables = TryGetCollections(pluginType, requiredContracts);
+			if(pluggables == null)
+			{
+				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
+				pluggables = configuredPluggables.Select(
+					c => c.GetFactory().TryGetOrCreate(this, pluginType)
+					).Where(p => p != null).ToList();
+			}
 			return pluggables;
 		}
 
