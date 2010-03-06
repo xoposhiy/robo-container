@@ -30,12 +30,12 @@ namespace RoboContainer.Impl
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
 		//use
-		public IEnumerable<IConfiguredPluggable> GetPluggables()
+		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
 		{
-			return pluggables ?? (pluggables = this.CreatePluggables());
+			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger));
 		}
 
-		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables()
+		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
 		{
 			return explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
 		}
@@ -45,7 +45,7 @@ namespace RoboContainer.Impl
 			get { return autoSearch; }
 		}
 
-		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables()
+		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger, bool filterByContractsRequirements)
 		{
 			IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
 			return
@@ -53,7 +53,7 @@ namespace RoboContainer.Impl
 					.Exclude(IsIgnored)
 					.Select(t => TryGetConfiguredPluggable(t))
 					.Where(pluggable => pluggable != null)
-					.Where(FitContracts);
+					.Where(p => !filterByContractsRequirements || p.ByContractsFilterWithLogging(RequiredContracts, logger));
 		}
 
 		public IEnumerable<ContractRequirement> RequiredContracts
@@ -259,23 +259,6 @@ namespace RoboContainer.Impl
 			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
 			return pluggableConfigs.GetOrCreate(pluggableType, () => ApplyPluginConfiguration(configuredPluggable));
-		}
-
-		private bool FitContracts(IConfiguredPluggable p)
-		{
-			bool fitContracts = RequiredContracts.All(req => p.GetAllContracts().Any(c => c.Satisfy(req)));
-			if(!fitContracts)
-			{
-				IConstructionLogger logger = configuration.GetConfiguredLogging().GetLogger();
-				logger.Declined(
-					p.PluggableType,
-					string.Format(
-						"declared [{0}], required [{1}]",
-						p.GetAllContracts().Select(c => c.ToString()).Join(", "),
-						RequiredContracts.Select(c => c.ToString()).Join(", "))
-					);
-			}
-			return fitContracts;
 		}
 
 		public static PluginConfigurator FromGenericDefinition(

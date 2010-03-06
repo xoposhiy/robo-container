@@ -56,7 +56,6 @@
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />
     <Compile Include="RoboConfig\Configurator.cs" />
     <Compile Include="Core\ConstructionLogger.cs" />
-    <Compile Include="Core\Factory.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\ILoggingConfigurator.cs" />
     <Compile Include="Core\IReusePolicy.cs" />

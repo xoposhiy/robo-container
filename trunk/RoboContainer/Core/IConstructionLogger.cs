@@ -13,7 +13,9 @@ namespace RoboContainer.Core
 		/// возвращенного этим методом.
 		/// </summary>
 		/// <param name="pluginType">тип запрашиваемого у контейнера объекта</param>
-		IDisposable StartConstruction(Type pluginType);
+		IDisposable StartResolving(Type pluginType);
+		
+		IDisposable StartConstruction(Type pluggableType);
 
 		/// <summary>
 		/// Вызывается контейнером сразу после того, как экземпляр <paramref name="pluggableType"/> был создан.

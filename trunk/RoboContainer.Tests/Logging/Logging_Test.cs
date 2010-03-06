@@ -31,14 +31,14 @@ namespace RoboContainer.Tests.Logging
 			Console.WriteLine(container.LastConstructionLog);
 			Assert.AreEqual(
 				@"Get IExportFileScreen
-	Get ExportFileScreen
+	Create ExportFileScreen
 		Get IExporter[]
 			Get IExporter
-				Get BmpExporter
+				Create BmpExporter
 				Constructed BmpExporter
-				Get JpgExporter
+				Create JpgExporter
 				Constructed JpgExporter
-				Get PngExporter
+				Create PngExporter
 				Constructed PngExporter
 	Constructed ExportFileScreen
 ",
@@ -56,6 +56,12 @@ namespace RoboContainer.Tests.Logging
 	public class MockConstructionLogger : IConstructionLogger
 	{
 		private int count;
+
+		public IDisposable StartResolving(Type pluginType)
+		{
+			count++;
+			return new NullDisposable();
+		}
 
 		public IDisposable StartConstruction(Type pluginType)
 		{

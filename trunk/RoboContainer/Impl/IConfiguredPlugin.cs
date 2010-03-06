@@ -12,8 +12,8 @@ namespace RoboContainer.Impl
 		IReusePolicy ReusePolicy { get; }
 		bool IsPluggableIgnored(Type pluggableType);
 		InitializePluggableDelegate<object> InitializePluggable { get; }
-		IEnumerable<IConfiguredPluggable> GetPluggables();
-		IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables();
-		IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables();
+		IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger);
+		IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger);
+		IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger, bool filterByContractsRequirements);
 	}
 }

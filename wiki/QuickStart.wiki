@@ -230,21 +230,21 @@ Console.WriteLine(container.LastConstructionLog);
 выведет на консоль следующий текст:
 <wiki:comment>[QS_FinalSample.out</wiki:comment>
 {{{
-21:15:17.593  Get IBattleShip
-21:15:17.593  	Get BigBattleShip
-21:15:17.593  		Get IWeapon[]
-21:15:17.593  			Get IWeapon
-21:15:17.593  				Get RocketWeapon
-21:15:17.594  				Constructed RocketWeapon
-21:15:17.594  				Get LaserWeapon
-21:15:17.594  				Constructed LaserWeapon
-21:15:17.594  				Get ComboWeapon
-21:15:17.594  					Get LaserWeapon
-21:15:17.594  						Reused LaserWeapon
-21:15:17.594  					Get RocketWeapon
-21:15:17.594  						Reused RocketWeapon
-21:15:17.594  				Constructed ComboWeapon
-21:15:17.595  	Constructed BigBattleShip
+Get IBattleShip
+	Create BigBattleShip
+		Get IWeapon[]
+			Get IWeapon
+				Create RocketWeapon
+				Constructed RocketWeapon
+				Create LaserWeapon
+				Constructed LaserWeapon
+				Create ComboWeapon
+					Get LaserWeapon
+						Reused LaserWeapon
+					Get RocketWeapon
+						Reused RocketWeapon
+				Constructed ComboWeapon
+	Constructed BigBattleShip
 
 }}}
 <wiki:comment></wiki:comment>
