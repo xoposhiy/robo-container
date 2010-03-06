@@ -59,6 +59,17 @@ namespace RoboContainer.Core
 		void ScanTypesWith(ScannerDelegate scanner);
 
 		/// <summary>
+		/// Рассматривать все публичные типы из загруженных в данный момент сборок, имена которых имеют общий префикс с именем вызывающей сборки.
+		/// Например, если метод вызван из сборки MyCompany.Something, то ьудут рассмотрены все сборки с именем, начинающимся на "MyCompany.".
+		/// </summary>
+		void ScanLoadedCompanyAssemblies();
+
+		/// <summary>
+		/// Рассматривать все публичные типы из загруженных в данный момент сборок, имена которых начинаются на префикс <paramref name="companyPrefix"/>.
+		/// </summary>
+		void ScanLoadedCompanyAssemblies(string companyPrefix);
+
+		/// <summary>
 		/// Конфигурирование создания экземпляра типа <paramref name="pluggableType"/>.
 		/// </summary>
 		IPluggableConfigurator ForPluggable(Type pluggableType);
@@ -79,25 +90,27 @@ namespace RoboContainer.Core
 		IPluginConfigurator ForPlugin(Type pluginType);
 	}
 
-	public interface IExternalConfigurator
-	{
-		void AppConfigSection(string sectionName);
-		void AppConfig();
-		void XmlFile(string filename);
-	}
-
 	public static class ContainerConfigurationExtensions
 	{
+		/// <summary>
+		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UseInstance(value)</code>
+		/// </summary>
 		public static void Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value)
 		{
 			configurator.ForPlugin<TPlugin>().UseInstance(value);
 		}
 
+		/// <summary>
+		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;()</code>
+		/// </summary>
 		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator) where TPluggable : TPlugin
 		{
 			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>();
 		}
 
+		/// <summary>
+		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;().ReusePluggable(reusePolicy)</code>
+		/// </summary>
 		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, ReusePolicy reusePolicy) where TPluggable : TPlugin
 		{
 			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>().ReusePluggable(reusePolicy);

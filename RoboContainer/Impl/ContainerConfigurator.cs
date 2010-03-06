@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using RoboConfig;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
@@ -29,7 +27,7 @@ namespace RoboContainer.Impl
 
 		public void ScanCallingAssembly()
 		{
-			ScanAssemblies(GetTheCallingAssembly());
+			ScanAssemblies(AssembliesUtils.GetTheCallingAssembly());
 		}
 
 		public void ScanLoadedAssemblies()
@@ -54,17 +52,44 @@ namespace RoboContainer.Impl
 
 		public IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>()
 		{
-			return ForPluggable(typeof(TPluggable)).TypedConfigurator<TPluggable>();
+			return ForPluggable(typeof (TPluggable)).TypedConfigurator<TPluggable>();
 		}
 
 		public IPluginConfigurator<TPlugin> ForPlugin<TPlugin>()
 		{
-			return ForPlugin(typeof(TPlugin)).TypedConfigurator<TPlugin>();
+			return ForPlugin(typeof (TPlugin)).TypedConfigurator<TPlugin>();
 		}
 
 		public IPluginConfigurator ForPlugin(Type pluginType)
 		{
 			return configuration.GetPluginConfigurator(pluginType);
+		}
+
+		public void ScanLoadedCompanyAssemblies()
+		{
+			string callingAssemblyName = AssembliesUtils.GetTheCallingAssembly().FullName;
+			ScanLoadedAssemblies(a => HasCommonDotPrefix(callingAssemblyName, a.FullName));
+		}
+
+		public void ScanLoadedCompanyAssemblies(string companyPrefix)
+		{
+			ScanLoadedAssemblies(a => a.FullName != null && a.FullName.StartsWith(companyPrefix));
+		}
+
+		// MyCompany.Something and MyCompany.Anything.Else has common dot-prefix
+		// MyCompanyX and MyCompanyY has not.
+		private static bool HasCommonDotPrefix(string name1, string name2)
+		{
+			int minLen = Math.Min(name1.Length, name2.Length);
+			for (int i = 0; i < minLen; i++)
+			{
+				if (name1[i] != name2[i]) return false;
+				if (name2[i] == '.') return true;
+			}
+			if (name1.Length > minLen && name1[minLen] == '.') return true; //MyCompany.Core and MyCompany
+			if (name2.Length > minLen && name2[minLen] == '.') return true; //MyCompany and MyCompany.Core
+			if (name1.Length == name2.Length) return true; //MyCompany.Core and MyCompany.Core
+			return false; //MyCompany and MyCompanyXYZ
 		}
 
 		public IExternalConfigurator ConfigureBy
@@ -80,41 +105,6 @@ namespace RoboContainer.Impl
 		public IConstructionLogger GetLogger()
 		{
 			return configuration.GetConfiguredLogging().GetLogger();
-		}
-
-		private static Assembly GetTheCallingAssembly()
-		{
-			Assembly thisAssembly = Assembly.GetExecutingAssembly();
-			StackFrame[] frames = new StackTrace(false).GetFrames() ?? new StackFrame[0];
-			return
-				frames
-					.Select(f => f.GetMethod().DeclaringType.Assembly)
-					.First(a => a != thisAssembly);
-		}
-	}
-
-	public class ExternalConfigurator : IExternalConfigurator
-	{
-		private readonly ContainerConfigurator configurator;
-
-		public ExternalConfigurator(ContainerConfigurator configurator)
-		{
-			this.configurator = configurator;
-		}
-
-		public void AppConfigSection(string sectionName)
-		{
-			XmlConfigurator.FromAppConfig(sectionName).ApplyConfigTo(configurator);
-		}
-
-		public void AppConfig()
-		{
-			AppConfigSection("robocontainer");
-		}
-
-		public void XmlFile(string filename)
-		{
-			XmlConfigurator.FromFile(filename).ApplyConfigTo(configurator);
 		}
 	}
 }

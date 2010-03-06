@@ -185,7 +185,7 @@ namespace RoboContainer.Core
 			configuration.Configurator.ForPlugin(typeof(Factory<,,,,>)).UsePluggable(typeof(Factory<,,,,>)).ReusePluggable(ReusePolicy.Never);
 			configuration.Configurator.ForPlugin(typeof(Factory<,,,,,>)).UsePluggable(typeof(Factory<,,,,,>)).ReusePluggable(ReusePolicy.Never);
 			if(!configuration.HasAssemblies())
-				configuration.Configurator.ScanCallingAssembly();
+				configuration.Configurator.ScanLoadedCompanyAssemblies();
 			return configuration;
 		}
 

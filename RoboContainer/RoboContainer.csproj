@@ -50,6 +50,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\IExternalConfigurator.cs" />
+    <Compile Include="Impl\AssembliesUtils.cs" />
+    <Compile Include="Impl\ExternalConfigurator.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />
     <Compile Include="RoboConfig\Configurator.cs" />
     <Compile Include="Core\ConstructionLogger.cs" />
