@@ -23,7 +23,10 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			DisposeUtils.Dispose(ref factory);
+			if(factory == parent.GetFactory()) 
+				factory = null;
+			else
+				DisposeUtils.Dispose(ref factory);
 		}
 
 		public Type PluggableType
@@ -74,10 +77,8 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(child.ReuseSpecified &&
-				!child.ReusePolicy.Equals(parent.ReusePolicy) || child.InitializePluggable != null)
-				return parent.GetFactory().CreateByPrototype(child.ReusePolicy, child.InitializePluggable, childConfiguration);
-			return parent.GetFactory();
+			if(parent.ReusePolicy.ReusableFromChildContainer) return parent.GetFactory();
+			return parent.GetFactory().CreateByPrototype(child.ReusePolicy, child.InitializePluggable, childConfiguration);
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)

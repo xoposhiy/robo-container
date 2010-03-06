@@ -96,10 +96,12 @@ namespace RoboContainer.Core
 		{
 			try
 			{
-				IDisposable session = ConstructionLogger.StartConstruction(pluginType);
-				IEnumerable<object> pluggables = PlainGetAll(pluginType, requiredContracts);
-				session.Dispose();
-				return pluggables;
+				using(ConstructionLogger.StartResolving(pluginType))
+					return PlainGetAll(pluginType, requiredContracts);
+			}
+			catch(ContainerException)
+			{
+				throw;
 			}
 			catch(Exception e)
 			{
@@ -160,7 +162,7 @@ namespace RoboContainer.Core
 			{
 				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
 				pluggables = configuredPluggables.Select(
-					c => c.GetFactory().TryGetOrCreate(this, pluginType)
+					c => c.GetFactory().TryGetOrCreate(ConstructionLogger, pluginType)
 					).Where(p => p != null).ToList();
 			}
 			return pluggables;
@@ -180,11 +182,6 @@ namespace RoboContainer.Core
 			configure(configuration.Configurator);
 			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Never);
 			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,>)).UsePluggable(typeof(Factory<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,>)).UsePluggable(typeof(Factory<,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,>)).UsePluggable(typeof(Factory<,,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,,>)).UsePluggable(typeof(Factory<,,,,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Factory<,,,,,>)).UsePluggable(typeof(Factory<,,,,,>)).ReusePluggable(ReusePolicy.Never);
 			if(!configuration.HasAssemblies())
 				configuration.Configurator.ScanLoadedCompanyAssemblies();
 			return configuration;
@@ -208,7 +205,7 @@ namespace RoboContainer.Core
 		{
 			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
 			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {ContractRequirement.Default};
-			var configuredPluggables = configuredPlugin.GetPluggables().ToList();
+			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger).ToList();
 			return configuredPluggables
 				.Where(
 					p =>

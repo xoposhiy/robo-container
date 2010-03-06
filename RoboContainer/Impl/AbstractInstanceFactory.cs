@@ -22,15 +22,14 @@ namespace RoboContainer.Impl
 		public Type InstanceType { get; protected set; }
 		public IContainerConfiguration Configuration { get; private set; }
 
-		public object TryGetOrCreate(Container not_used, Type typeToCreate)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate)
 		{
 			if(reuseValueSlot.Value != null)
 			{
-				Configuration.GetConfiguredLogging().GetLogger().Reused(reuseValueSlot.Value.GetType());
+				logger.Reused(reuseValueSlot.Value.GetType());
 				return reuseValueSlot.Value;
 			}
-			var container = new Container(Configuration);
-			return reuseValueSlot.Value = TryConstructAndLog(container, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
+			return reuseValueSlot.Value = TryConstructAndLog(logger, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
 		}
 
 		public IInstanceFactory CreateByPrototype(IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
@@ -60,17 +59,17 @@ namespace RoboContainer.Impl
 
 		protected abstract IInstanceFactory DoCreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
-		private object TryConstructAndLog(Container container, Type typeToCreate)
+		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate)
 		{
-			IConstructionLogger constructionLog = container.ConstructionLogger;
-			object result = TryConstruct(container, typeToCreate);
-			if(result == null) constructionLog.ConstructionFailed(InstanceType);
-			else constructionLog.Constructed(result.GetType());
+			object result = TryConstruct(typeToCreate);
+			if(result == null) logger.ConstructionFailed(InstanceType);
+			else logger.Constructed(result.GetType());
 			return result;
 		}
 
-		private object TryConstruct(Container container, Type typeToCreate)
+		private object TryConstruct(Type typeToCreate)
 		{
+			var container = new Container(Configuration);
 			object constructed = TryCreatePluggable(container, typeToCreate);
 			if(constructed == null) return null;
 			var initializablePluggable = constructed as IInitializablePluggable;

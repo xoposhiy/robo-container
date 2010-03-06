@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
 
@@ -34,7 +35,11 @@ namespace RoboContainer.Tests.With
 		{
 			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never));
 			IContainer child = container.With(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Always));
-			Assert.AreSame(child.Get<Foo1>(), child.Get<Foo1>());
+			var expected = child.Get<Foo1>();
+			Console.WriteLine(child.LastConstructionLog);
+			var actual = child.Get<Foo1>();
+			Console.WriteLine(child.LastConstructionLog);
+			Assert.AreSame(expected, actual);
 			Assert.AreNotSame(container.Get<Foo1>(), container.Get<Foo1>());
 		}
 
@@ -75,12 +80,12 @@ namespace RoboContainer.Tests.With
 		public void With_can_expand_contracts_requirements()
 		{
 			var container = new Container(
-				c => c.ForPlugin<IFoo>().RequireContracts("contract"));
-			var parentFooes = container.GetAll<IFoo>();
+				c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Never).RequireContracts("contract"));
 			var childContainer = container.With(c => c.ForPluggable<Foo1>().DeclareContracts("contract"));
 			var childFooes = childContainer.GetAll<IFoo>();
-			Assert.AreEqual(0, parentFooes.Count());
 			Assert.AreEqual(1, childFooes.Count());
+			var parentFooes = container.GetAll<IFoo>();
+			Assert.AreEqual(0, parentFooes.Count());
 		}
 
 		[Test]

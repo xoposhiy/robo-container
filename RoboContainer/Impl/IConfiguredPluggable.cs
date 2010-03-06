@@ -21,11 +21,11 @@ namespace RoboContainer.Impl
 
 	public static class ConfiguredPluginExtensions
 	{
-		public static IConfiguredPluggable[] CreatePluggables(this IConfiguredPlugin plugin)
+		public static IConfiguredPluggable[] CreatePluggables(this IConfiguredPlugin plugin, IConstructionLogger logger)
 		{
-			var explicitlySpecifiedPluggables = plugin.GetExplicitlySpecifiedPluggables();
+			var explicitlySpecifiedPluggables = plugin.GetExplicitlySpecifiedPluggables(logger);
 			if(plugin.AutoSearch.GetValueOrDefault(true))
-				explicitlySpecifiedPluggables = explicitlySpecifiedPluggables.Concat(plugin.GetAutoFoundPluggables());
+				explicitlySpecifiedPluggables = explicitlySpecifiedPluggables.Concat(plugin.GetAutoFoundPluggables(logger, true));
 			return explicitlySpecifiedPluggables.ToArray();
 		}
 

@@ -5,6 +5,11 @@ namespace RoboContainer.Impl
 {
 	public class NullConstructionLogger : IConstructionLogger
 	{
+		public IDisposable StartResolving(Type pluginType)
+		{
+			return new NullDisposable();
+		}
+
 		public IDisposable StartConstruction(Type pluginType)
 		{
 			return new NullDisposable();

@@ -16,11 +16,26 @@ namespace RoboContainer.Core
 		}
 
 		public ConstructionLogger()
-			: this(true)
+			: this(false)
 		{
 		}
 
-		public IDisposable StartConstruction(Type newPluginType)
+		public IDisposable StartConstruction(Type pluggableType)
+		{
+			try
+			{
+				return new SessionFinisher(this, pluginType, ident);
+			}
+			finally
+			{
+				if(pluginType == null) text = new StringBuilder();
+				Write("Create {0}", Format(pluggableType));
+				pluginType = pluggableType;
+				ident += "\t";
+			}
+		}
+		
+		public IDisposable StartResolving(Type newPluginType)
 		{
 			try
 			{

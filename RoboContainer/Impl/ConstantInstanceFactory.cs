@@ -17,9 +17,9 @@ namespace RoboContainer.Impl
 			get { return instance.GetType(); }
 		}
 
-		public object TryGetOrCreate(Container container, Type typeToCreate)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate)
 		{
-			container.ConstructionLogger.Reused(instance.GetType());
+			logger.Reused(instance.GetType());
 			return instance;
 		}
 

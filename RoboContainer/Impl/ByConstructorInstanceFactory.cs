@@ -31,24 +31,17 @@ namespace RoboContainer.Impl
 			return dep.TryGetValue(formalArg.ParameterType, container, out actualArg);
 		}
 
-		protected override object TryCreatePluggable(Container not_used, Type pluginToCreate)
+		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
-			IDisposable session = Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType);
-			ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(pluggable.InjectableConstructorArgsTypes);
-			ParameterInfo[] formalArgs = constructorInfo.GetParameters();
-			var actualArgs = new object[formalArgs.Length];
-			var container = new Container(Configuration);
-			for(int i = 0; i < actualArgs.Length; i++)
+			using(Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType))
 			{
-				if(!TryGetActualArg(container, formalArgs[i], out actualArgs[i]))
-				{
-					session.Dispose();
-					return null;
-				}
+				ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(pluggable.InjectableConstructorArgsTypes);
+				ParameterInfo[] formalArgs = constructorInfo.GetParameters();
+				var actualArgs = new object[formalArgs.Length];
+				for(int i = 0; i < actualArgs.Length; i++)
+					if(!TryGetActualArg(container, formalArgs[i], out actualArgs[i])) return null;
+				return constructorInfo.Invoke(actualArgs);
 			}
-			object createdPluggable = constructorInfo.Invoke(actualArgs);
-			session.Dispose();
-			return createdPluggable;
 		}
 	}
 }
