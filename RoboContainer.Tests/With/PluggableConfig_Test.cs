@@ -54,8 +54,10 @@ namespace RoboContainer.Tests.With
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => parent_plugin++);
-						c.ForPluggable<Foo1>().SetInitializer(foo => parent_pluggable--);
+						c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => 
+							parent_plugin++
+							);
+						c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never).SetInitializer(foo => parent_pluggable--);
 					});
 
 			container.With(c => { }).Get<IFoo>();
@@ -66,8 +68,8 @@ namespace RoboContainer.Tests.With
 			container.With(
 				c =>
 					{
-						c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => child_plugin++);
-						c.ForPluggable<Foo1>().SetInitializer(foo1 => child_pluggable--);
+						c.ForPlugin<IFoo>().SetInitializer(foo => child_plugin++);
+						c.ForPluggable<Foo1>().SetInitializer(foo => child_pluggable--);
 					}).Get<IFoo>();
 			Assert.AreEqual(1, child_plugin);
 			Assert.AreEqual(-1, child_pluggable);

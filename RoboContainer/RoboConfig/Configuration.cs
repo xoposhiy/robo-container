@@ -5,12 +5,12 @@ using System.Reflection;
 
 namespace RoboConfig
 {
-	public class Configurator<TSource>
+	public class Configuration<TSource>
 	{
 		private readonly IActionsReader<TSource> reader;
 		private readonly TSource root;
 
-		public Configurator(IActionsReader<TSource> reader, TSource root)
+		public Configuration(IActionsReader<TSource> reader, TSource root)
 		{
 			this.reader = reader;
 			this.root = root;
