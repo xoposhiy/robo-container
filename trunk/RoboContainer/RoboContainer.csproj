@@ -54,7 +54,7 @@
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\ExternalConfigurator.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />
-    <Compile Include="RoboConfig\Configurator.cs" />
+    <Compile Include="RoboConfig\Configuration.cs" />
     <Compile Include="Core\ConstructionLogger.cs" />
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\ILoggingConfigurator.cs" />
@@ -63,7 +63,6 @@
     <Compile Include="Core\Reuse.cs" />
     <Compile Include="Core\TypeParameters.cs" />
     <Compile Include="Impl\AbstractInstanceFactory.cs" />
-    <Compile Include="Impl\ChildConfiguredPluggable.cs" />
     <Compile Include="Impl\CombinedConfiguredPluggable.cs" />
     <Compile Include="Impl\CombinedConfiguredPlugin.cs" />
     <Compile Include="Impl\CommonReusePolicy.cs" />
@@ -131,9 +130,11 @@
     <Compile Include="RoboConfig\IActionsReader.cs" />
     <Compile Include="RoboConfig\IDeserializer.cs" />
     <Compile Include="RoboConfig\XmlActionsReader.cs" />
-    <Compile Include="RoboConfig\XmlConfigurator.cs" />
+    <Compile Include="RoboConfig\XmlConfiguration.cs" />
+    <Compile Include="RoboConfig\CompositeXmlDeserializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="RoboConfig\RoboConfig.png" />
     <Content Include="todo.txt" />
   </ItemGroup>
   <ItemGroup>

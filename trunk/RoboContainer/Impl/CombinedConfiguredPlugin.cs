@@ -31,7 +31,7 @@ namespace RoboContainer.Impl
 
 		public InitializePluggableDelegate<object> InitializePluggable
 		{
-			get { return child.InitializePluggable ?? parent.InitializePluggable; }
+			get { return child.InitializePluggable; }
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
@@ -41,10 +41,13 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
 		{
+			var childInitialize = child.InitializePluggable ?? ((pluggable, container) => { return pluggable; });
 			return parent.GetExplicitlySpecifiedPluggables(logger)
-				.Select(p => new ConfiguredByPluginPluggable(this, child.InitializePluggable, p, configuration) as IConfiguredPluggable)
-				.Concat(child.GetExplicitlySpecifiedPluggables(logger))
-				.Select(p => new ConfiguredByPluginPluggable(this, parent.InitializePluggable, p, configuration) as IConfiguredPluggable);
+				.Select(p => new ConfiguredByPluginPluggable(this, childInitialize, p, configuration) as IConfiguredPluggable)
+				.Concat(
+					child.GetExplicitlySpecifiedPluggables(logger)
+					.Select(p => new ConfiguredByPluginPluggable(this, parent.InitializePluggable, p, configuration) as IConfiguredPluggable)
+				);
 		}
 
 		public bool? AutoSearch

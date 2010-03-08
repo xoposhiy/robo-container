@@ -14,7 +14,7 @@ namespace RoboContainer.Impl
 
 		public void AppConfigSection(string sectionName)
 		{
-			XmlConfigurator.FromAppConfig(sectionName).ApplyConfigTo(configurator);
+			XmlConfiguration.FromAppConfig(sectionName).ApplyConfigTo(configurator);
 		}
 
 		public void AppConfig()
@@ -24,7 +24,7 @@ namespace RoboContainer.Impl
 
 		public void XmlFile(string filename)
 		{
-			XmlConfigurator.FromFile(filename).ApplyConfigTo(configurator);
+			XmlConfiguration.FromFile(filename).ApplyConfigTo(configurator);
 		}
 	}
 }

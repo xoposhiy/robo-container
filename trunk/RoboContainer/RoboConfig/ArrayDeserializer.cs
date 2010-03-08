@@ -8,11 +8,11 @@ namespace RoboConfig
 {
 	public class ArrayDeserializer : IDeserializer
 	{
-		private readonly XmlDeserializators xmlDeserializators;
+		private readonly CompositeXmlDeserializer compositeDeserializer;
 
-		public ArrayDeserializer(XmlDeserializators xmlDeserializators)
+		public ArrayDeserializer(CompositeXmlDeserializer compositeDeserializer)
 		{
-			this.xmlDeserializators = xmlDeserializators;
+			this.compositeDeserializer = compositeDeserializer;
 		}
 
 		public bool CanDeserialize(Type type)
@@ -25,7 +25,7 @@ namespace RoboConfig
 			Debug.Assert(type.IsArray);
 			List<object> items = source.ChildNodes.OfType<XmlElement>()
 				.Where(e => e.Name == name)
-				.Select(e => xmlDeserializators.Deserialize(e, "item", type.GetElementType())).ToList();
+				.Select(e => compositeDeserializer.Deserialize(type.GetElementType(), e, "item")).ToList();
 			var result = Array.CreateInstance(type.GetElementType(), items.Count());
 			for(int i = 0; i < result.Length; i++)
 				result.SetValue(items[i], i);

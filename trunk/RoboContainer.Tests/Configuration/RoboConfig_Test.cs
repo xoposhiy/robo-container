@@ -66,7 +66,7 @@ namespace RoboContainer.Tests.Configuration
 		public void Test()
 		{
 			var target = new X();
-			XmlConfigurator.FromString(TestData.conf1).ApplyConfigTo(target);
+			XmlConfiguration.FromString(TestData.conf1).ApplyConfigTo(target);
 			Assert.AreEqual(TestData.result1, target.result.ToString());
 		}
 	}
