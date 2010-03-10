@@ -1,0 +1,62 @@
+#summary Xml-конфигурирование контейнера
+
+= Xml-конфигурирование =
+
+Xml-конфигурирование `RoboContainer` полностью повторяет конфигурирование кодом.
+
+Рассмотрим для примера вот такой блок конфигурирования:
+{{{
+var container = new Container(
+    c =>
+        {
+            c.ForPlugin<IComponent>()
+                .UsePluggable<Component1>()
+                .UseAutoFoundPluggables()
+                .DontUse<Component2>()
+                .DontUse<Component3>()
+                .DontUse<Component4>()
+                .ReusePluggable(ReusePolicy.Never);
+            c.ForPluggable<Component1>().DontUseIt();
+            c.ForPluggable<Component4>()
+                .ReuseIt(ReusePolicy.Never)
+                .UseConstructor(typeof(IComponent))
+                .Dependency("comp").UsePluggable<Component2>();
+        }
+    );
+}}}
+Его можно переписать вот так:
+{{{var container = new Container(c => c.ConfigureBy.XmlFile("config.xml"));}}}
+
+Вот с таким config.xml:
+{{{
+<?xml version="1.0" encoding="utf-8" ?>
+<robocontainer>
+	
+	<ForPlugin pluginType="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests">
+		<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests"/>
+		<UseAutoFoundPluggables/>
+		<DontUse>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component3, RoboContainer.Tests"/>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests"/>
+		</DontUse>
+		<ReusePluggable reusePolicy="Never"/>
+	</ForPlugin>
+	
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests">
+		<DontUseIt/>
+	</ForPluggable>
+	
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests">
+		<ReuseIt reusePolicy="Never"/>
+		<UseConstructor>
+			<argsTypes item="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests"/>
+		</UseConstructor>
+		<Dependency dependencyName="comp">
+			<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
+		</Dependency>
+	</ForPluggable>
+	
+</robocontainer>
+
+}}}
