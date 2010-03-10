@@ -14,7 +14,7 @@ namespace RoboContainer.Tests.Configuration
 				//[XmlConfiguration.ConfigByXmlFile
 				var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigSample.xml"));
 				//]
-				File.Copy("Configuration\\ConfigSample.xml", "Configuration\\XmlConfiguration.Config.xml.txt");
+				File.Copy("Configuration\\ConfigSample.xml", "Configuration\\XmlConfiguration.Config.xml.txt", true);
 				Check(container);
 			}
 			{
