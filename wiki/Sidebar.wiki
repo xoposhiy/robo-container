@@ -3,6 +3,7 @@
   * [HowToLearn Как знакомиться с `RoboContainer`?]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
+  * [XmlConfiguration Xml-конфигурирование]
   * [Generics Поддержка generics]
   * [Collections Поддержка коллекций]
   * [Lazy Ленивое инжектирование]
