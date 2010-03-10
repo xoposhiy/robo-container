@@ -43,7 +43,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 				return;
 			}
 			IDictionary<string, string> samples = LoadSamples();
-			samples.ForEach(sample => Console.WriteLine(sample.Key + Environment.NewLine + sample.Value + Environment.NewLine));
+			samples.ForEach(sample => Console.WriteLine(sample.Key));
 			wikiDirectory.GetFiles("*.wiki").ForEach(pageFile => ProcessPage(pageFile, samples));
 		}
 
@@ -65,9 +65,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 						sampleText.Split(new[] {"\r\n"}, StringSplitOptions.None)
 						.Where(line => !line.EndsWith("//hide")).ToArray();
 					sampleText = string.Join("\r\n", sampleTextLines);
-					Console.WriteLine(sampleText);
 					sampleText = MinimizeIdentation(sampleText);
-					Console.WriteLine(sampleText);
 					if(samples.ContainsKey(sampleName))
 						samples[sampleName] = samples[sampleName].TrimEnd() + sampleText;
 					else
@@ -86,7 +84,6 @@ namespace RoboContainer.Tests.SamplesForWiki
 		{
 			string[] lines = sampleText.Split(new[]{"\r\n"}, StringSplitOptions.RemoveEmptyEntries);
 			var identation = lines.Min(l => MaxWhitespacePrefixLen(l));
-			Console.WriteLine("Identation " + identation);
 			return lines.Select(l => l.Substring(identation)).Aggregate("", (s, line) => s + "\r\n" + line);
 		}
 

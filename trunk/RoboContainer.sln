@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{981825CD-8
 		..\wiki\QuickStart.wiki = ..\wiki\QuickStart.wiki
 		..\wiki\RoboConcept.wiki = ..\wiki\RoboConcept.wiki
 		..\wiki\Sidebar.wiki = ..\wiki\Sidebar.wiki
+		..\wiki\XmlConfiguration.wiki = ..\wiki\XmlConfiguration.wiki
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExploreOthers", "ExploreOthers\ExploreOthers.csproj", "{C3306639-B495-49AA-8FF5-CD987883E0FE}"

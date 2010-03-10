@@ -5,31 +5,38 @@
 Xml-конфигурирование `RoboContainer` полностью повторяет конфигурирование кодом.
 
 Рассмотрим для примера вот такой блок конфигурирования:
+<wiki:comment>[XmlConfiguration.ConfigByCode</wiki:comment>
 {{{
+
 var container = new Container(
-    c =>
-        {
-            c.ForPlugin<IComponent>()
-                .UsePluggable<Component1>()
-                .UseAutoFoundPluggables()
-                .DontUse<Component2>()
-                .DontUse<Component3>()
-                .DontUse<Component4>()
-                .ReusePluggable(ReusePolicy.Never);
-            c.ForPluggable<Component1>().DontUseIt();
-            c.ForPluggable<Component4>()
-                .ReuseIt(ReusePolicy.Never)
-                .UseConstructor(typeof(IComponent))
-                .Dependency("comp").UsePluggable<Component2>();
-        }
-    );
+	c =>
+		{
+			c.ForPlugin<IComponent>()
+				.UsePluggable<Component1>()
+				.UseAutoFoundPluggables()
+				.DontUse<Component2>()
+				.DontUse<Component3>()
+				.DontUse<Component4>()
+				.ReusePluggable(ReusePolicy.Never);
+			c.ForPluggable<Component1>().DontUseIt();
+			c.ForPluggable<Component4>()
+				.ReuseIt(ReusePolicy.Never)
+				.UseConstructor(typeof(IComponent))
+				.Dependency("comp").UsePluggable<Component2>();
+		}
+	);
 }}}
+<wiki:comment></wiki:comment>
 Его можно переписать вот так:
+<wiki:comment>[XmlConfiguration.ConfigByXmlFile</wiki:comment>
 {{{
-var container = new Container(c => c.ConfigureBy.XmlFile("config.xml"));
+
+var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigSample.xml"));
 }}}
+<wiki:comment></wiki:comment>
 
 Вот с таким config.xml:
+<wiki:comment>[XmlConfiguration.Config.xml</wiki:comment>
 {{{
 <?xml version="1.0" encoding="utf-8" ?>
 <robocontainer>
@@ -60,7 +67,9 @@ var container = new Container(c => c.ConfigureBy.XmlFile("config.xml"));
 	</ForPluggable>
 	
 </robocontainer>
+
 }}}
+<wiki:comment></wiki:comment>
 
 По факту механизм конфигурирования с помощью xml полностью отделен от самого контейнера и просто конвертирует последовательность xml-элементов в последовательность вызовов методов объекта `IContainerConfigurator`. Поэтому интерфейс xml-конфигурирования гарантированно никогда не разойдется с интерфейсом конфигурирования кодом.
 

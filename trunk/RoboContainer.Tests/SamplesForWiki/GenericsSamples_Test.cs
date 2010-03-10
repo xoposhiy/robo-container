@@ -88,7 +88,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 						// неизвестного на момент конфигурирования, 
 						// использовать заместитель параметра типа TypeParameters.T1, TypeParameters.T2, ...
 						c.ForPluggable(typeof(GenericWithConstructor<>))
-							.UseConstructor(TypeParameters.T1); // контейнер типы TypeParameters.Tn обрабатывает особо.
+							.UseConstructor(TypeParameters.T1); //типы TypeParameters.Tn обрабатываются контейнером особо.
 						c.ForPlugin<int>().UseInstance(42);
 					}
 				);

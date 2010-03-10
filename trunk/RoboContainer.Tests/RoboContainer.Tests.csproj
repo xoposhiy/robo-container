@@ -51,7 +51,9 @@
   <ItemGroup>
     <Compile Include="Arrays\Arrays_Test.cs" />
     <Compile Include="CommonFunctionality\Container_Test.cs" />
-    <Compile Include="Configuration\ExternalConfiguration_Test.cs" />
+    <Compile Include="Configuration\ExternalConfiguration_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Configuration\RoboConfig_Test.cs" />
     <Compile Include="ContainerTestingExtensions.cs" />
     <Compile Include="Contracts\Contracts_Test.cs" />
