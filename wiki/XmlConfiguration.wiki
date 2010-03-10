@@ -25,7 +25,9 @@ var container = new Container(
     );
 }}}
 Его можно переписать вот так:
-{{{var container = new Container(c => c.ConfigureBy.XmlFile("config.xml"));}}}
+{{{
+var container = new Container(c => c.ConfigureBy.XmlFile("config.xml"));
+}}}
 
 Вот с таким config.xml:
 {{{
@@ -58,5 +60,9 @@ var container = new Container(
 	</ForPluggable>
 	
 </robocontainer>
-
 }}}
+
+По факту механизм конфигурирования с помощью xml полностью отделен от самого контейнера и просто конвертирует последовательность xml-элементов в последовательность вызовов методов объекта `IContainerConfigurator`. Поэтому интерфейс xml-конфигурирования гарантированно никогда не разойдется с интерфейсом конфигурирования кодом.
+
+Кстати, механизм xml-конфигурирования вполне самостоятельная вещь и может использоваться не только применительно к контейнеру. Он довольно прост и, возможно, недостаточно гибок, но его всегда можно взять за основу. Код лежит в пространстве имен RoboConfig вот тут:
+http://code.google.com/p/robo-container/source/browse/#svn/trunk/RoboContainer/RoboConfig
