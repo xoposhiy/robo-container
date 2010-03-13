@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
 using RoboContainer.Infection;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Impl
 {
@@ -68,8 +69,14 @@ namespace RoboContainer.Impl
 		{
 			var config = new DependencyConfigurator(parameterInfo.Name);
 			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
-			config.RequireContracts(requirementAttributes.SelectMany(att => att.Contracts).Select(c => (ContractRequirement) c).ToArray());
+			config.RequireContracts(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
+			config.RequireContracts(
+				parameterInfo.GetCustomAttributes(false)
+				.Where(InjectionContracts.IsContractAttribute)
+				.Select(a => (ContractRequirement)a.GetType())
+				.ToArray()
+				);
 			return config;
 		}
-	}
+			}
 }

@@ -4,13 +4,13 @@
 	{
 		/// <summary>
 		/// Конфигурирует контейнер на основе секции <paramref name="sectionName"/> из app.config-файла.
-		/// Соответствующая секция должна быть... TODO
+		/// Соответствующая секция должна быть... TODO секции в app.config
 		/// </summary>
 		void AppConfigSection(string sectionName);
 
 		/// <summary>
 		/// Конфигурирует контейнер на основе секции 'robocontainer' из app.config-файла.
-		/// Соответствующая секция должна быть... TODO
+		/// Соответствующая секция должна быть... TODO секции в app.config
 		/// </summary>
 		void AppConfig();
 	

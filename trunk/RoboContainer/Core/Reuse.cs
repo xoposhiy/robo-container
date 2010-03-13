@@ -12,7 +12,7 @@ namespace RoboContainer.Core
 		public class Always : CommonReusePolicy
 		{
 			public Always() 
-				: base(true, () => new SingleValueSlot())
+				: base(false, () => new SingleValueSlot())
 			{
 			}
 		}
@@ -24,7 +24,7 @@ namespace RoboContainer.Core
 		public class Never : CommonReusePolicy
 		{
 			public Never() 
-				: base(false, () => new TransientSlot())
+				: base(true, () => new TransientSlot())
 			{
 			}
 		}
@@ -36,7 +36,7 @@ namespace RoboContainer.Core
 		public class InSameThread : CommonReusePolicy
 		{
 			public InSameThread() 
-				: base(true, () => new PerThreadSlot()) // TODO подумать, правильно ли тут стоит true.
+				: base(false, () => new PerThreadSlot())
 			{
 			}
 		}

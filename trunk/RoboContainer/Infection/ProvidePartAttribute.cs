@@ -14,6 +14,6 @@ namespace RoboContainer.Infection
 
 		public bool UseOnlyThis { get; set; }
 
-		//TODO Contracts
+		//TODO Contracts in Provide part attribute
 	}
 }

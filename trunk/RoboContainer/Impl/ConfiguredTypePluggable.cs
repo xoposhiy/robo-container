@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
+	[DebuggerDisplay("ByType {PluggableType}")]
 	public class ConfiguredTypePluggable : IConfiguredPluggable
 	{
 		private readonly ContractDeclaration[] additionalDeclaredContracts;
 		private readonly Func<IConfiguredPluggable> configuredPluggableProvider;
 		private IConfiguredPluggable configuredPluggable;
-		private IEnumerable<ContractDeclaration> declaredContracts;
+		private IEnumerable<ContractDeclaration> allDeclaredContracts;
 
 		public ConfiguredTypePluggable(Func<IConfiguredPluggable> configuredPluggableProvider, ContractDeclaration[] additionalDeclaredContracts)
 		{
@@ -50,7 +52,7 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
-			get { return declaredContracts ?? (declaredContracts = ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts)); }
+			get { return allDeclaredContracts ?? (allDeclaredContracts = ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts)); }
 		}
 
 		public IEnumerable<IConfiguredDependency> Dependencies
@@ -71,6 +73,13 @@ namespace RoboContainer.Impl
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
 			return new ConfiguredTypePluggable(() => ConfiguredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), additionalDeclaredContracts);
+		}
+
+		public void DumpDebugInfo(Action<string> writeLine)
+		{
+			this.DumpMainInfo(writeLine);
+			if(configuredPluggable != null)
+				configuredPluggable.DumpDebugInfo(l => writeLine("\t" + l));
 		}
 
 		public void Dispose()

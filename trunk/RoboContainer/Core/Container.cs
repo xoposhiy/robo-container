@@ -161,6 +161,7 @@ namespace RoboContainer.Core
 			if(pluggables == null)
 			{
 				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
+				//configuredPluggables.ForEach(p => Console.WriteLine(p.DumpDebugInfo()));
 				pluggables = configuredPluggables.Select(
 					c => c.GetFactory().TryGetOrCreate(ConstructionLogger, pluginType)
 					).Where(p => p != null).ToList();
@@ -208,9 +209,8 @@ namespace RoboContainer.Core
 			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger).ToList();
 			return configuredPluggables
 				.Where(
-					p =>
-						requiredContracts.All(
-							req => p.GetAllContracts().Any(c => c.Satisfy(req)))).ToList();
+					p => p.ByContractsFilterWithLogging(requiredContracts, ConstructionLogger)
+					).ToList();
 		}
 
 		private static IEnumerable<object> CreateArray(Type elementType, IEnumerable<object> elements)

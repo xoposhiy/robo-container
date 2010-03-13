@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
@@ -49,32 +50,37 @@ namespace RoboContainer.Tests.With
 			// ReSharper disable AccessToModifiedClosure
 			int parent_pluggable = 0;
 			int parent_plugin = 0;
-			int child_pluggable = 0;
-			int child_plugin = 0;
 			var container = new Container(
 				c =>
 					{
-						c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => 
-							parent_plugin++
+						c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => parent_plugin++);
+						c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never).SetInitializer(
+							foo => { parent_pluggable++;
+							       	//Debugger.Break();
+							}
 							);
-						c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never).SetInitializer(foo => parent_pluggable--);
 					});
 
-			container.With(c => { }).Get<IFoo>();
-			Assert.AreEqual(1, parent_plugin);
-			Assert.AreEqual(-1, parent_pluggable);
+//			container.With(c => { }).Get<IFoo>();
+//			Assert.AreEqual(1, parent_plugin);
+//			Assert.AreEqual(1, parent_pluggable);
 			parent_plugin = 0;
 			parent_pluggable = 0;
-			container.With(
+			int child_pluggable = 0;
+			int child_plugin = 0;
+			var childContainer = container.With(
 				c =>
 					{
 						c.ForPlugin<IFoo>().SetInitializer(foo => child_plugin++);
-						c.ForPluggable<Foo1>().SetInitializer(foo => child_pluggable--);
-					}).Get<IFoo>();
+						c.ForPluggable<Foo1>().SetInitializer(
+							foo => child_pluggable++
+							);
+					});
+			childContainer.Get<IFoo>();
 			Assert.AreEqual(1, child_plugin);
-			Assert.AreEqual(-1, child_pluggable);
-			Assert.AreEqual(1, parent_plugin);
-			Assert.AreEqual(-1, parent_pluggable);
+			Assert.AreEqual(1, child_pluggable);
+			Assert.AreEqual(0, parent_plugin);
+			Assert.AreEqual(0, parent_pluggable);
 			// ReSharper restore AccessToModifiedClosure
 		}
 

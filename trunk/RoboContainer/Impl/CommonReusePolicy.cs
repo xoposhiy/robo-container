@@ -7,9 +7,9 @@ namespace RoboContainer.Impl
 	{
 		private readonly Func<IReuseSlot> createSlot;
 
-		internal CommonReusePolicy(bool reusableFromChildContainer, Func<IReuseSlot> createSlot)
+		internal CommonReusePolicy(bool overridable, Func<IReuseSlot> createSlot)
 		{
-			ReusableFromChildContainer = reusableFromChildContainer;
+			Overridable = overridable;
 			this.createSlot = createSlot;
 		}
 
@@ -28,6 +28,6 @@ namespace RoboContainer.Impl
 			return createSlot();
 		}
 
-		public bool ReusableFromChildContainer { get; private set; }
+		public bool Overridable { get; private set; }
 	}
 }

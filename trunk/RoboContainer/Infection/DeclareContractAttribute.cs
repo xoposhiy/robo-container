@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using RoboContainer.Core;
 using RoboContainer.Impl;
+using System.Linq;
 
 namespace RoboContainer.Infection
 {
@@ -12,10 +15,19 @@ namespace RoboContainer.Infection
 	public class DeclareContractAttribute : Attribute
 	{
 		public DeclareContractAttribute(params string[] contracts)
+			: this(contracts.Select(c => (ContractDeclaration)c))
 		{
-			Contracts = contracts;
+		}
+		public DeclareContractAttribute(params Type[] contracts)
+			: this(contracts.Select(c => (ContractDeclaration)c))
+		{
 		}
 
-		public string[] Contracts { get; private set; }
+		public DeclareContractAttribute(IEnumerable<ContractDeclaration> contracts)
+		{
+			Contracts = contracts.ToArray();
+		}
+
+		public ContractDeclaration[] Contracts { get; private set; }
 	}
 }

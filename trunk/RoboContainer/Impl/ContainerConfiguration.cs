@@ -52,6 +52,15 @@ namespace RoboContainer.Impl
 		}
 
 		// use
+		public IConfiguredPluggable TryGetConfiguredPluggable(Type pluginType, Type pluggableType)
+		{
+			if(!pluggableType.Constructable()) return null;
+			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, pluginType);
+			if(pluggableType == null) return null;
+			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
+			return TryGetConfiguredPluggable(pluggableType);
+		}
+
 		public virtual bool HasConfiguredPluggable(Type pluggableType)
 		{
 			return pluggableConfigs.ContainsKey(pluggableType);
@@ -68,7 +77,7 @@ namespace RoboContainer.Impl
 		}
 
 		// use
-		public virtual IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
+		public virtual IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}

@@ -2,23 +2,34 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
+	[DebuggerDisplay("CombPluggable {PluggableType}")]
 	public class CombinedConfiguredPluggable : IConfiguredPluggable
 	{
 		private readonly IConfiguredPluggable parent;
 		private readonly IConfiguredPluggable child;
-		private readonly ChildConfiguration childConfiguration;
+		private readonly IContainerConfiguration childConfiguration;
 		private IInstanceFactory factory;
 
-		public CombinedConfiguredPluggable(IConfiguredPluggable parent, IConfiguredPluggable child, ChildConfiguration childConfiguration)
+		public CombinedConfiguredPluggable(IConfiguredPluggable parent, IConfiguredPluggable child, IContainerConfiguration childConfiguration)
 		{
 			this.parent = parent;
 			this.child = child;
 			this.childConfiguration = childConfiguration;
 			Debug.Assert(parent.PluggableType == child.PluggableType);
+		}
+
+		public void DumpDebugInfo(Action<string> writeLine)
+		{
+			this.DumpMainInfo(writeLine);
+			writeLine("\tChild:");
+			child.DumpDebugInfo(line => writeLine("\t" + line));
+			writeLine("\tParent:");
+			parent.DumpDebugInfo(line => writeLine("\t" + line));
 		}
 
 		public void Dispose()
@@ -77,7 +88,7 @@ namespace RoboContainer.Impl
 
 		private IInstanceFactory CreateFactory()
 		{
-			if(parent.ReusePolicy.ReusableFromChildContainer) return parent.GetFactory();
+			if(!parent.ReusePolicy.Overridable) return parent.GetFactory();
 			return parent.GetFactory().CreateByPrototype(child.ReusePolicy, child.InitializePluggable, childConfiguration);
 		}
 

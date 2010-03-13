@@ -1,14 +1,16 @@
-﻿namespace RoboContainer.Core
+﻿using System;
+
+namespace RoboContainer.Core
 {
 	/// <summary>
 	/// Абстрактный класс, представляющий собой определение контракта.
-	/// Имеет неявный оператор приведения типов, конвертирующий строку в экземпляр <see cref="NamedContractDeclaration"/>.
+	/// Имеет неявный оператор приведения типов, конвертирующий строку в экземпляр <see cref="SimpleContractDeclaration{String}"/>.
 	/// </summary>
 	public abstract class ContractDeclaration
 	{
 		static ContractDeclaration()
 		{
-			Default = new DefaultContractDeclaration();
+			Default = "DEFAULT";
 		}
 
 		public static ContractDeclaration Default { get; private set; }
@@ -20,20 +22,12 @@
 
 		public static implicit operator ContractDeclaration(string contractName)
 		{
-			return new NamedContractDeclaration(contractName);
+			return new SimpleContractDeclaration<string>(contractName);
 		}
 
-		private class DefaultContractDeclaration : ContractDeclaration
+		public static implicit operator ContractDeclaration(Type contractType)
 		{
-			public override bool Satisfy(ContractRequirement requirement)
-			{
-				return requirement == ContractRequirement.Default;
-			}
-
-			public override string ToString()
-			{
-				return "DEFAULT";
-			}
+			return contractType.FullName;
 		}
 	}
 }

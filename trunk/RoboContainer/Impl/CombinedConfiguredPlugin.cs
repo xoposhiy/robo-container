@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RoboContainer.Core;
 
@@ -9,14 +10,23 @@ namespace RoboContainer.Impl
 	{
 		private readonly IConfiguredPlugin parent;
 		private readonly IConfiguredPlugin child;
-		private readonly IContainerConfiguration configuration;
+		private readonly ChildConfiguration childConfiguration;
 		private IConfiguredPluggable[] pluggables;
 
-		public CombinedConfiguredPlugin(IConfiguredPlugin parent, IConfiguredPlugin child, IContainerConfiguration configuration)
+		public CombinedConfiguredPlugin(IConfiguredPlugin parent, IConfiguredPlugin child, ChildConfiguration childConfiguration)
 		{
 			this.parent = parent;
 			this.child = child;
-			this.configuration = configuration;
+			this.childConfiguration = childConfiguration;
+		}
+
+		public Type PluginType
+		{
+			get
+			{
+				Debug.Assert(child.PluginType == parent.PluginType);
+				return parent.PluginType;
+			}
 		}
 
 		public IEnumerable<ContractRequirement> RequiredContracts
@@ -31,23 +41,21 @@ namespace RoboContainer.Impl
 
 		public InitializePluggableDelegate<object> InitializePluggable
 		{
-			get { return child.InitializePluggable; }
+			get { return child.InitializePluggable ?? parent.InitializePluggable; }
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
 		{
-			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger));
+			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger, childConfiguration));
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
 		{
-			var childInitialize = child.InitializePluggable ?? ((pluggable, container) => { return pluggable; });
-			return parent.GetExplicitlySpecifiedPluggables(logger)
-				.Select(p => new ConfiguredByPluginPluggable(this, childInitialize, p, configuration) as IConfiguredPluggable)
-				.Concat(
-					child.GetExplicitlySpecifiedPluggables(logger)
-					.Select(p => new ConfiguredByPluginPluggable(this, parent.InitializePluggable, p, configuration) as IConfiguredPluggable)
-				);
+			return 
+				parent.GetExplicitlySpecifiedPluggables(logger)
+				.Select(p => new CombinedConfiguredPluggable(p, childConfiguration.GetChildConfiguredPluggable(p.PluggableType), childConfiguration))
+				.Cast<IConfiguredPluggable>()
+				.Concat(child.GetExplicitlySpecifiedPluggables(logger));
 		}
 
 		public bool? AutoSearch
@@ -65,13 +73,9 @@ namespace RoboContainer.Impl
 			get { return child.ReuseSpecified ? child.ReusePolicy : parent.ReusePolicy; }
 		}
 
-		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger, bool filterByContractsRequirements)
+		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger)
 		{
-			return parent.GetAutoFoundPluggables(logger, false)
-				.Select(p => configuration.GetConfiguredPluggable(p.PluggableType))
-				.Select(p => new ConfiguredByPluginPluggable(this, child.InitializePluggable, p, configuration) as IConfiguredPluggable)
-				.Exclude(p => p.Ignored || child.IsPluggableIgnored(p.PluggableType))
-				.Where(p => !filterByContractsRequirements || p.ByContractsFilterWithLogging(RequiredContracts, logger));
+			return this.GetAutoFoundPluggables(childConfiguration, logger);
 		}
 
 		public void Dispose()

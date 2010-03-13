@@ -92,7 +92,7 @@ namespace RoboContainer.Tests.With
 			Assert.AreEqual(1, counter);
 
 			container.With(c => c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => counter+=10)).Get<IFoo>();
-			Assert.AreEqual(12, counter);
+			Assert.AreEqual(11, counter);
 			// ReSharper restore AccessToModifiedClosure
 		}
 
