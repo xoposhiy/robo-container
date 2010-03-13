@@ -39,14 +39,14 @@ namespace RoboContainer.Impl
 			return base.GetScannableTypes(pluginType).Union(parent.GetScannableTypes(pluginType));
 		}
 
-		public override IConfiguredPluggable GetConfiguredPluggable(Type pluggableType)
+		public override IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
 			IConfiguredPluggable result;
 			if(!pluggables.TryGetValue(pluggableType, out result))
 			{
 				result = new CombinedConfiguredPluggable(
-					parent.GetConfiguredPluggable(pluggableType),
-					base.GetConfiguredPluggable(pluggableType),
+					parent.TryGetConfiguredPluggable(pluggableType),
+					base.TryGetConfiguredPluggable(pluggableType),
 					this);
 				pluggables.Add(pluggableType, result);
 			}
@@ -65,6 +65,11 @@ namespace RoboContainer.Impl
 				plugins.Add(pluginType, result);
 			}
 			return result;
+		}
+
+		public IConfiguredPluggable GetChildConfiguredPluggable(Type pluggableType)
+		{
+			return base.TryGetConfiguredPluggable(pluggableType);
 		}
 	}
 }

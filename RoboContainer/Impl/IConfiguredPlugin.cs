@@ -6,6 +6,7 @@ namespace RoboContainer.Impl
 {
 	public interface IConfiguredPlugin : IDisposable
 	{
+		Type PluginType { get; }
 		IEnumerable<ContractRequirement> RequiredContracts { get; }
 		bool? AutoSearch { get; }
 		bool ReuseSpecified { get; }
@@ -14,6 +15,6 @@ namespace RoboContainer.Impl
 		InitializePluggableDelegate<object> InitializePluggable { get; }
 		IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger);
 		IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger);
-		IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger, bool filterByContractsRequirements);
+		IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger);
 	}
 }

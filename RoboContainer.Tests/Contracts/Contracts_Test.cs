@@ -39,11 +39,10 @@ namespace RoboContainer.Tests.Contracts
 		{
 			var container = new Container(
 				c =>
-				{
-					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast");
-					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
-
-				});
+					{
+						c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast");
+						c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
+					});
 			var plugin = container.Get<PluginWithDeclaredContract>();
 			Assert.IsInstanceOf<PluggableWithContracts1>(plugin.Plugin);
 		}
@@ -53,14 +52,13 @@ namespace RoboContainer.Tests.Contracts
 		{
 			var container = new Container(
 				c =>
-				{
-					c.ForPlugin<IPluginWithContract>().RequireContracts("hidden");
-					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast", "hidden");
-					c.ForPluggable<PluggableWithContracts2>().DeclareContracts("fast");
-					c.ForPluggable<PluggableWithContracts3>().DeclareContracts("hidden");
-					c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
-
-				});
+					{
+						c.ForPlugin<IPluginWithContract>().RequireContracts("hidden");
+						c.ForPluggable<PluggableWithContracts1>().DeclareContracts("fast", "hidden");
+						c.ForPluggable<PluggableWithContracts2>().DeclareContracts("fast");
+						c.ForPluggable<PluggableWithContracts3>().DeclareContracts("hidden");
+						c.ForPluggable<PluginWithDeclaredContract>().Dependency("plugin").RequireContracts("fast");
+					});
 			var plugin = container.Get<PluginWithDeclaredContract>();
 			Assert.IsInstanceOf<PluggableWithContracts1>(plugin.Plugin);
 		}
@@ -78,12 +76,12 @@ namespace RoboContainer.Tests.Contracts
 		{
 			var container = new Container(
 				c =>
-				{
-					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("1");
-					c.ForPluggable<PluggableWithContracts2>().DeclareContracts();
-					c.ForPluggable<PluggableWithContracts3>().DeclareContracts("3");
-					c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
-				});
+					{
+						c.ForPluggable<PluggableWithContracts1>().DeclareContracts("1");
+						c.ForPluggable<PluggableWithContracts2>().DeclareContracts();
+						c.ForPluggable<PluggableWithContracts3>().DeclareContracts("3");
+						c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
+					});
 			container.Get<IPluginWithContract>().ShouldBeInstanceOf<PluggableWithContracts2>();
 			container.Get<IPluginWithContract>(ContractRequirement.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
 		}
@@ -93,14 +91,24 @@ namespace RoboContainer.Tests.Contracts
 		{
 			var container = new Container(
 				c =>
-				{
-					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("1");
-					c.ForPluggable<PluggableWithContracts2>().DeclareContracts(ContractDeclaration.Default);
-					c.ForPluggable<PluggableWithContracts3>().DeclareContracts("3");
-					c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
-				});
+					{
+						c.ForPluggable<PluggableWithContracts1>().DeclareContracts("1");
+						c.ForPluggable<PluggableWithContracts2>().DeclareContracts(ContractDeclaration.Default);
+						c.ForPluggable<PluggableWithContracts3>().DeclareContracts("3");
+						c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
+					});
 			container.Get<IPluginWithContract>().ShouldBeInstanceOf<PluggableWithContracts2>();
 			container.Get<IPluginWithContract>(ContractRequirement.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
+		}
+
+		[Test]
+		public void Contracts_without_code_infection()
+		{
+			var container = new Container();
+			var hidden = container.Get<IPluginWithAttributes>(typeof(FastAndHiddenAttribute));
+			Assert.IsInstanceOf<FastHiddenPluggable>(hidden);
+			Assert.IsInstanceOf<FastHiddenPluggable>(container.Get<Framework>().Plugin);
+			Assert.IsInstanceOf<BestFramework>(container.Get<IFramework>());
 		}
 	}
 
@@ -108,15 +116,57 @@ namespace RoboContainer.Tests.Contracts
 	public interface IPluginWithAttributes
 	{
 	}
+
+	[BestFramework]
+	interface IFramework{}
+
+	[DependencyInjectionContract]
+	internal class BestFrameworkAttribute : Attribute
+	{
+	}
+
+	[BestFramework]
+	public class BestFramework : IFramework
+	{
+		
+	}
+
+	public class Framework : IFramework
+	{
+		public IPluginWithAttributes Plugin { get; set; }
+
+		public Framework([FastAndHidden, NotNull] IPluginWithAttributes plugin)
+		{
+			Plugin = plugin;
+		}
+	}
+
+	public class NotNullAttribute : Attribute
+	{
+	}
+
+	[DependencyInjectionContract]
+	public class FastAndHiddenAttribute : Attribute
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	public class DependencyInjectionContract : Attribute
+	{
+	}
+
 	[DeclareContract("hidden")]
 	public class HiddenPluggable : IPluginWithAttributes
 	{
 	}
+
 	[DeclareContract("hidden")]
 	[DeclareContract("fast")]
+	[FastAndHidden]
 	public class FastHiddenPluggable : IPluginWithAttributes
 	{
 	}
+
 	[DeclareContract("fast")]
 	public class FastPluggable : IPluginWithAttributes
 	{
@@ -126,7 +176,7 @@ namespace RoboContainer.Tests.Contracts
 	{
 		public IPluginWithAttributes Plugin { get; private set; }
 
-		public Root([RequireContract("fast")]IPluginWithAttributes plugin)
+		public Root([RequireContract("fast")] IPluginWithAttributes plugin)
 		{
 			Plugin = plugin;
 		}

@@ -35,26 +35,13 @@ namespace RoboContainer.Impl
 		public IInstanceFactory CreateByPrototype(IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
 		{
 			if(newReusePolicy != null && !newReusePolicy.Equals(reusePolicy) || newInitializator != null || Configuration != configuration)
-				return DoCreateByPrototype(newReusePolicy, CombineInitializators(newInitializator, initializePluggable), configuration);
+				return DoCreateByPrototype(newReusePolicy, newInitializator, configuration);
 			return this;
 		}
 
 		public void Dispose()
 		{
 			reuseValueSlot.Dispose();
-		}
-
-		private static InitializePluggableDelegate<object> CombineInitializators(InitializePluggableDelegate<object> pluginInitializator, InitializePluggableDelegate<object> pluggableInitializator)
-		{
-			if(pluggableInitializator == null || pluginInitializator == null)
-				return pluggableInitializator ?? pluginInitializator;
-			return
-				(pluggable, container) =>
-					{
-						pluggableInitializator(pluggable, container);
-						pluginInitializator(pluggable, container);
-						return pluggable;
-					};
 		}
 
 		protected abstract IInstanceFactory DoCreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);

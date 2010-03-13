@@ -64,6 +64,11 @@ namespace RoboContainer.Impl
 			return new ConfiguredByDelegatePluggable(pluginConfigurator, createPluggable, declaredContracts, configuration);
 		}
 
+		public void DumpDebugInfo(Action<string> writeLine)
+		{
+			this.DumpMainInfo(writeLine);
+		}
+
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
 		{
 			get { return declaredContracts; }

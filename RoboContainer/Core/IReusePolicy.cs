@@ -8,7 +8,7 @@ namespace RoboContainer.Core
 	public interface IReusePolicy
 	{
 		IReuseSlot CreateSlot();
-		bool ReusableFromChildContainer { get; }
+		bool Overridable { get; }
 	}
 
 	public interface IReuseSlot : IDisposable

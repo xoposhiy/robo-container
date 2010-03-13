@@ -12,7 +12,6 @@ namespace RoboContainer.Impl
 		private readonly IContainerConfiguration configuration;
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
-		private readonly IDictionary<Type, IConfiguredPluggable> pluggableConfigs = new Dictionary<Type, IConfiguredPluggable>();
 		private readonly List<ContractRequirement> requiredContracts = new List<ContractRequirement>();
 		private IConfiguredPluggable[] pluggables;
 		private bool? autoSearch;
@@ -32,12 +31,12 @@ namespace RoboContainer.Impl
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
 		{
-			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger));
+			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger, configuration));
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
 		{
-			return explicitlySpecifiedPluggables.Select(p => ApplyPluginConfiguration(p));
+			return explicitlySpecifiedPluggables;
 		}
 
 		public bool? AutoSearch
@@ -45,15 +44,9 @@ namespace RoboContainer.Impl
 			get { return autoSearch; }
 		}
 
-		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger, bool filterByContractsRequirements)
+		public IEnumerable<IConfiguredPluggable> GetAutoFoundPluggables(IConstructionLogger logger)
 		{
-			IEnumerable<Type> scannableTypes = configuration.GetScannableTypes(PluginType);
-			return
-				scannableTypes
-					.Exclude(IsIgnored)
-					.Select(t => TryGetConfiguredPluggable(t))
-					.Where(pluggable => pluggable != null)
-					.Where(p => !filterByContractsRequirements || p.ByContractsFilterWithLogging(RequiredContracts, logger));
+			return this.GetAutoFoundPluggables(configuration, logger);
 		}
 
 		public IEnumerable<ContractRequirement> RequiredContracts
@@ -65,8 +58,6 @@ namespace RoboContainer.Impl
 		{
 			if(pluggables != null) pluggables.ForEach(p => p.Dispose());
 			pluggables = null;
-			pluggableConfigs.Values.ForEach(p => p.Dispose());
-			pluggableConfigs.Clear();
 		}
 
 		public IPluginConfigurator UseAutoFoundPluggables()
@@ -100,7 +91,7 @@ namespace RoboContainer.Impl
 		public IPluginConfigurator UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts)
 		{
 			CheckPluggablility(pluggableType);
-			explicitlySpecifiedPluggables.Add(new ConfiguredTypePluggable(() => configuration.GetConfiguredPluggable(pluggableType), declaredContracts));
+			explicitlySpecifiedPluggables.Add(new ConfiguredTypePluggable(() => configuration.TryGetConfiguredPluggable(pluggableType), declaredContracts));
 			autoSearch = false;
 			return this;
 		}
@@ -232,34 +223,16 @@ namespace RoboContainer.Impl
 			DontUse(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
 				PluginType.FindAttributes<RequireContractAttribute>()
-					.SelectMany(a => a.Contracts).Select(c => new NamedContractRequirement(c))
+					.SelectMany(a => a.Contracts)
+					.ToArray());
+			RequireContracts(
+				PluginType.GetCustomAttributes(false)
+					.Where(InjectionContracts.IsContractAttribute)
+					.Select(a => (ContractRequirement) a.GetType())
 					.ToArray());
 		}
 
-		private IConfiguredPluggable ApplyPluginConfiguration(IConfiguredPluggable configuredPluggable)
-		{
-			if(configuredPluggable.PluggableType == null) return configuredPluggable;
-			return new ConfiguredByPluginPluggable(this, configuredPluggable, configuration);
-		}
-
 		// use / once
-		private bool IsIgnored(Type pluggableType)
-		{
-			return
-				configuration.GetConfiguredPluggable(pluggableType).Ignored ||
-					IsPluggableIgnored(pluggableType);
-		}
-
-		// use / once
-		private IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
-		{
-			if(!pluggableType.Constructable()) return null;
-			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, PluginType);
-			if(pluggableType == null) return null;
-			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
-			IConfiguredPluggable configuredPluggable = configuration.GetConfiguredPluggable(pluggableType);
-			return pluggableConfigs.GetOrCreate(pluggableType, () => ApplyPluginConfiguration(configuredPluggable));
-		}
 
 		public static PluginConfigurator FromGenericDefinition(
 			PluginConfigurator genericDefinition,
@@ -274,8 +247,8 @@ namespace RoboContainer.Impl
 			result.explicitlySpecifiedPluggables.AddRange(
 				genericDefinition.explicitlySpecifiedPluggables
 					.Select(
-					openPluggable =>
-						openPluggable.TryGetClosedGenericPluggable(pluginType))
+						openPluggable =>
+							openPluggable.TryGetClosedGenericPluggable(pluginType))
 					.Where(p => p != null)
 				);
 
@@ -374,5 +347,4 @@ namespace RoboContainer.Impl
 			return this;
 		}
 	}
-
 }

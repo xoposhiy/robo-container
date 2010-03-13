@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using RoboContainer.Core;
 using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
 {
+	[DebuggerDisplay("Pluggable {PluggableType}")]
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
 		private readonly List<ContractDeclaration> contracts = new List<ContractDeclaration>();
@@ -65,6 +67,12 @@ namespace RoboContainer.Impl
 		{
 			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
 			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this, Configuration);
+		}
+
+		public void DumpDebugInfo(Action<string> writeLine)
+		{
+			this.DumpMainInfo(writeLine);
+			writeLine("\tContainerConfig: " + Configuration);
 		}
 
 		public void Dispose()
@@ -164,8 +172,13 @@ namespace RoboContainer.Impl
 			if(pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
 			DeclareContracts(
 				PluggableType.FindAttributes<DeclareContractAttribute>()
-					.SelectMany(a => a.Contracts).Select(c => new NamedContractDeclaration(c))
+					.SelectMany(a => a.Contracts)
 					.ToArray());
+			DeclareContracts(
+				PluggableType.GetCustomAttributes(false)
+				.Where(InjectionContracts.IsContractAttribute)
+				.Select(o => (ContractDeclaration)o.GetType())
+				.ToArray()); 
 		}
 	}
 

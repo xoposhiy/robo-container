@@ -65,6 +65,12 @@ namespace RoboContainer.Impl
 			return null;
 		}
 
+		public void DumpDebugInfo(Action<string> writeLine)
+		{
+			this.DumpMainInfo(writeLine);
+			writeLine("\t" + part);
+		}
+
 		public void Dispose()
 		{
 			var disp = part as IDisposable;

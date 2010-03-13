@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using RoboContainer.Core;
 using RoboContainer.Impl;
+using System.Linq;
 
 namespace RoboContainer.Infection
 {
@@ -23,10 +25,20 @@ namespace RoboContainer.Infection
 	public class RequireContractAttribute : Attribute
 	{
 		public RequireContractAttribute(params string[] contracts)
+			: this(contracts.Select(c => (ContractRequirement)c))
 		{
-			Contracts = contracts;
 		}
 
-		public string[] Contracts { get; private set; }
+		public RequireContractAttribute(params Type[] contracts)
+			: this(contracts.Select(c => (ContractRequirement)c))
+		{
+		}
+
+		public RequireContractAttribute(IEnumerable<ContractRequirement> contracts)
+		{
+			Contracts = contracts.ToArray();
+		}
+
+		public ContractRequirement[] Contracts { get; private set; }
 	}
 }
