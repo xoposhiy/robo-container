@@ -13,7 +13,7 @@ namespace RoboContainer.Impl
 		{
 		}
 
-		public ByConstructorInstanceFactory(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration)
+		private ByConstructorInstanceFactory(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration)
 			: base(pluggable.PluggableType, reusePolicy, initializator, configuration)
 		{
 			this.pluggable = pluggable;

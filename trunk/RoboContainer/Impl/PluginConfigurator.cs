@@ -188,6 +188,7 @@ namespace RoboContainer.Impl
 					.Select(p => TryCreatePart(p, part)).Where(p => p != null);
 		}
 
+		[CanBeNull]
 		private static PartDescription TryCreatePart(PropertyInfo propertyInfo, object part)
 		{
 			var attribute = propertyInfo.FindAttribute<ProvidePartAttribute>();
@@ -220,9 +221,9 @@ namespace RoboContainer.Impl
 				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(Reuse.FromEnum(pluginAttribute.ReusePluggable));
 				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
 			}
-			DontUse(PluginType.FindAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
+			DontUse(PluginType.GetAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
-				PluginType.FindAttributes<RequireContractAttribute>()
+				PluginType.GetAttributes<RequireContractAttribute>()
 					.SelectMany(a => a.Contracts)
 					.ToArray());
 			RequireContracts(

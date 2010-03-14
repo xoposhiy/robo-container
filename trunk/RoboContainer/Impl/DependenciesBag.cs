@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
@@ -12,6 +11,7 @@ namespace RoboContainer.Impl
 	{
 		private readonly List<DependencyConfigurator> dependencies = new List<DependencyConfigurator>();
 
+		[CanBeNull]
 		private bool TryGetActualArg(IContainer container, ParameterInfo formalArg, out object actualArg)
 		{
 			var dep = DependencyConfigurator.FromAttributes(formalArg);
@@ -19,6 +19,7 @@ namespace RoboContainer.Impl
 			return dep.TryGetValue(formalArg.ParameterType, container, out actualArg);
 		}
 
+		[CanBeNull]
 		public object[] TryGetActualArgs(ConstructorInfo constructorInfo, IContainer container)
 		{
 			ParameterInfo[] formalArgs = constructorInfo.GetParameters();

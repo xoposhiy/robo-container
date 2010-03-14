@@ -6,7 +6,7 @@ namespace RoboContainer.Core
 
 	public static class InitializePluggableDelegateExtensions
 	{
-		public static InitializePluggableDelegate<TPluggable> CombineWith<TPluggable>(this InitializePluggableDelegate<TPluggable> first, InitializePluggableDelegate<TPluggable> second)
+		public static InitializePluggableDelegate<TPluggable> CombineWith<TPluggable>([CanBeNull]this InitializePluggableDelegate<TPluggable> first, [CanBeNull]InitializePluggableDelegate<TPluggable> second)
 		{
 			if(first == null || second == null)
 				return first ?? second;

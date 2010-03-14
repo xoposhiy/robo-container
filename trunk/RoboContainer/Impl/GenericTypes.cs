@@ -5,6 +5,7 @@ namespace RoboContainer.Impl
 {
 	public static class GenericTypes
 	{
+		[CanBeNull]
 		public static Type TryCloseGenericTypeToMakeItAssignableTo(Type openGenericType, Type destinationType)
 		{
 			if(!openGenericType.ContainsGenericParameters && destinationType.IsAssignableFrom(openGenericType))

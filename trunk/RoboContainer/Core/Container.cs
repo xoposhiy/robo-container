@@ -46,6 +46,7 @@ namespace RoboContainer.Core
 		}
 
 		[DebuggerStepThrough]
+		[CanBeNull]
 		public TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
 			object tryGet = TryGet(typeof(TPlugin), requiredContracts);
@@ -84,6 +85,7 @@ namespace RoboContainer.Core
 			return items.Single();
 		}
 
+		[CanBeNull]
 		public object TryGet(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
@@ -169,6 +171,7 @@ namespace RoboContainer.Core
 			return pluggables;
 		}
 
+		[CanBeNull]
 		private IEnumerable<object> TryGetCollections(Type pluginType, ContractRequirement[] requiredContracts)
 		{
 			Type elementType;

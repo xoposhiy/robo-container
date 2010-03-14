@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RoboContainer.Core
+﻿namespace RoboContainer.Core
 {
 	/// <summary>
 	/// 	Политика повторного использования объектов.

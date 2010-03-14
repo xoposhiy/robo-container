@@ -47,8 +47,9 @@ namespace RoboContainer.Impl
 			get { return contracts; }
 		}
 
+		[NotNull]
 		public Type PluggableType { get; private set; }
-		public IContainerConfiguration Configuration { get; private set; }
+		private IContainerConfiguration Configuration { get; set; }
 
 		public bool Ignored { get; private set; }
 
@@ -136,7 +137,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		private Type[] CloseTypeParameters(IEnumerable<Type> types)
+		private Type[] CloseTypeParameters([CanBeNull]IEnumerable<Type> types)
 		{
 			if(types == null) return null;
 			return
@@ -165,7 +166,7 @@ namespace RoboContainer.Impl
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
 			if(pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
 			DeclareContracts(
-				PluggableType.FindAttributes<DeclareContractAttribute>()
+				PluggableType.GetAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts)
 					.ToArray());
 			DeclareContracts(

@@ -22,6 +22,7 @@ namespace RoboContainer.Impl
 			return new ByDelegateInstanceFactory(reusePolicy, initializator, createPluggable, configuration);
 		}
 
+		[CanBeNull]
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
 		{
 			return createPluggable(container, pluginToCreate);

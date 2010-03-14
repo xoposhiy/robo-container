@@ -18,11 +18,13 @@ namespace RoboContainer.Core
 		/// Нашлось более одной подходящей реализации.
 		/// Случилась ошибка при создании реализации.
 		/// </exception>
+		[CanBeNull]
 		TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts);
 
 		/// <summary>
 		/// Нетипизированная версия метода <see cref="TryGet{TPlugin}"/>.
 		/// </summary>
+		[CanBeNull]
 		object TryGet(Type pluginType, params ContractRequirement[] requiredContracts);
 
 		/// <summary>
