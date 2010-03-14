@@ -55,7 +55,7 @@ namespace RoboContainer.Impl
 			get { return allDeclaredContracts ?? (allDeclaredContracts = ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts)); }
 		}
 
-		public IEnumerable<IConfiguredDependency> Dependencies
+		public DependenciesBag Dependencies
 		{
 			get { return ConfiguredPluggable.Dependencies; }
 		}

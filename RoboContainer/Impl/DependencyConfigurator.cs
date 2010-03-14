@@ -4,20 +4,16 @@ using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
 using RoboContainer.Infection;
-using RoboContainer.Impl;
 
 namespace RoboContainer.Impl
 {
 	public class DependencyConfigurator : IDependencyConfigurator, IConfiguredDependency
 	{
 		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
-		private Type pluggableType;
-		private object value;
-		private bool valueSpecified;
 
-		public DependencyConfigurator(string name)
+		public DependencyConfigurator(DependencyId id)
 		{
-			Name = name;
+			Id = id;
 		}
 
 		public IEnumerable<ContractRequirement> Contracts
@@ -25,18 +21,29 @@ namespace RoboContainer.Impl
 			get { return contracts; }
 		}
 
-		public bool TryGetValue(Type dependencyType, Container container, out object result)
+		public DependencyId Id
 		{
-			if(valueSpecified)
-			{
-				result = value;
-				return true;
-			}
-			result = container.TryGet(pluggableType ?? dependencyType, contracts.ToArray());
-			return result != null;
+			get; private set;
 		}
 
-		public string Name { get; set; }
+		public Type PluggableType
+		{
+			get;
+			private set;
+		}
+
+		public Type DependencyType { get; set; }
+
+		public bool ValueSpecified
+		{
+			get; private set;
+		}
+
+		public object Value
+		{
+			get;
+			private set;
+		}
 
 		public IDependencyConfigurator RequireContracts(params ContractRequirement[] requiredContracts)
 		{
@@ -47,14 +54,14 @@ namespace RoboContainer.Impl
 		// ReSharper disable ParameterHidesMember
 		public IDependencyConfigurator UseValue(object value)
 		{
-			this.value = value;
-			valueSpecified = true;
+			Value = value;
+			ValueSpecified = true;
 			return this;
 		}
 
 		public IDependencyConfigurator UsePluggable(Type pluggableType)
 		{
-			this.pluggableType = pluggableType;
+			PluggableType = pluggableType;
 			return this;
 		}
 		// ReSharper restore ParameterHidesMember
@@ -67,16 +74,16 @@ namespace RoboContainer.Impl
 
 		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
 		{
-			var config = new DependencyConfigurator(parameterInfo.Name);
+			var config = new DependencyConfigurator(new DependencyId(parameterInfo));
 			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
 			config.RequireContracts(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
 			config.RequireContracts(
 				parameterInfo.GetCustomAttributes(false)
-				.Where(InjectionContracts.IsContractAttribute)
-				.Select(a => (ContractRequirement)a.GetType())
-				.ToArray()
+					.Where(InjectionContracts.IsContractAttribute)
+					.Select(a => (ContractRequirement) a.GetType())
+					.ToArray()
 				);
 			return config;
 		}
-			}
+	}
 }

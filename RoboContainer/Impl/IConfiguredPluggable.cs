@@ -14,7 +14,7 @@ namespace RoboContainer.Impl
 		bool ReuseSpecified { get; }
 		InitializePluggableDelegate<object> InitializePluggable { get; }
 		IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts { get; }
-		IEnumerable<IConfiguredDependency> Dependencies { get; }
+		DependenciesBag Dependencies { get; }
 		Type[] InjectableConstructorArgsTypes { get; }
 		IInstanceFactory GetFactory();
 		IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType);

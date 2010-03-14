@@ -99,9 +99,17 @@ namespace RoboContainer.Tests.With
 		[Test]
 		public void With_refine_dependency_configurations()
 		{
-			var container = new Container();
+			var container = new Container(c => c.ForPluggable<Service>().ReuseIt(ReusePolicy.Never));
 			var service = container.With(c => c.ForPluggable<Service>().Dependency("foo").UsePluggable<Foo1>()).Get<Service>();
 			Assert.IsInstanceOf<Foo1>(service.foo);
+		}
+
+		[Test]
+		public void With_preserves_original_dependency_configurations()
+		{
+			var container = new Container(c => c.ForPluggable<Service>().ReuseIt(ReusePolicy.Never).Dependency("foo").UsePluggable<Foo2>());
+			var service = container.With(c => { }).Get<Service>();
+			Assert.IsInstanceOf<Foo2>(service.foo);
 		}
 	}
 }

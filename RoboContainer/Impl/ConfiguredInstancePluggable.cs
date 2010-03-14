@@ -45,9 +45,9 @@ namespace RoboContainer.Impl
 			get { return declaredContracts; }
 		}
 
-		public IEnumerable<IConfiguredDependency> Dependencies
+		public DependenciesBag Dependencies
 		{
-			get { yield break; }
+			get { return new DependenciesBag(); }
 		}
 
 		public Type[] InjectableConstructorArgsTypes

@@ -74,7 +74,7 @@ namespace RoboContainer.Impl
 			get { return declaredContracts; }
 		}
 
-		public IEnumerable<IConfiguredDependency> Dependencies
+		public DependenciesBag Dependencies
 		{
 			get { throw new NotSupportedException(); }
 		}

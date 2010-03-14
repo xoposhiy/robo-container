@@ -32,11 +32,11 @@ namespace RoboContainer.Impl
 			return reuseValueSlot.Value = TryConstructAndLog(logger, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
 		}
 
-		public IInstanceFactory CreateByPrototype(IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
+		public IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
 		{
-			if(newReusePolicy != null && !newReusePolicy.Equals(reusePolicy) || newInitializator != null || Configuration != configuration)
-				return DoCreateByPrototype(newReusePolicy, newInitializator, configuration);
-			return this;
+			//if(newReusePolicy != null && !newReusePolicy.Equals(reusePolicy) || newInitializator != null || Configuration != configuration)
+			return DoCreateByPrototype(newPluggable, newReusePolicy, newInitializator, configuration);
+			//return this;
 		}
 
 		public void Dispose()
@@ -44,7 +44,7 @@ namespace RoboContainer.Impl
 			reuseValueSlot.Dispose();
 		}
 
-		protected abstract IInstanceFactory DoCreateByPrototype(IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
+		protected abstract IInstanceFactory DoCreateByPrototype(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
 		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate)
 		{

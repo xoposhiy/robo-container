@@ -72,7 +72,7 @@ namespace RoboContainer.Impl
 			get { return configuredPluggable.ExplicitlyDeclaredContracts; }
 		}
 
-		public IEnumerable<IConfiguredDependency> Dependencies
+		public DependenciesBag Dependencies
 		{
 			get { return configuredPluggable.Dependencies; }
 		}
@@ -86,7 +86,7 @@ namespace RoboContainer.Impl
 		private IInstanceFactory CreateFactory()
 		{
 			if(configuredPlugin.ReuseSpecified || configuredPlugin.InitializePluggable != null)
-				return configuredPluggable.GetFactory().CreateByPrototype(configuredPlugin.ReusePolicy, InitializePluggable, configuration);
+				return configuredPluggable.GetFactory().CreateByPrototype(this, configuredPlugin.ReusePolicy, InitializePluggable, configuration);
 			return configuredPluggable.GetFactory();
 		}
 	}
