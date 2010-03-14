@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
@@ -7,7 +8,9 @@ namespace RoboContainer.Core
 	{
 		private readonly bool showTime;
 		private string ident = "";
+		[CanBeNull]
 		private Type pluginType;
+		[CanBeNull]
 		private StringBuilder text;
 
 		public ConstructionLogger(bool showTime)
@@ -68,7 +71,7 @@ namespace RoboContainer.Core
 
 		public override string ToString()
 		{
-			return text.ToString();
+			return text != null ? text.ToString() : "";
 		}
 
 		public void Declined(Type pluggableType, string reason)

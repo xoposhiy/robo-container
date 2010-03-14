@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using RoboContainer.Core;
 using System.Linq;
 
@@ -9,8 +8,6 @@ namespace RoboContainer.Impl
 	public interface IConfiguredDependency
 	{
 		IEnumerable<ContractRequirement> Contracts { get; }
-
-		DependencyId Id { get; }
 
 		bool ValueSpecified { get; }
 
@@ -36,7 +33,7 @@ namespace RoboContainer.Impl
 			}
 			return result;
 		}
-		
+
 		public static bool TryGetValue(this IConfiguredDependency me, Type dependencyType, IContainer container, out object result)
 		{
 			if(me.ValueSpecified)

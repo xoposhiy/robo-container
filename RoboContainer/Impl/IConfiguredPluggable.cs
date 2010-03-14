@@ -8,15 +8,19 @@ namespace RoboContainer.Impl
 {
 	public interface IConfiguredPluggable : IDisposable
 	{
+		[CanBeNull]
 		Type PluggableType { get; }
 		bool Ignored { get; }
 		IReusePolicy ReusePolicy { get; }
 		bool ReuseSpecified { get; }
+		[CanBeNull]
 		InitializePluggableDelegate<object> InitializePluggable { get; }
 		IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts { get; }
 		DependenciesBag Dependencies { get; }
+		[CanBeNull]
 		Type[] InjectableConstructorArgsTypes { get; }
 		IInstanceFactory GetFactory();
+		[CanBeNull]
 		IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType);
 		void DumpDebugInfo(Action<string> writeLine);
 	}

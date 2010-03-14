@@ -7,6 +7,7 @@ namespace RoboContainer.Impl
 	{
 		private readonly IConstructionLogger nullLogger = new NullConstructionLogger();
 		private IConstructionLogger logger = new ConstructionLogger();
+		[CanBeNull]
 		private Func<bool> whenDisable;
 
 		public IConstructionLogger GetLogger()

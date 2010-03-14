@@ -6,22 +6,21 @@ namespace RoboContainer.Impl
 {
 	public abstract class AbstractInstanceFactory : IInstanceFactory
 	{
-		private readonly IReusePolicy reusePolicy;
 		private readonly InitializePluggableDelegate<object> initializePluggable;
 		private readonly IReuseSlot reuseValueSlot;
 
 		protected AbstractInstanceFactory(Type pluggableType, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializePluggable, IContainerConfiguration configuration)
 		{
 			reuseValueSlot = reusePolicy.CreateSlot();
-			this.reusePolicy = reusePolicy;
 			this.initializePluggable = initializePluggable;
 			InstanceType = pluggableType;
 			Configuration = configuration;
 		}
 
-		public Type InstanceType { get; protected set; }
+		public Type InstanceType { get; private set; }
 		public IContainerConfiguration Configuration { get; private set; }
 
+		[CanBeNull]
 		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate)
 		{
 			if(reuseValueSlot.Value != null)
@@ -34,9 +33,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
 		{
-			//if(newReusePolicy != null && !newReusePolicy.Equals(reusePolicy) || newInitializator != null || Configuration != configuration)
 			return DoCreateByPrototype(newPluggable, newReusePolicy, newInitializator, configuration);
-			//return this;
 		}
 
 		public void Dispose()
@@ -46,6 +43,7 @@ namespace RoboContainer.Impl
 
 		protected abstract IInstanceFactory DoCreateByPrototype(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
+		[CanBeNull]
 		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate)
 		{
 			object result = TryConstruct(typeToCreate);
@@ -54,6 +52,7 @@ namespace RoboContainer.Impl
 			return result;
 		}
 
+		[CanBeNull]
 		private object TryConstruct(Type typeToCreate)
 		{
 			var container = new Container(Configuration);
@@ -64,6 +63,7 @@ namespace RoboContainer.Impl
 			return initializePluggable != null ? initializePluggable(constructed, container) : constructed;
 		}
 
+		[CanBeNull]
 		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate);
 	}
 }

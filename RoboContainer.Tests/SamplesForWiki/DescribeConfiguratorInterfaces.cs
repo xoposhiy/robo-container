@@ -69,6 +69,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 			return name.Remove(indexOfGeneric);
 		}
 
+		[CanBeNull]
 		private static string TryGetPropertyDesc(PropertyInfo propertyInfo)
 		{
 			return
@@ -81,6 +82,7 @@ namespace RoboContainer.Tests.SamplesForWiki
 					);
 		}
 
+		[CanBeNull]
 		private static string TryGetMethodDesc(MethodInfo methodInfo)
 		{
 			if(methodInfo.IsSpecialName) return null;

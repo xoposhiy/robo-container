@@ -11,7 +11,9 @@ namespace RoboContainer.Impl
 		bool HasAssemblies();
 		IEnumerable<Type> GetScannableTypes();
 		IEnumerable<Type> GetScannableTypes(Type pluginType);
+		[CanBeNull]
 		IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType);
+		[CanBeNull]
 		IConfiguredPluggable TryGetConfiguredPluggable(Type pluginType, Type pluggableType);
 		bool HasConfiguredPluggable(Type pluggableType);
 		IConfiguredPlugin GetConfiguredPlugin(Type pluginType);

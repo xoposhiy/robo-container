@@ -74,7 +74,6 @@
     <Compile Include="Impl\DisposeUtils.cs" />
     <Compile Include="Impl\EnumerableExtensions.cs" />
     <Compile Include="Impl\IConfiguredLogging.cs" />
-    <Compile Include="Impl\DurationLogger.cs" />
     <Compile Include="Impl\IGenericPluggableConfigurator.cs" />
     <Compile Include="Impl\IGenericPluginConfigurator.cs" />
     <Compile Include="Impl\LoggingConfigurator.cs" />

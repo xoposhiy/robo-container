@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JetBrains.Annotations
+namespace RoboContainer.Impl
 {
 	/// <summary>
 	/// Indicates that marked element should be localized or not.

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace RoboContainer.Impl
 {
-	public class AssembliesUtils
+	public static class AssembliesUtils
 	{
 		public static Assembly GetTheCallingAssembly()
 		{
