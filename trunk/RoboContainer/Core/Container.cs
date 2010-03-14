@@ -161,7 +161,7 @@ namespace RoboContainer.Core
 			if(pluggables == null)
 			{
 				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
-				//configuredPluggables.ForEach(p => Console.WriteLine(p.DumpDebugInfo()));
+//				configuredPluggables.ForEach(p => Console.WriteLine(p.DumpDebugInfo()));
 				pluggables = configuredPluggables.Select(
 					c => c.GetFactory().TryGetOrCreate(ConstructionLogger, pluginType)
 					).Where(p => p != null).ToList();

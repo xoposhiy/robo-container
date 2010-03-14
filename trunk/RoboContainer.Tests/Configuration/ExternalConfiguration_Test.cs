@@ -11,32 +11,32 @@ namespace RoboContainer.Tests.Configuration
 		public void TestCase()
 		{
 			{
+				//[XmlConfiguration.ConfigByCode
+				var container = new Container(
+					c =>
+					{
+						c.ForPlugin<IComponent>()
+							.UsePluggable<Component1>()
+							.UseAutoFoundPluggables()
+							.DontUse<Component2>()
+							.DontUse<Component3>()
+							.DontUse<Component4>()
+							.ReusePluggable(ReusePolicy.Never);
+						c.ForPluggable<Component1>().DontUseIt();
+						c.ForPluggable<Component4>()
+							.ReuseIt(ReusePolicy.Never)
+							.UseConstructor(typeof(IComponent))
+							.Dependency("comp").UsePluggable<Component2>();
+					}
+					);
+				//]
+				Check(container);
+			}
+			{
 				//[XmlConfiguration.ConfigByXmlFile
 				var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigSample.xml"));
 				//]
 				File.Copy("Configuration\\ConfigSample.xml", "Configuration\\XmlConfiguration.Config.xml.txt", true);
-				Check(container);
-			}
-			{
-				//[XmlConfiguration.ConfigByCode
-				var container = new Container(
-					c =>
-						{
-							c.ForPlugin<IComponent>()
-								.UsePluggable<Component1>()
-								.UseAutoFoundPluggables()
-								.DontUse<Component2>()
-								.DontUse<Component3>()
-								.DontUse<Component4>()
-								.ReusePluggable(ReusePolicy.Never);
-							c.ForPluggable<Component1>().DontUseIt();
-							c.ForPluggable<Component4>()
-								.ReuseIt(ReusePolicy.Never)
-								.UseConstructor(typeof(IComponent))
-								.Dependency("comp").UsePluggable<Component2>();
-						}
-					);
-				//]
 				Check(container);
 			}
 		}

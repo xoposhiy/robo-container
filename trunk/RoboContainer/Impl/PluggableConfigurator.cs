@@ -11,7 +11,7 @@ namespace RoboContainer.Impl
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
 		private readonly List<ContractDeclaration> contracts = new List<ContractDeclaration>();
-		private readonly IList<DependencyConfigurator> dependencies = new List<DependencyConfigurator>();
+		private readonly DependenciesBag dependencies = new DependenciesBag();
 		private IInstanceFactory factory;
 
 		private PluggableConfigurator(Type pluggableType, IContainerConfiguration configuration)
@@ -37,9 +37,9 @@ namespace RoboContainer.Impl
 
 		public Type[] InjectableConstructorArgsTypes { get; private set; }
 
-		IEnumerable<IConfiguredDependency> IConfiguredPluggable.Dependencies
+		DependenciesBag IConfiguredPluggable.Dependencies
 		{
-			get { return dependencies.Cast<IConfiguredDependency>(); }
+			get { return dependencies; }
 		}
 
 		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
@@ -106,13 +106,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
-			var dep = dependencies.SingleOrDefault(d => d.Name == dependencyName);
-			if(dep == null)
-			{
-				dep = new DependencyConfigurator(dependencyName);
-				dependencies.Add(dep);
-			}
-			return dep;
+			return dependencies.Get(dependencyName, null);
 		}
 
 		public IPluggableConfigurator SetInitializer(InitializePluggableDelegate<object> initializePluggable)
@@ -176,9 +170,9 @@ namespace RoboContainer.Impl
 					.ToArray());
 			DeclareContracts(
 				PluggableType.GetCustomAttributes(false)
-				.Where(InjectionContracts.IsContractAttribute)
-				.Select(o => (ContractDeclaration)o.GetType())
-				.ToArray()); 
+					.Where(InjectionContracts.IsContractAttribute)
+					.Select(o => (ContractDeclaration) o.GetType())
+					.ToArray());
 		}
 	}
 

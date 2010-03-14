@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
@@ -34,7 +33,7 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			if(factory == parent.GetFactory()) 
+			if(factory == parent.GetFactory())
 				factory = null;
 			else
 				DisposeUtils.Dispose(ref factory);
@@ -71,9 +70,12 @@ namespace RoboContainer.Impl
 		}
 
 		//TODO add support for child dependency configuration
-		public IEnumerable<IConfiguredDependency> Dependencies
+		public DependenciesBag Dependencies
 		{
-			get { return parent.Dependencies.Any() ? parent.Dependencies : child.Dependencies; }
+			get
+			{
+				return parent.ReusePolicy.Overridable ? parent.Dependencies.CombineWith(child.Dependencies) : parent.Dependencies;
+			}
 		}
 
 		public Type[] InjectableConstructorArgsTypes
@@ -89,7 +91,7 @@ namespace RoboContainer.Impl
 		private IInstanceFactory CreateFactory()
 		{
 			if(!parent.ReusePolicy.Overridable) return parent.GetFactory();
-			return parent.GetFactory().CreateByPrototype(child.ReusePolicy, child.InitializePluggable, childConfiguration);
+			return parent.GetFactory().CreateByPrototype(this, child.ReusePolicy, child.InitializePluggable, childConfiguration);
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
