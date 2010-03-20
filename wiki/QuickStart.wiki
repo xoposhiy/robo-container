@@ -71,7 +71,7 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
 <wiki:comment></wiki:comment>
 
-Контейнер можно использовать и для получения коллекции всех реализаций интерфейса.
+Можно использовать контейнер для получения коллекции всех реализаций интересующего интерфейса.
 
 <wiki:comment>[AllWeapons</wiki:comment>
 {{{
@@ -81,7 +81,6 @@ CollectionAssert.Contains(weapons, container.Get<LaserWeapon>());
 CollectionAssert.Contains(weapons, container.Get<RocketWeapon>());
 }}}
 <wiki:comment></wiki:comment>
-
 
 По умолчанию при запросе одного интерфейса несколько раз, контейнер возвращает ссылки на один и тот же объект:
 
