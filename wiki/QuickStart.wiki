@@ -71,13 +71,14 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
 <wiki:comment></wiki:comment>
 
-Впрочем можно получить и полный список реализаций интересующего интерфейса:
+Контейнер можно использовать и для получения коллекции всех реализаций интерфейса.
+
 <wiki:comment>[AllWeapons</wiki:comment>
 {{{
-
 var container = new Container();
 IEnumerable<IWeapon> weapons = container.GetAll<IWeapon>();
-Assert.AreEqual(3, weapons.Count()); // Laser, Rocket, Combo
+CollectionAssert.Contains(weapons, container.Get<LaserWeapon>());
+CollectionAssert.Contains(weapons, container.Get<RocketWeapon>());
 }}}
 <wiki:comment></wiki:comment>
 
