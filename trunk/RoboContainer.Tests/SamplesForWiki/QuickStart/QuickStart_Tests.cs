@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using System.Linq;
@@ -93,6 +94,15 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 			//]
 		}
 
+		[Test]
+		public void GetAllWeapons()
+		{
+			//[AllWeapons
+			var container = new Container();
+			IEnumerable<IWeapon> weapons = container.GetAll<IWeapon>();
+			Assert.AreEqual(3, weapons.Count()); // Laser, Rocket, Combo
+			//]
+		}
 		#endregion
 
 		[Test]

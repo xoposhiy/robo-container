@@ -71,6 +71,17 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 }}}
 <wiki:comment></wiki:comment>
 
+Впрочем можно получить и полный список реализаций интересующего интерфейса:
+<wiki:comment>[AllWeapons</wiki:comment>
+{{{
+
+var container = new Container();
+IEnumerable<IWeapon> weapons = container.GetAll<IWeapon>();
+Assert.AreEqual(3, weapons.Count()); // Laser, Rocket, Combo
+}}}
+<wiki:comment></wiki:comment>
+
+
 По умолчанию при запросе одного интерфейса несколько раз, контейнер возвращает ссылки на один и тот же объект:
 
 <wiki:comment>[SingletoneWeapon</wiki:comment>
