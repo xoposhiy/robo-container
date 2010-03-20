@@ -76,10 +76,10 @@ namespace RoboContainer.Impl
 		}
 
 		// use
+		[CanBeNull]
 		public virtual IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
 			if(!pluggableType.Constructable()) return null;
-			if(pluggableType.ContainsGenericParameters) throw new DeveloperMistake(pluggableType);
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
