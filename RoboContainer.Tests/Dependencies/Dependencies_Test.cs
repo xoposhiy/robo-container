@@ -27,8 +27,8 @@ namespace RoboContainer.Tests.Dependencies
 			var container = new Container(
 				c =>
 				{
-					c.ForPluggable<Multiparam>().Dependency<int>().UseValue(42);
-					c.ForPluggable<Multiparam>().Dependency<IPart>().UsePluggable<Part0>();
+					c.ForPluggable<Multiparam>().DependencyOfType<int>().UseValue(42);
+					c.ForPluggable<Multiparam>().DependencyOfType<IPart>().UsePluggable<Part0>();
 				}
 				);
 			Assert.AreEqual(42, container.Get<Multiparam>().fortyTwo);

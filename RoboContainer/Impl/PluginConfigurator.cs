@@ -147,8 +147,7 @@ namespace RoboContainer.Impl
 
 		private void CheckPluggablility(Type pluggableType)
 		{
-			//TODO диагностика для Generics тоже нужна...
-			if(!PluginType.ContainsGenericParameters && !PluginType.IsAssignableFrom(pluggableType))
+			if(!pluggableType.IsPluggableInto(PluginType))
 				throw NotPluggableException(pluggableType);
 		}
 

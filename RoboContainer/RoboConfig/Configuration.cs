@@ -41,10 +41,11 @@ namespace RoboConfig
 			FieldInfo fieldInfo = target.GetType().GetField(memberName);
 			if(fieldInfo != null) return fieldInfo.GetValue(target);
 
-			var methodInfo = target.GetType().GetMethods()
+			var methodInfos = target.GetType().GetMethods()
 				.Where(m => m.Name == memberName && !m.GetGenericArguments().Any())
-				.Where(m => m.GetParameters().All(p => reader.CanDeserialize(p.ParameterType)))
-				.SingleOrDefault();
+				.Where(m => m.GetParameters().All(p => reader.CanDeserialize(p.ParameterType))).ToList();
+			if(methodInfos.Count() > 1) throw new Exception("Найдено несколько методов " + memberName + " у типа " + target.GetType());
+			var methodInfo = methodInfos.SingleOrDefault();
 			if (methodInfo == null)
 				throw new Exception("Не найден метод " + memberName + " у типа " + target.GetType());
 			return methodInfo.Invoke(target, ReadActualParameters(methodInfo.GetParameters(), source));
