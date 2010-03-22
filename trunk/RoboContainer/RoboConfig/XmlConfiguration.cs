@@ -35,6 +35,7 @@ namespace RoboConfig
 		public static XmlConfiguration FromAppConfig(string sectionName)
 		{
 			var section = (XmlElement) ConfigurationManager.GetSection(sectionName);
+			if(section == null) throw new ConfigurationErrorsException("Section " + sectionName + " not found");
 			return new XmlConfiguration(section);
 		}
 	}

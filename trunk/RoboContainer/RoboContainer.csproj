@@ -131,6 +131,7 @@
     <Compile Include="RoboConfig\EnumDeserializer.cs" />
     <Compile Include="RoboConfig\IActionsReader.cs" />
     <Compile Include="RoboConfig\IDeserializer.cs" />
+    <Compile Include="RoboConfig\Settings.cs" />
     <Compile Include="RoboConfig\XmlActionsReader.cs" />
     <Compile Include="RoboConfig\XmlConfiguration.cs" />
     <Compile Include="RoboConfig\CompositeXmlDeserializer.cs" />
