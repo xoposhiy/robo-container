@@ -22,6 +22,20 @@ namespace RoboContainer.Tests.Dependencies
 		}
 
 		[Test]
+		public void dependency_can_be_set_by_type()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPluggable<Multiparam>().Dependency<int>().UseValue(42);
+					c.ForPluggable<Multiparam>().Dependency<IPart>().UsePluggable<Part0>();
+				}
+				);
+			Assert.AreEqual(42, container.Get<Multiparam>().fortyTwo);
+			Assert.IsInstanceOf<Part0>(container.Get<Multiparam>().part);
+		}
+
+		[Test]
 		public void can_configure_dependencies_for_multiconstructor_pluggable()
 		{
 			var container = new Container(
