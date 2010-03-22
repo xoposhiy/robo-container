@@ -14,37 +14,26 @@
 + Переработка AddPart и экспорта частей.
 + IDisposable
 + Xml-конфигурирование.
++ Доработка With подчистить TODO-шки.
++ Dependency<IService>().UseInstance(service)
 
-Фасилити
-
-Доработка With подчистить TODO-шки.
-
-Dependency<IService>().UseInstance(service)
-
-Сделать экспорт частей из синглтонов. Ворнинги в логе при не экспорте из несинглтонов. Подумать...
-
-Структурированный лог
+Container Reuse Scope
 
 Больше информации в логе.
 
 Документация
 
-Hierarchy Reuse Scope
+Фасилити / Registry / Module
 
-Owner
+Сделать экспорт частей из синглтонов. Ворнинги в логе при не экспорте из несинглтонов. Подумать...
 
-Thread safety
+Структурированный лог
 
-BuildContext
-
-container.AssertConfigurationIsValid();
-
-registry
+container.AssertConfigurationIsValid(); ?!?!?!
 
 setter injection
 field injection
 method injection
-
 
 клевый интерфейс для получения generic-а если значения его параметров типа известны только в рантайме.
 IGenericInterface gi = container.GetGeneric(typeof(IGeneric<,>), object1.GetType(), object2.GetType()).As<IGenericInterface>();
