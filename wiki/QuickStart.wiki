@@ -75,6 +75,7 @@ Assert.IsInstanceOf<RocketWeapon>(weapon);
 
 <wiki:comment>[AllWeapons</wiki:comment>
 {{{
+
 var container = new Container();
 IEnumerable<IWeapon> weapons = container.GetAll<IWeapon>();
 CollectionAssert.Contains(weapons, container.Get<LaserWeapon>());

@@ -110,12 +110,12 @@ namespace RoboContainer.Impl
 			return dependencies.Get(dependencyName, null);
 		}
 
-		public IDependencyConfigurator Dependency<TDependencyType>()
+		public IDependencyConfigurator DependencyOfType<TDependencyType>()
 		{
-			return Dependency(typeof(TDependencyType));
+			return DependencyOfType(typeof(TDependencyType));
 		}
 
-		public IDependencyConfigurator Dependency(Type dependencyType)
+		public IDependencyConfigurator DependencyOfType(Type dependencyType)
 		{
 			return dependencies.Get(null, dependencyType);
 		}
@@ -225,14 +225,14 @@ namespace RoboContainer.Impl
 			return pluggableConfigurator.Dependency(dependencyName);
 		}
 
-		public IDependencyConfigurator Dependency<TPlugin>()
+		public IDependencyConfigurator DependencyOfType<TPlugin>()
 		{
-			return pluggableConfigurator.Dependency<TPlugin>();
+			return pluggableConfigurator.DependencyOfType<TPlugin>();
 		}
 
-		public IDependencyConfigurator Dependency(Type dependencyType)
+		public IDependencyConfigurator DependencyOfType(Type dependencyType)
 		{
-			return pluggableConfigurator.Dependency(dependencyType);
+			return pluggableConfigurator.DependencyOfType(dependencyType);
 		}
 
 		public IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable)

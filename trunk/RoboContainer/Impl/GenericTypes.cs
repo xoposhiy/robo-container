@@ -10,6 +10,22 @@ namespace RoboContainer.Impl
 		{
 			if(!openGenericType.ContainsGenericParameters && destinationType.IsAssignableFrom(openGenericType))
 				return openGenericType;
+			var closedTypeArgs = TryGetTypeParametersToCloseGeneric(openGenericType, destinationType);
+			return closedTypeArgs == null ? null : openGenericType.MakeGenericType(closedTypeArgs);
+		}
+
+		[CanBeNull]
+		public static bool IsPluggableInto(this Type openGenericType, Type destinationType)
+		{
+			if(!openGenericType.ContainsGenericParameters && destinationType.IsAssignableFrom(openGenericType))
+				return true;
+			var closedTypeArgs = TryGetTypeParametersToCloseGeneric(openGenericType, destinationType);
+			return closedTypeArgs != null;
+		}
+
+		[CanBeNull]
+		private static Type[] TryGetTypeParametersToCloseGeneric(this Type openGenericType, Type destinationType)
+		{
 			if(!openGenericType.IsGenericType || !destinationType.IsGenericType) return null;
 			Type type = openGenericType.FindInterfaceOrBaseClass(destinationType.GetGenericTypeDefinition());
 			if(type == null) return null;
@@ -28,7 +44,7 @@ namespace RoboContainer.Impl
 					open2closedTypeArgs.Where(p => p.OpenArg == openArg).Select(arg => arg.ClosedArg).Distinct()
 				).ToArray();
 			if(closedTypeArgs.Length != openGenericType.GetGenericArguments().Length) return null;
-			return openGenericType.MakeGenericType(closedTypeArgs);
+			return closedTypeArgs;
 		}
 	}
 }

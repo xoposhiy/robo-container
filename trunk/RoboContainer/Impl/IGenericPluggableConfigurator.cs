@@ -85,13 +85,13 @@ namespace RoboContainer.Impl
 		/// Конфигурирование зависимости с типом <typeparamref name="TDependencyType"/>.
 		/// При повторном вызове возвращается конфигуратор, с помощью которого можно доконфигурировать зависимость.
 		/// </summary>
-		IDependencyConfigurator Dependency<TDependencyType>();
+		IDependencyConfigurator DependencyOfType<TDependencyType>();
 
 		/// <summary>
 		/// Конфигурирование зависимости с типом <paramref name="dependencyType"/>.
 		/// При повторном вызове возвращается конфигуратор, с помощью которого можно доконфигурировать зависимость.
 		/// </summary>
-		IDependencyConfigurator Dependency(Type dependencyType);
+		IDependencyConfigurator DependencyOfType(Type dependencyType);
 	}
 
 	/// <summary>
