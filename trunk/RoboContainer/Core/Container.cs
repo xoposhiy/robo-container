@@ -120,7 +120,6 @@ namespace RoboContainer.Core
 		{
 			var childConfiguration = new ChildConfiguration(configuration);
 			configure(childConfiguration.Configurator);
-			//TODO check generics...
 			return new Container(childConfiguration);
 		}
 

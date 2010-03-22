@@ -36,7 +36,5 @@ namespace RoboContainer.Core
 		/// Использовать в качестве значения для этой зависимости реализацию типа <typeparamref name="TPluggable"/>
 		/// </summary>
 		IDependencyConfigurator UsePluggable<TPluggable>();
-
-		//TODO Поддержка UsePluggable через атрибуты.
 	}
 }

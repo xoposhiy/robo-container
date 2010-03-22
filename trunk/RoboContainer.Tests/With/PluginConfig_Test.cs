@@ -32,6 +32,19 @@ namespace RoboContainer.Tests.With
 		{
 		}
 
+		public interface IGenericFoo<T>{}
+		public class GenericFoo<T> : IGenericFoo<T> { }
+		public class GenericFooOld<T> : IGenericFoo<T> { }
+
+		[Test]
+		public void Generics()
+		{
+			var parent = new Container(c => c.ForPlugin(typeof(IGenericFoo<>)).UsePluggable(typeof(GenericFooOld<>)));
+			var child = parent.With(c => c.ForPlugin(typeof(IGenericFoo<>)).UsePluggable(typeof(GenericFoo<>), "child"));
+			Assert.IsInstanceOf<GenericFooOld<string>>(child.Get<IGenericFoo<string>>());
+			Assert.IsInstanceOf<GenericFoo<string>>(child.Get<IGenericFoo<string>>("child"));
+		}
+
 		[Test]
 		public void Singletons_of_parent_cant_have_child_dependencies()
 		{
@@ -111,7 +124,7 @@ namespace RoboContainer.Tests.With
 		{
 			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(new Foo1()));
 			var parentFooes = container.GetAll<IFoo>();
-			var childContainer = container.With(c => c.ForPlugin<IFoo>().UseAutoFoundPluggables());
+			var childContainer = container.With(c => c.ForPlugin<IFoo>().UsePluggablesAutosearch(true));
 			var childFooes = childContainer.GetAll<IFoo>();
 			Console.WriteLine(childContainer.LastConstructionLog);
 			Console.WriteLine(container.LastConstructionLog);
@@ -122,9 +135,9 @@ namespace RoboContainer.Tests.With
 		[Test]
 		public void With_can_turn_off_autosearch()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(new Foo1()).UseAutoFoundPluggables());
+			var container = new Container(c => c.ForPlugin<IFoo>().UseInstance(new Foo1()).UsePluggablesAutosearch(true));
 			var parentFooes = container.GetAll<IFoo>();
-			var childContainer = container.With(c => c.ForPlugin<IFoo>().DontUseAutoFoundPluggables());
+			var childContainer = container.With(c => c.ForPlugin<IFoo>().UsePluggablesAutosearch(false));
 			var childFooes = childContainer.GetAll<IFoo>();
 			Console.WriteLine(childContainer.LastConstructionLog);
 			Console.WriteLine(container.LastConstructionLog);

@@ -16,6 +16,7 @@ namespace RoboConfig
 			deserializers.Add(new DeserializerOf<int>(s => int.Parse(s, NumberFormatInfo.InvariantInfo)));
 			deserializers.Add(new DeserializerOf<double>(s => double.Parse(s, NumberFormatInfo.InvariantInfo)));
 			deserializers.Add(new DeserializerOf<float>(s => float.Parse(s, NumberFormatInfo.InvariantInfo)));
+			deserializers.Add(new DeserializerOf<bool>(s => bool.Parse(s)));
 			deserializers.Add(new DeserializerOf<Type>(s => Type.GetType(s, true, false)));
 			deserializers.Add(new EnumDeserializer());
 			deserializers.Add(new ArrayDeserializer(this));

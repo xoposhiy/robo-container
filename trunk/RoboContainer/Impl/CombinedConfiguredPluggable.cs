@@ -69,13 +69,9 @@ namespace RoboContainer.Impl
 			get { return parent.ExplicitlyDeclaredContracts.Union(child.ExplicitlyDeclaredContracts); }
 		}
 
-		//TODO add support for child dependency configuration
 		public DependenciesBag Dependencies
 		{
-			get
-			{
-				return parent.ReusePolicy.Overridable ? parent.Dependencies.CombineWith(child.Dependencies) : parent.Dependencies;
-			}
+			get { return parent.ReusePolicy.Overridable ? parent.Dependencies.CombineWith(child.Dependencies) : parent.Dependencies; }
 		}
 
 		public Type[] InjectableConstructorArgsTypes

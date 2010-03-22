@@ -11,7 +11,7 @@ namespace RoboContainer.Infection
 	/// Список поддерживаемых контрактов может быть расширен при явном динамическом конфигурировании.
 	/// <seealso cref="IGenericPluggableConfigurator{TPluggable,TSelf}.DeclareContracts(RoboContainer.Core.ContractDeclaration[])"/>
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true)]
 	public class DeclareContractAttribute : Attribute
 	{
 		public DeclareContractAttribute(params string[] contracts)

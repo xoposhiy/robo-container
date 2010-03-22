@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using RoboContainer.Core;
 
 namespace RoboContainer.Impl
@@ -14,6 +15,7 @@ namespace RoboContainer.Impl
 	/// </code>
 	/// </para>
 	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IGenericPluggableConfigurator<TPluggable, TSelf>
 	{
 		/// <summary>
@@ -78,15 +80,18 @@ namespace RoboContainer.Impl
 		/// При повторном вызове возвращается конфигуратор, с помощью которого можно доконфигурировать зависимость.
 		/// </summary>
 		IDependencyConfigurator Dependency(string dependencyName);
-
-		//TODO Поддержка ProvidePart
-		//TSelf Exports<TPart>(Func<TPluggable, TPart> getExportedPart, params ContractDeclaration[] contractDeclarations);
 	}
 
+	/// <summary>
+	/// Повторный вызов метода, помеченного этим атрибутом, <b>полностью перекрывает</b> эффект от предыдущего вызова. То же относится и к вызовам из дочернего контейнера.
+	/// </summary>
 	public class OverridableAttribute : Attribute
 	{
 	}
 
+	/// <summary>
+	/// Повторный вызов метода, помеченного этим атрибутом, <b>дополняет</b> эффект от предыдущего вызова. То же относится и к вызовам из дочернего контейнера.
+	/// </summary>
 	public class AdditiveAttribute : Attribute
 	{
 	}

@@ -15,7 +15,7 @@ var container = new Container(
 	{
 		c.ForPlugin<IComponent>()
 			.UsePluggable<Component1>()
-			.UseAutoFoundPluggables()
+			.UsePluggablesAutosearch(true)
 			.DontUse<Component2>()
 			.DontUse<Component3>()
 			.DontUse<Component4>()
@@ -45,7 +45,7 @@ var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigS
 	
 	<ForPlugin pluginType="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests">
 		<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests"/>
-		<UseAutoFoundPluggables/>
+		<UsePluggablesAutosearch useAutosearch="true"/>
 		<DontUse>
 			<pluggableTypes item="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
 			<pluggableTypes item="RoboContainer.Tests.Configuration.Component3, RoboContainer.Tests"/>

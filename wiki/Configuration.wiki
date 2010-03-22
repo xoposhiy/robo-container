@@ -83,13 +83,12 @@ IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(ContractDeclaration[] decl
 IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, ContractDeclaration[] declaredContracts);
 IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, ContractDeclaration[] declaredContracts);
-IPluginConfigurator<TPlugin> UseAutoFoundPluggables();
-IPluginConfigurator<TPlugin> DontUseAutoFoundPluggables();
+IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
 IPluginConfigurator<TPlugin> DontUse<TPluggable>();
 IPluginConfigurator<TPlugin> DontUse(Type[] pluggableTypes);
+IPluginConfigurator<TPlugin> UsePluggablesAutosearch(Boolean useAutosearch);
 IPluginConfigurator<TPlugin> ReusePluggable(ReusePolicy reusePolicy);
 IPluginConfigurator<TPlugin> ReusePluggable(IReusePolicy reusePolicy);
-IPluginConfigurator<TPlugin> RequireContracts(ContractRequirement[] requiredContracts);
 IPluginConfigurator<TPlugin> SetInitializer(InitializePluggableDelegate<TPlugin> initializePluggable);
 IPluginConfigurator<TPlugin> SetInitializer(Action<TPlugin> initializePlugin);
 
@@ -106,7 +105,7 @@ var container = new Container(
 	c =>
 	c.ForPlugin<IPlugin>()
 		.UseInstance(explicitlySpecifiedPluggable)
-		.UseAutoFoundPluggables()
+		.UsePluggablesAutosearch(true)
 		.ReusePluggable(ReusePolicy.Never)
 	);
 IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
