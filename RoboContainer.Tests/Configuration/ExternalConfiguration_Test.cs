@@ -17,7 +17,7 @@ namespace RoboContainer.Tests.Configuration
 					{
 						c.ForPlugin<IComponent>()
 							.UsePluggable<Component1>()
-							.UseAutoFoundPluggables()
+							.UsePluggablesAutosearch(true)
 							.DontUse<Component2>()
 							.DontUse<Component3>()
 							.DontUse<Component4>()

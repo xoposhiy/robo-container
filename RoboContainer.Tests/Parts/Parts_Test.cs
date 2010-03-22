@@ -24,12 +24,20 @@ namespace RoboContainer.Tests.Parts
 
 		public class Root : IRoot
 		{
-			private readonly IPart part = new Part1();
+			private readonly IPart part1 = new Part1();
+			private readonly IPart part2 = new Part2();
 
 			[ProvidePart(AsPlugin = typeof(IPart), UseOnlyThis = true)]
-			public IPart APart
+			public IPart APart1
 			{
-				get { return part; }
+				get { return part1; }
+			}
+
+			[ProvidePart(AsPlugin = typeof(IPart), UseOnlyThis = true)]
+			[DeclareContract("contract")]
+			public IPart APart2
+			{
+				get { return part2; }
 			}
 		}
 
@@ -83,6 +91,14 @@ namespace RoboContainer.Tests.Parts
 		}
 
 		[Test]
+		public void can_provide_parts_with_contracts()
+		{
+			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(new Root()));
+			var part = container.Get<IPart>("contract");
+			Assert.IsInstanceOf<Part2>(part);
+		}
+
+		[Test]
 		public void can_provide_parts_without_detailed_configuration()
 		{
 			var root2 = new Root2();
@@ -108,7 +124,7 @@ namespace RoboContainer.Tests.Parts
 		public void parts_can_declare_contracts()
 		{
 			var root3 = new Root3();
-			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UseAutoFoundPluggables());
+			container = new Container(c => c.ForPlugin<IRoot>().UseInstance(root3, "foo").UsePluggablesAutosearch(true));
 			Assert.AreEqual(root3, container.Get<IRoot>("foo"));
 			IEnumerable<IRoot> roots = container.GetAll<IRoot>();
 			Assert.AreEqual(3, roots.Count());

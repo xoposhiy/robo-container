@@ -60,15 +60,9 @@ namespace RoboContainer.Impl
 			pluggables = null;
 		}
 
-		public IPluginConfigurator UseAutoFoundPluggables()
+		public IPluginConfigurator UsePluggablesAutosearch(bool useAutosearch)
 		{
-			autoSearch = true;
-			return this;
-		}
-
-		public IPluginConfigurator DontUseAutoFoundPluggables()
-		{
-			autoSearch = false;
+			autoSearch = useAutosearch;
 			return this;
 		}
 
@@ -171,8 +165,8 @@ namespace RoboContainer.Impl
 				{
 					IPluginConfigurator pluginConfigurator = configuration.Configurator.ForPlugin(partDescription.AsPlugin);
 					object providedPart = partDescription.Part();
-					pluginConfigurator.UseInstance(providedPart);
-					if(!partDescription.UseOnlyThis) pluginConfigurator.UseAutoFoundPluggables();
+					pluginConfigurator.UseInstance(providedPart, partDescription.DeclaredContracts);
+					pluginConfigurator.UsePluggablesAutosearch(!partDescription.UseOnlyThis);
 				}
 				catch(ContainerException e)
 				{
@@ -193,12 +187,14 @@ namespace RoboContainer.Impl
 		{
 			var attribute = propertyInfo.FindAttribute<ProvidePartAttribute>();
 			if(attribute == null) return null;
+			var contractsAttrs = propertyInfo.GetAttributes<DeclareContractAttribute>();
 			return
 				new PartDescription(
 					propertyInfo.Name,
 					attribute.UseOnlyThis,
 					attribute.AsPlugin ?? propertyInfo.PropertyType,
-					() => propertyInfo.GetValue(part, null));
+					() => propertyInfo.GetValue(part, null),
+					contractsAttrs.SelectMany(a => a.Contracts).ToArray());
 		}
 
 		public bool IsPluggableIgnored(Type pluggableType)
@@ -216,10 +212,12 @@ namespace RoboContainer.Impl
 		private void FillFromAttributes()
 		{
 			var pluginAttribute = PluginType.FindAttribute<PluginAttribute>();
+			var usePluggableAttributes = PluginType.GetAttributes<UsePluggableAttribute>();
 			if(pluginAttribute != null)
 			{
 				if(pluginAttribute.ReusePolicySpecified) ReusePluggable(Reuse.FromEnum(pluginAttribute.ReusePluggable));
-				if(pluginAttribute.PluggableType != null) UsePluggable(pluginAttribute.PluggableType);
+				foreach(var attr in usePluggableAttributes)
+					UsePluggable(attr.PluggableType, attr.DeclaredContracts);
 			}
 			DontUse(PluginType.GetAttributes<DontUsePluggableAttribute>().Select(a => a.IgnoredPluggable).ToArray());
 			RequireContracts(
@@ -266,15 +264,9 @@ namespace RoboContainer.Impl
 			this.realConfigurator = realConfigurator;
 		}
 
-		public IPluginConfigurator<TPlugin> UseAutoFoundPluggables()
+		public IPluginConfigurator<TPlugin> UsePluggablesAutosearch(bool useAutosearch)
 		{
-			realConfigurator.UseAutoFoundPluggables();
-			return this;
-		}
-
-		public IPluginConfigurator<TPlugin> DontUseAutoFoundPluggables()
-		{
-			realConfigurator.DontUseAutoFoundPluggables();
+			realConfigurator.UsePluggablesAutosearch(useAutosearch);
 			return this;
 		}
 

@@ -25,7 +25,5 @@ namespace RoboContainer.Infection
 		}
 
 		public bool ReusePolicySpecified { get; private set; }
-
-		public Type PluggableType { get; set; }
 	}
 }
