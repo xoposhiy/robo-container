@@ -11,8 +11,20 @@ namespace RoboContainer.Core
 		/// </summary>
 		public class Always : CommonReusePolicy
 		{
-			public Always() 
+			public Always()
 				: base(false, () => new SingleValueSlot())
+			{
+			}
+		}
+
+		/// <summary>
+		/// Политика повторного использования объектов. 
+		/// Всегда использовать одно и то же значение в рамках одного контейнера. В частности не использовать значения из родительского контейнера.
+		/// </summary>
+		public class InSameContainer : CommonReusePolicy
+		{
+			public InSameContainer()
+				: base(true, () => new SingleValueSlot())
 			{
 			}
 		}
@@ -51,6 +63,8 @@ namespace RoboContainer.Core
 					return new Never();
 				case ReusePolicy.InSameThread:
 					return new InSameThread();
+				case ReusePolicy.InSameContainer:
+					return new InSameContainer();
 				default:
 					throw new NotSupportedException(reuse.ToString());
 			}

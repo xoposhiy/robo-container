@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Tests.With
 {
@@ -32,7 +33,7 @@ namespace RoboContainer.Tests.With
 		}
 
 		[Test]
-		public void With_can_override_pluggable_reuse()
+		public void With_can_override_pluggable_reuse_Never()
 		{
 			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never));
 			IContainer child = container.With(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Always));
@@ -42,6 +43,59 @@ namespace RoboContainer.Tests.With
 			Console.WriteLine(child.LastConstructionLog);
 			Assert.AreSame(expected, actual);
 			Assert.AreNotSame(container.Get<Foo1>(), container.Get<Foo1>());
+		}
+
+		[Test]
+		public void Can_not_override_reuse_policy_with_ReuseAlways_policy()
+		{
+			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Always));
+			IContainer child = container.With(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never));
+			Assert.Throws<ContainerException>(() => child.Get<Foo1>());
+		}
+
+		[Test]
+		public void Can_not_override_initializer_with_ReuseAlways_policy()
+		{
+			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Always));
+			IContainer child = container.With(c => c.ForPluggable<Foo1>().SetInitializer(foo => { }));
+			Assert.Throws<ContainerException>(() => child.Get<Foo1>());
+		}
+
+		[Test]
+		public void Can_override_reuse_policy_with_default_policy_in_parent_container()
+		{
+			var container = new Container();
+			IContainer child = container.With(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never));
+			Assert.AreNotSame(child.Get<Foo1>(), child.Get<Foo1>());
+		}
+
+		[Test]
+		public void Can_override_initializer_with_default_reuse_policy_in_parent_container()
+		{
+			var container = new Container();
+			int counter = 0;
+			IContainer child = container.With(c => c.ForPluggable<Foo1>().SetInitializer(foo => counter++));
+			Assert.AreSame(child.Get<Foo1>(), child.Get<Foo1>());
+			Assert.AreEqual(1, counter);
+		}
+
+		[Test]
+		public void InSameContainer_reuse_policy_dont_use_pluggables_from_parent_container()
+		{
+			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.InSameContainer));
+			IContainer child = container.With(c => { });
+			Assert.AreSame(child.Get<Foo1>(), child.Get<Foo1>());
+			Assert.AreSame(container.Get<Foo1>(), container.Get<Foo1>());
+			Assert.AreNotSame(container.Get<Foo1>(), child.Get<Foo1>());
+		}
+
+		[Test]
+		public void With_can_not_override_pluggable_reuse_InSameContainerHierarchy()
+		{
+			var container = new Container(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.InSameContainer));
+			IContainer child = container.With(c => c.ForPluggable<Foo1>().ReuseIt(ReusePolicy.Never));
+			Assert.AreNotSame(child.Get<Foo1>(), child.Get<Foo1>());
+			Assert.AreSame(container.Get<Foo1>(), container.Get<Foo1>());
 		}
 
 		[Test]
@@ -61,9 +115,9 @@ namespace RoboContainer.Tests.With
 							);
 					});
 
-//			container.With(c => { }).Get<IFoo>();
-//			Assert.AreEqual(1, parent_plugin);
-//			Assert.AreEqual(1, parent_pluggable);
+			container.With(c => { }).Get<IFoo>();
+			Assert.AreEqual(1, parent_plugin);
+			Assert.AreEqual(1, parent_pluggable);
 			parent_plugin = 0;
 			parent_pluggable = 0;
 			int child_pluggable = 0;

@@ -15,9 +15,11 @@
 + IDisposable
 + Xml-конфигурирование.
 + Доработка With подчистить TODO-шки.
-+ Dependency<IService>().UseInstance(service)
++ DependencyOfType<IService>().UseInstance(service)
++ Container Reuse Scope
 
-Container Reuse Scope
+
+Infectionless Atributed configuration. см. InjectionContracts
 
 Больше информации в логе.
 

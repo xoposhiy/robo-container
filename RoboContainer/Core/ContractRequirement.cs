@@ -36,13 +36,13 @@ namespace RoboContainer.Core
 
 		public static bool IsContractAttribute(Type attributeType)
 		{
-			return attributeType.GetCustomAttributes(true).Any(a => IsDependencyInjectionContractAttribute(a.GetType()));
+			return attributeType.GetCustomAttributes(true).Any(a => MeansRequiredContractAttribute(a.GetType()));
 		}
 
-		public static bool IsDependencyInjectionContractAttribute(Type attributeType)
+		public static bool MeansRequiredContractAttribute(Type attributeType)
 		{
 			var typename = attributeType.Name;
-			return typename == "DependencyInjectionContractAttribute" || typename == "DependencyInjectionContract";
+			return typename == "MeansInjectionContractAttribute" || typename == "MeansInjectionContract";
 		}
 	}
 }

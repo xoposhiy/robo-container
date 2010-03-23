@@ -120,7 +120,7 @@ namespace RoboContainer.Tests.Contracts
 	[BestFramework]
 	interface IFramework{}
 
-	[DependencyInjectionContract]
+	[MeansInjectionContract]
 	internal class BestFrameworkAttribute : Attribute
 	{
 	}
@@ -145,13 +145,13 @@ namespace RoboContainer.Tests.Contracts
 	{
 	}
 
-	[DependencyInjectionContract]
+	[MeansInjectionContract]
 	public class FastAndHiddenAttribute : Attribute
 	{
 	}
 
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-	public class DependencyInjectionContract : Attribute
+	public class MeansInjectionContract : Attribute
 	{
 	}
 
