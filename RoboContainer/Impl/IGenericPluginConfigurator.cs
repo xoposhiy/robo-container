@@ -81,6 +81,7 @@ namespace RoboContainer.Impl
 		/// <summary>
 		/// Для всех реализаций, созданных для данного сервиса применить указанную политику повторного использования.
 		/// При повторном вызове старая политика повторного используется заменяется на новую.
+		/// По умолчанию полтитика <see cref="Reuse.InSameContainer"/>.
 		/// </summary>
 		[Overridable]
 		TSelf ReusePluggable(ReusePolicy reusePolicy);
@@ -88,6 +89,7 @@ namespace RoboContainer.Impl
 		/// <summary>
 		/// Для всех реализаций, созданных для данного сервиса применить указанную политику повторного использования.
 		/// При повторном вызове старая политика повторного используется заменяется на новую.
+		/// По умолчанию полтитика <see cref="Reuse.InSameContainer"/>.
 		/// </summary>
 		[Overridable]
 		TSelf ReusePluggable(IReusePolicy reusePolicy);
