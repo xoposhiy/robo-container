@@ -20,7 +20,7 @@ namespace RoboContainer.Impl
 		{
 			this.configuration = configuration;
 			PluginType = pluginType;
-			ReusePolicy = new Reuse.Always();
+			ReusePolicy = new Reuse.InSameContainer();
 		}
 
 		public Type PluginType { get; private set; }

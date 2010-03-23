@@ -18,7 +18,7 @@ namespace RoboContainer.Impl
 		{
 			PluggableType = pluggableType;
 			Configuration = configuration;
-			ReusePolicy = new Reuse.Always();
+			ReusePolicy = new Reuse.InSameContainer();
 			ReuseSpecified = false;
 		}
 

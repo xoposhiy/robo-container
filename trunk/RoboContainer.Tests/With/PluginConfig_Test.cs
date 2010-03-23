@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
-using System.Linq;
 using RoboContainer.Infection;
 
 namespace RoboContainer.Tests.With
@@ -32,9 +32,20 @@ namespace RoboContainer.Tests.With
 		{
 		}
 
-		public interface IGenericFoo<T>{}
-		public class GenericFoo<T> : IGenericFoo<T> { }
-		public class GenericFooOld<T> : IGenericFoo<T> { }
+		// ReSharper disable UnusedTypeParameter
+		public interface IGenericFoo<T>
+		{
+		}
+
+		public class GenericFoo<T> : IGenericFoo<T>
+		{
+		}
+
+		public class GenericFooOld<T> : IGenericFoo<T>
+		{
+		}
+
+		// ReSharper restore UnusedTypeParameter
 
 		[Test]
 		public void Generics()
@@ -49,7 +60,7 @@ namespace RoboContainer.Tests.With
 		public void Singletons_of_parent_cant_have_child_dependencies()
 		{
 			Assert.Throws<ContainerException>(
-				() => new Container().With(c => c.Bind<IFoo, Foo1>()).Get<Singleton>()
+				() => new Container(c => c.ForPluggable<Singleton>().ReuseIt(ReusePolicy.Always)).With(c => c.Bind<IFoo, Foo1>()).Get<Singleton>()
 				);
 		}
 
@@ -67,7 +78,7 @@ namespace RoboContainer.Tests.With
 		public void With_overrides_parent_container_even_indirect()
 		{
 			var container = new Container(c => c.ForPlugin<Singleton>().ReusePluggable(ReusePolicy.Never));
-//			Assert.Throws<ContainerException>(() => container.Get<Singleton>());
+			Assert.Throws<ContainerException>(() => container.Get<Singleton>());
 			var singleton = container.With(c => c.Bind<IFoo, Foo1>()).Get<Singleton>();
 			Assert.IsInstanceOf<Foo1>(singleton.foo);
 			Assert.Throws<ContainerException>(() => container.Get<Singleton>());
@@ -86,10 +97,10 @@ namespace RoboContainer.Tests.With
 		public void With_override_plugin_ReusePolicy_2()
 		{
 			var container = new Container(c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Never));
-			
+
 			IContainer child = container.With(c => c.Bind<IFoo, Foo1>(ReusePolicy.Always));
 			Assert.AreSame(child.Get<IFoo>(), child.Get<IFoo>());
-			
+
 			child = container.With(c => c.Bind<IFoo, Foo1>());
 			Assert.AreNotSame(child.Get<IFoo>(), child.Get<IFoo>());
 		}
@@ -104,7 +115,7 @@ namespace RoboContainer.Tests.With
 			container.With(c => c.Bind<IFoo, Foo1>()).Get<IFoo>();
 			Assert.AreEqual(1, counter);
 
-			container.With(c => c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => counter+=10)).Get<IFoo>();
+			container.With(c => c.ForPlugin<IFoo>().UsePluggable<Foo1>().SetInitializer(foo => counter += 10)).Get<IFoo>();
 			Assert.AreEqual(11, counter);
 			// ReSharper restore AccessToModifiedClosure
 		}
@@ -172,15 +183,22 @@ namespace RoboContainer.Tests.With
 		}
 
 		[DeclareContract("for_parent")]
-		public class ContractedFoo1 : IContractedFoo { }
+		public class ContractedFoo1 : IContractedFoo
+		{
+		}
 
 		[DeclareContract("for_child")]
-		public class ContractedFoo2 : IContractedFoo { }
+		public class ContractedFoo2 : IContractedFoo
+		{
+		}
 
 		[DeclareContract("for_child", "for_parent")]
-		public class ContractedFoo3 : IContractedFoo { }
+		public class ContractedFoo3 : IContractedFoo
+		{
+		}
 
-		public class ContractedFoo4 : IContractedFoo { }
+		public class ContractedFoo4 : IContractedFoo
+		{
+		}
 	}
-
 }
