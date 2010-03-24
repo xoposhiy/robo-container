@@ -1,13 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
 using RoboConfig;
 using NUnit.Framework;
+using RoboContainer.Core;
+using RoboContainer.RoboConfig;
 
 namespace RoboContainer.Tests.Configuration
 {
 	public class X
 	{
-		public readonly StringBuilder result = new StringBuilder();
+		internal readonly StringBuilder result = new StringBuilder();
 
 		public X()
 		{
@@ -68,6 +73,18 @@ namespace RoboContainer.Tests.Configuration
 			var target = new X();
 			XmlConfiguration.FromString(TestData.conf1).ApplyConfigTo(target);
 			Assert.AreEqual(TestData.result1, target.result.ToString());
+		}
+
+		[Test]
+		public void BuildXsd()
+		{
+			var schema = new XsdBuilder(typeof(IContainerConfigurator), "http://robo-container.googlecode.com/roboconfig", "roboconfig").BuildSchema();
+			var xmlSchema = XmlSchema.Read(new StringReader(schema), (sender, args) => { throw args.Exception; });
+			Assert.IsNotNull(xmlSchema);
+			var xmlWriter = XmlWriter.Create(@"..\..\..\RoboContainer\robocontainer.xsd", new XmlWriterSettings{Indent = true, IndentChars = "\t"});
+			Assert.IsNotNull(xmlWriter);
+			xmlSchema.Write(xmlWriter);
+			Console.WriteLine(@"..\..\..\RoboContainer\robocontainer.xsd was updated!");
 		}
 	}
 

@@ -62,7 +62,7 @@ void ScanLoadedAssemblies();
 void ScanLoadedAssemblies(Func<Assembly, Boolean> shouldScan);
 void ScanTypesWith(ScannerDelegate scanner);
 void ScanLoadedCompanyAssemblies();
-void ScanLoadedCompanyAssemblies(String companyPrefix);
+void ScanLoadedAssembliesWithPrefix(String companyPrefix);
 IPluggableConfigurator ForPluggable(Type pluggableType);
 IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>();
 IPluginConfigurator<TPlugin> ForPlugin<TPlugin>();

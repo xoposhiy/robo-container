@@ -41,8 +41,23 @@ var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigS
 <wiki:comment>[XmlConfiguration.Config.xml</wiki:comment>
 {{{
 <?xml version="1.0" encoding="utf-8" ?>
-<robocontainer>
+<roboconfig xmlns="http://robo-container.googlecode.com/roboconfig">
 	
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests">
+		<DontUseIt/>
+		<ReuseIt reusePolicy="Never" />
+	</ForPluggable>
+
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests">
+		<ReuseIt reusePolicy="Never"/>
+		<UseConstructor>
+			<argsTypes item="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests"/>
+		</UseConstructor>
+		<Dependency dependencyName="comp">
+			<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
+		</Dependency>
+	</ForPluggable>
+
 	<ForPlugin pluginType="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests">
 		<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests"/>
 		<UsePluggablesAutosearch useAutosearch="true"/>
@@ -53,22 +68,8 @@ var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigS
 		</DontUse>
 		<ReusePluggable reusePolicy="Never"/>
 	</ForPlugin>
-	
-	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests">
-		<DontUseIt/>
-	</ForPluggable>
-	
-	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests">
-		<ReuseIt reusePolicy="Never"/>
-		<UseConstructor>
-			<argsTypes item="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests"/>
-		</UseConstructor>
-		<Dependency dependencyName="comp">
-			<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
-		</Dependency>
-	</ForPluggable>
-	
-</robocontainer>
+
+</roboconfig>
 
 }}}
 <wiki:comment></wiki:comment>
