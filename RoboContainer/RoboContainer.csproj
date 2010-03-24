@@ -135,6 +135,7 @@
     <Compile Include="RoboConfig\XmlActionsReader.cs" />
     <Compile Include="RoboConfig\XmlConfiguration.cs" />
     <Compile Include="RoboConfig\CompositeXmlDeserializer.cs" />
+    <Compile Include="RoboConfig\XsdBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="RoboConfig\RoboConfig.png" />
@@ -142,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="robocontainer.snk" />
+    <None Include="robocontainer.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

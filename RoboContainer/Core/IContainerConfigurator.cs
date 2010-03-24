@@ -67,7 +67,7 @@ namespace RoboContainer.Core
 		/// <summary>
 		/// Рассматривать все публичные типы из загруженных в данный момент сборок, имена которых начинаются на префикс <paramref name="companyPrefix"/>.
 		/// </summary>
-		void ScanLoadedCompanyAssemblies(string companyPrefix);
+		void ScanLoadedAssembliesWithPrefix(string companyPrefix);
 
 		/// <summary>
 		/// Конфигурирование создания экземпляра типа <paramref name="pluggableType"/>.

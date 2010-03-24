@@ -36,7 +36,8 @@ namespace RoboConfig
 		private object GetValue(object target, string memberName, TSource source)
 		{
 			PropertyInfo propertyInfo = target.GetType().GetProperty(memberName);
-			if(propertyInfo != null) return propertyInfo.GetValue(target, null);
+			if(propertyInfo != null && propertyInfo.GetIndexParameters().Length == 0) 
+				return propertyInfo.GetValue(target, null);
 
 			FieldInfo fieldInfo = target.GetType().GetField(memberName);
 			if(fieldInfo != null) return fieldInfo.GetValue(target);

@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns="http://robo-container.googlecode.com/roboconfig" elementFormDefault="qualified" targetNamespace="http://robo-container.googlecode.com/roboconfig" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="IContainerConfigurator">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ScanCallingAssembly" type="Void" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ScanLoadedAssemblies" type="Void" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ScanLoadedCompanyAssemblies" type="Void" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ScanLoadedAssembliesWithPrefix">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="Void">
+							<xs:sequence />
+							<xs:attribute name="companyPrefix" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ForPluggable">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluggableConfigurator">
+							<xs:sequence />
+							<xs:attribute name="pluggableType" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ForPlugin">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence />
+							<xs:attribute name="pluginType" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Void">
+		<xs:choice minOccurs="0" maxOccurs="unbounded" />
+	</xs:complexType>
+	<xs:complexType name="IPluggableConfigurator">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="DeclareContracts">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluggableConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="contractsDeclaration">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ReuseIt">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluggableConfigurator">
+							<xs:sequence />
+							<xs:attribute name="reusePolicy" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="DontUseIt" type="IPluggableConfigurator" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="UseConstructor">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluggableConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="argsTypes">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="Dependency">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IDependencyConfigurator">
+							<xs:sequence />
+							<xs:attribute name="dependencyName" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="DependencyOfType">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IDependencyConfigurator">
+							<xs:sequence />
+							<xs:attribute name="dependencyType" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="IDependencyConfigurator">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="RequireContracts">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IDependencyConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="requiredContracts">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="UsePluggable">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IDependencyConfigurator">
+							<xs:sequence />
+							<xs:attribute name="pluggableType" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="IPluginConfigurator">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="UsePluggable">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="declaredContracts">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:attribute name="pluggableType" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="RequireContracts">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="requiredContracts">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="DontUse">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="unbounded" name="pluggableTypes">
+									<xs:complexType>
+										<xs:attribute name="item" type="xs:string" />
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="UsePluggablesAutosearch">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence />
+							<xs:attribute name="useAutosearch" type="xs:boolean" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="ReusePluggable">
+				<xs:complexType>
+					<xs:complexContent mixed="false">
+						<xs:extension base="IPluginConfigurator">
+							<xs:sequence />
+							<xs:attribute name="reusePolicy" type="xs:string" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="roboconfig" type="IContainerConfigurator" />
+</xs:schema>

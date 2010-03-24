@@ -71,7 +71,7 @@ namespace RoboContainer.Impl
 			ScanLoadedAssemblies(a => HasCommonDotPrefix(callingAssemblyName, a.FullName));
 		}
 
-		public void ScanLoadedCompanyAssemblies(string companyPrefix)
+		public void ScanLoadedAssembliesWithPrefix(string companyPrefix)
 		{
 			ScanLoadedAssemblies(a => a.FullName != null && a.FullName.StartsWith(companyPrefix));
 		}
