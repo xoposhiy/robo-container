@@ -127,10 +127,12 @@
     <Compile Include="Core\Lazy.cs" />
     <Compile Include="Core\SimpleContractRequirement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoboConfig\ConvertableFromStringDeserializer.cs" />
     <Compile Include="RoboConfig\DeserializerOf.cs" />
     <Compile Include="RoboConfig\EnumDeserializer.cs" />
     <Compile Include="RoboConfig\IActionsReader.cs" />
     <Compile Include="RoboConfig\IDeserializer.cs" />
+    <Compile Include="RoboConfig\ObjectDeserializer.cs" />
     <Compile Include="RoboConfig\Settings.cs" />
     <Compile Include="RoboConfig\XmlActionsReader.cs" />
     <Compile Include="RoboConfig\XmlConfiguration.cs" />

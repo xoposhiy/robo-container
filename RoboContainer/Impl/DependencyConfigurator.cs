@@ -52,9 +52,9 @@ namespace RoboContainer.Impl
 		}
 
 		// ReSharper disable ParameterHidesMember
-		public IDependencyConfigurator UseValue(object value)
+		public IDependencyConfigurator UseValue(object o)
 		{
-			Value = value;
+			Value = o;
 			ValueSpecified = true;
 			return this;
 		}
