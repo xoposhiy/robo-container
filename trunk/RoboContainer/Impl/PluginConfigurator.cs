@@ -90,12 +90,12 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator UseInstance(object part, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator UseInstance(object instance, params ContractDeclaration[] declaredContracts)
 		{
-			CheckPluggablility(part.GetType());
-			explicitlySpecifiedPluggables.Add(new ConfiguredInstancePluggable(part, declaredContracts));
+			CheckPluggablility(instance.GetType());
+			explicitlySpecifiedPluggables.Add(new ConfiguredInstancePluggable(instance, declaredContracts));
 			autoSearch = false;
-			UseProvidedParts(part);
+			UseProvidedParts(instance);
 			return this;
 		}
 

@@ -119,6 +119,7 @@ namespace RoboContainer.RoboConfig
 
 		private static string TryGetSimpleType(Type t)
 		{
+			if(t == typeof(object)) return "xs:string";
 			if(t == typeof(string)) return "xs:string";
 			if(t == typeof(bool)) return "xs:boolean";
 			if(t == typeof(Type)) return "xs:string";

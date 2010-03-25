@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
+using RoboContainer.RoboConfig;
 
 namespace RoboConfig
 {
@@ -20,6 +21,8 @@ namespace RoboConfig
 			deserializers.Add(new DeserializerOf<Type>(s => Type.GetType(s, true, false)));
 			deserializers.Add(new EnumDeserializer());
 			deserializers.Add(new ArrayDeserializer(this));
+			deserializers.Add(new ConvertableFromStringDeserializer());
+			deserializers.Add(new ObjectDeserializer());
 		}
 
 		public object Deserialize(Type type, XmlElement source, string name)
