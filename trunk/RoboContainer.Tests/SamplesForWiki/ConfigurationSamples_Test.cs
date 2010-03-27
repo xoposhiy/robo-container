@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
-using RoboContainer.Impl;
 
 // ReSharper disable RedundantLambdaParameterType
 namespace RoboContainer.Tests.SamplesForWiki
@@ -11,12 +10,6 @@ namespace RoboContainer.Tests.SamplesForWiki
 	[TestFixture]
 	public class ConfigurationSamples_Test
 	{
-		private static void WriteAndHighlight(string log, params string[] expectedLines)
-		{
-			Console.WriteLine(log);
-			expectedLines.ForEach(expectedLine => StringAssert.Contains(expectedLine, log));
-		}
-
 		[Test]
 		public void ConfigurePlugin()
 		{
@@ -25,14 +18,14 @@ namespace RoboContainer.Tests.SamplesForWiki
 			var container = new Container(
 				c =>
 				c.ForPlugin<IPlugin>()
-					.UseInstance(explicitlySpecifiedPluggable)
-					.UsePluggablesAutosearch(true)
+					.UseInstance(explicitlySpecifiedPluggable) //автоматика отключилась
+					.UsePluggablesAutosearch(true)  //но мы ее принудительно включили обратно
 					.ReusePluggable(ReusePolicy.Never)
 				);
 			IEnumerable<IPlugin> pluggables = container.GetAll<IPlugin>();
-			WriteAndHighlight(container.LastConstructionLog, "Constructed Pluggable", "Reused Pluggable"); //hide
+			Console.WriteLine(container.LastConstructionLog); //hide
 			CollectionAssert.Contains(pluggables, explicitlySpecifiedPluggable);
-			Assert.AreEqual(2, pluggables.Count());
+			Assert.AreEqual(2, pluggables.Count()); // вторую реализацию нашла автоматика.
 			//]
 		}
 
