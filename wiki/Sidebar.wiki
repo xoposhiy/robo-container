@@ -1,6 +1,6 @@
   * [DIContainers DI container — это...]
   * [QuickStart Пятиминутное введение]
-  * [HowToLearn Как знакомиться с `RoboContainer`?]
+  * [HowToLearn Как знакомиться с !RoboContainer?]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
   * [ReusePolicies Политики переиспользования]
