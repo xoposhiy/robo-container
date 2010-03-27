@@ -80,3 +80,5 @@ var container = new Container(c => c.ConfigureBy.XmlFile("Configuration\\ConfigS
 http://code.google.com/p/robo-container/source/browse/#svn/trunk/RoboContainer/RoboConfig
 
 Вместе с контейнером поставляется xml-схема [http://robo-container.googlecode.com/svn/trunk/RoboContainer/robocontainer.xsd robocontainer.xsd]. Если включить ее в проект `VisualStudio`, а в xml-файле с конфигурацией корректно сослаться на соответствующее пространство имен (см. xmlns=... в примере выше), то при редактировании xml-файла конфигурации `IntelliSense` начнет подсказывать допустимые элементы.
+
+http://robo-container.googlecode.com/svn/wiki/xml-intellisense.png
