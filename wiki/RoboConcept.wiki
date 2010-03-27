@@ -44,7 +44,14 @@ var container = new Container(
 
 Для этого в робоконтейнере есть встроенная подсистема логгирования, которую также можно сконфигурировать. Несконфигурированный контейнер запоминает лог последней сессии работы с контейнером и позволяет его просмотреть в качестве строки.
 
-//TODO sample
+<wiki:comment>[Logging.ShowMeTheLog</wiki:comment>
+{{{
+
+var container = new Container();
+var someObj = container.Get<SomeType>();
+Console.WriteLine(container.LastConstructionLog);
+}}}
+<wiki:comment></wiki:comment>
 
 == Fluent configuration interface ==
 У контейнера должен быть очевидный, согласованный, простой интерфейс конфигурирования. Интерфейс должен минимизировать количество обращений к документации.
