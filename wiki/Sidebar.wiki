@@ -3,6 +3,7 @@
   * [HowToLearn Как знакомиться с `RoboContainer`?]
   * [RoboConcept Концепция проекта]
   * [Configuration Конфигурирование]
+  * [ReusePolicies Политики переиспользования]
   * [XmlConfiguration Xml-конфигурирование]
   * [AttributesConfiguration Конфигурирование атрибутами]
   * [Generics Поддержка generics]
