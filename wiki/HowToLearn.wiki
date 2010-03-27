@@ -18,4 +18,4 @@ Console.WriteLine(container.LastConstructionLog);
 }}}
 <wiki:comment></wiki:comment>
 
-И, конечно, контейнер снабжается файлом с xml-документацией (TODO). Если файл `RoboContainer.dll.xml` будет находиться рядом с `RoboContainer.dll`, то `VisualStudio` будет показывать документацию из него в своих подсказках.
+И, конечно, контейнер снабжается файлом с xml-документацией. Если файл `RoboContainer.dll.xml` будет находиться рядом с `RoboContainer.dll`, то `VisualStudio` будет показывать документацию из него в своих подсказках.
