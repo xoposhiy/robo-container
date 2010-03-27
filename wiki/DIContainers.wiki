@@ -28,6 +28,6 @@ DI-контейнер позволяет на основе конфигурир�
 
 Подробное обсуждение контейнеров есть в известной статье Мартина Фаулера [http://martinfowler.com/articles/injection.html Inversion of Control Containers and the Dependency Injection pattern].
 
-Ещё одно неплохое введение в DI-контейнеры — это видео с презентации Guice — DI-контейнера для Java [http://video.google.com/videoplay?docid=6068447410873108038&ei=RdsIS5WnDqWu2wK-v63fDg Java on Guice: Dependency Injection, the Java Way].
+Ещё одно неплохое введение в DI-контейнеры — это видео с презентации Guice — DI-контейнера для Java: [http://video.google.com/videoplay?docid=6068447410873108038&ei=RdsIS5WnDqWu2wK-v63fDg Java on Guice: Dependency Injection, the Java Way].
 
 Есть также небольшая статья в википедии [http://en.wikipedia.org/wiki/Dependency_injection Dependency injection], в которой, в частности, можно найти список существующих DI-контейнеров.
