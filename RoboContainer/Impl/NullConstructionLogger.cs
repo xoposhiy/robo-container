@@ -36,6 +36,10 @@ namespace RoboContainer.Impl
 			return string.Empty;
 		}
 
+		public void UseSpecifiedValue(Type dependencyType, object value)
+		{
+		}
+
 		public void Declined(Type pluggableType, string reason)
 		{
 		}

@@ -74,6 +74,10 @@ namespace RoboContainer.Tests.Logging
 			return count.ToString();
 		}
 
+		public void UseSpecifiedValue(Type dependencyType, object value)
+		{
+		}
+
 		public void Declined(Type pluggableType, string reason)
 		{
 		}
