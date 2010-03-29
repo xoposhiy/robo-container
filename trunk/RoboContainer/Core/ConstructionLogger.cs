@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using RoboContainer.Impl;
+using System.Linq;
 
 namespace RoboContainer.Core
 {
@@ -32,7 +33,7 @@ namespace RoboContainer.Core
 			finally
 			{
 				if(pluginType == null) text = new StringBuilder();
-				Write("Create {0}", Format(pluggableType));
+				Write("Constructing {0}", Format(pluggableType));
 				pluginType = pluggableType;
 				ident += "\t";
 			}
@@ -74,6 +75,11 @@ namespace RoboContainer.Core
 			return text != null ? text.ToString() : "";
 		}
 
+		public void UseSpecifiedValue(Type dependencyType, object value)
+		{
+			Write("Used value for {0}: '{1}'", Format(dependencyType), value);
+		}
+
 		public void Declined(Type pluggableType, string reason)
 		{
 			Write("Declined {0}: {1}", Format(pluggableType), reason);
@@ -86,7 +92,13 @@ namespace RoboContainer.Core
 
 		private static string Format(Type type)
 		{
-			return type == null ? "?" : type.Name;
+			if(type == null) return "?";
+			if (type.IsGenericType)
+			{
+				var name = type.Name.Substring(0, type.Name.IndexOf('`'));
+				return name + "<" + string.Join(", ", type.GetGenericArguments().Select(t => Format(t)).ToArray()) + ">";
+			}
+			return type.Name;
 		}
 
 		private void Write(string message, params object[] args)

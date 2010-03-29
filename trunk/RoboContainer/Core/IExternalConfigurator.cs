@@ -13,11 +13,11 @@
 		///		<configSections>
 		/// 		<section name="robo" type="RoboContainer.RoboConfig.Settings, RoboContainer"/>
 		/// 	</configSections>
-		/// 	<robo>
+		/// 	<roboconfig xmlns="http://robo-container.googlecode.com/roboconfig">
 		/// 		<ForPlugin pluginType="TestAppConfig.IFoo, TestAppConfig">
 		///				<UsePluggable pluggableType="TestAppConfig.Foo2, TestAppConfig" />
 		/// 		</ForPlugin>
-		/// 	</robo>
+		/// 	</roboconfig>
 		/// </configuration>
 		/// ]]>
 		/// </code>
@@ -40,11 +40,11 @@
 		/// <para>Пример xml-файла
 		/// <code>
 		/// <![CDATA[
-		/// 	<robo>
+		/// 	<roboconfig xmlns="http://robo-container.googlecode.com/roboconfig">
 		/// 		<ForPlugin pluginType="TestAppConfig.IFoo, TestAppConfig">
 		///				<UsePluggable pluggableType="TestAppConfig.Foo2, TestAppConfig" />
 		/// 		</ForPlugin>
-		/// 	</robo>
+		/// 	</roboconfig>
 		/// ]]>
 		/// </code>
 		/// </para>

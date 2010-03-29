@@ -44,5 +44,7 @@ namespace RoboContainer.Core
 		void Declined(Type pluggableType, string reason);
 
 		string ToString();
+		
+		void UseSpecifiedValue(Type dependencyType, object value);
 	}
 }

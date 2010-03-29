@@ -34,10 +34,11 @@ namespace RoboContainer.Impl
 			return result;
 		}
 
-		public static bool TryGetValue(this IConfiguredDependency me, Type dependencyType, IContainer container, out object result)
+		public static bool TryGetValue(this IConfiguredDependency me, Type dependencyType, Container container, out object result)
 		{
 			if(me.ValueSpecified)
 			{
+				container.ConstructionLogger.UseSpecifiedValue(dependencyType, me.Value);
 				result = me.Value;
 				return true;
 			}

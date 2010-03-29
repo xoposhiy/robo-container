@@ -12,7 +12,7 @@ namespace RoboContainer.Impl
 		private readonly List<DependencyConfigurator> dependencies = new List<DependencyConfigurator>();
 
 		[CanBeNull]
-		private bool TryGetActualArg(IContainer container, ParameterInfo formalArg, out object actualArg)
+		private bool TryGetActualArg(Container container, ParameterInfo formalArg, out object actualArg)
 		{
 			var dep = DependencyConfigurator.FromAttributes(formalArg);
 			dep = dep.CombineWith(Get(formalArg.Name, formalArg.ParameterType));
@@ -20,7 +20,7 @@ namespace RoboContainer.Impl
 		}
 
 		[CanBeNull]
-		public object[] TryGetActualArgs(ConstructorInfo constructorInfo, IContainer container)
+		public object[] TryGetActualArgs(ConstructorInfo constructorInfo, Container container)
 		{
 			ParameterInfo[] formalArgs = constructorInfo.GetParameters();
 			var actualArgs = new object[formalArgs.Length];
