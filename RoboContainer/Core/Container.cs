@@ -99,6 +99,7 @@ namespace RoboContainer.Core
 			try
 			{
 				using(ConstructionLogger.StartResolving(pluginType))
+				using(configuration.StartResolve(pluginType, requiredContracts))
 					return PlainGetAll(pluginType, requiredContracts);
 			}
 			catch(ContainerException)

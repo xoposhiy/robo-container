@@ -8,6 +8,7 @@ namespace RoboContainer.Impl
 {
 	public class ContainerConfiguration : IContainerConfiguration
 	{
+		private readonly MultiSet<ResolutionRequest> resolutionStack = new MultiSet<ResolutionRequest>();
 		private readonly List<Assembly> assemblies = new List<Assembly>();
 		private readonly LoggingConfigurator loggerConfigurator = new LoggingConfigurator();
 
@@ -86,6 +87,18 @@ namespace RoboContainer.Impl
 		public virtual bool HasAssemblies()
 		{
 			return assemblies.Any();
+		}
+
+		public IDisposable StartResolve(Type t, ContractRequirement[] contracts)
+		{
+			var request = new ResolutionRequest(t, contracts);
+			if(resolutionStack.Contains(request))
+			{
+				var message = string.Format("Type {0} has cyclic dependencies.", t);
+				throw new ContainerException(message + Environment.NewLine + GetConfiguredLogging().GetLogger().ToString());
+			}
+			resolutionStack.Add(request);
+			return new Disposable(() => resolutionStack.Remove(request));
 		}
 
 		public IContainerConfigurator Configurator

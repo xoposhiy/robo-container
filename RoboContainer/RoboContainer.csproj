@@ -54,7 +54,10 @@
     <Compile Include="Impl\Annotations.cs" />
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\DependenciesBag.cs" />
+    <Compile Include="Impl\Disposable.cs" />
     <Compile Include="Impl\ExternalConfigurator.cs" />
+    <Compile Include="Impl\MultiSet.cs" />
+    <Compile Include="Impl\ResolutionRequest.cs" />
     <Compile Include="Infection\UsePluggableAttribute.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />
     <Compile Include="RoboConfig\Configuration.cs" />

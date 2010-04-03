@@ -6,6 +6,8 @@ namespace RoboContainer.Core
 	/// <summary>
 	/// Абстрактный класс, представляющий собой определение требования контракта.
 	/// Имеет неявный оператор приведения типов, конвертирующий строку в экземпляр <see cref="SimpleContractRequirement{String}"/>.
+	/// <para>Наследники должны обязательно переопределять методы Equals и GetHashCode. 
+	/// Иначе не сможет корректно работать детектор циклических зависимостей.</para>
 	/// </summary>
 	public abstract class ContractRequirement
 	{
