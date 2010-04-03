@@ -243,14 +243,14 @@ Console.WriteLine(container.LastConstructionLog);
 <wiki:comment>[QS_FinalSample.out</wiki:comment>
 {{{
 Get IBattleShip
-	Create BigBattleShip
+	Constructing BigBattleShip
 		Get IWeapon[]
 			Get IWeapon
-				Create RocketWeapon
+				Constructing RocketWeapon
 				Constructed RocketWeapon
-				Create LaserWeapon
+				Constructing LaserWeapon
 				Constructed LaserWeapon
-				Create ComboWeapon
+				Constructing ComboWeapon
 					Get LaserWeapon
 						Reused LaserWeapon
 					Get RocketWeapon

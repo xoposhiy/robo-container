@@ -26,19 +26,19 @@ namespace RoboContainer.Tests.Logging
 		[Test]
 		public void LastConstructionLog()
 		{
-			var container = new Container(c => c.Logging.UseLogger(new ConstructionLogger(false)));
+			var container = new Container();
 			container.Get<IExportFileScreen>();
 			Console.WriteLine(container.LastConstructionLog);
 			Assert.AreEqual(
 				@"Get IExportFileScreen
-	Create ExportFileScreen
+	Constructing ExportFileScreen
 		Get IExporter[]
 			Get IExporter
-				Create BmpExporter
+				Constructing BmpExporter
 				Constructed BmpExporter
-				Create JpgExporter
+				Constructing JpgExporter
 				Constructed JpgExporter
-				Create PngExporter
+				Constructing PngExporter
 				Constructed PngExporter
 	Constructed ExportFileScreen
 ",
