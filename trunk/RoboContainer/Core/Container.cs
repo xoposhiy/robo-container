@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using RoboContainer.Impl;
 
 namespace RoboContainer.Core
@@ -12,6 +10,9 @@ namespace RoboContainer.Core
 	public class Container : IContainer
 	{
 		private readonly IContainerConfiguration configuration;
+
+		private static readonly IEnumerable<IConfigurationModule> defaultModules =
+			new IConfigurationModule[] {new LazyConfigurationModule(), new ScannedAssembliesConfigurationModule()};
 
 		/// <summary>
 		/// Если контейнер не нуждается в конфигурировании, подойдет этот конструктор. Иначе, используйте одну из его перегрузок.
@@ -173,26 +174,6 @@ namespace RoboContainer.Core
 			return pluggables;
 		}
 
-		private class LazyObj
-		{
-			public LazyObj(IContainer container, Type type, ContractRequirement[] contracts)
-			{
-				this.container = container;
-				this.type = type;
-				this.contracts = contracts;
-			}
-
-			private readonly IContainer container;
-			private readonly Type type;
-			private readonly ContractRequirement[] contracts;
-			public static readonly MethodInfo GetMethod = typeof(LazyObj).GetMethod("Get");
-
-			[UsedImplicitly]
-			public object Get()
-			{
-				return container.Get(type, contracts);
-			}
-		}
 
 		[CanBeNull]
 		private IEnumerable<object> TryGetCollections(Type pluginType, ContractRequirement[] requiredContracts)
@@ -207,28 +188,9 @@ namespace RoboContainer.Core
 		{
 			var configuration = new ContainerConfiguration();
 			configure(configuration.Configurator);
-			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Always);
-			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc).ReusePluggable(ReusePolicy.Always);
-			if(!configuration.HasAssemblies())
-			{
-				configuration.Configurator.ScanLoadedCompanyAssemblies();
-				configuration.Configurator.ScanCallingAssembly();
-			}
+			foreach(var module in defaultModules)
+				module.Configure(configuration);
 			return configuration;
-		}
-
-		private static object CreateFunc(Container container, Type Func_Of_TResultType, ContractRequirement[] requiredContracts)
-		{
-			Type resultType = Func_Of_TResultType.GetGenericArguments().Last();
-			var e = Expression.Lambda(Func_Of_TResultType,
-				Expression.Convert(
-					Expression.Call(
-						Expression.Constant(new LazyObj(container, resultType, requiredContracts)),
-						LazyObj.GetMethod),
-					resultType
-					));
-			return e.Compile();
 		}
 
 		private static bool IsCollection(Type pluginType, out Type elementType)

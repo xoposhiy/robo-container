@@ -74,8 +74,8 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo>",
-				500,
-				() => new Container(c => c.ScanLoadedAssemblies()).Get<IFoo>()
+				5,
+				() => new Container().Get<IFoo>()
 				);
 		}
 
@@ -84,7 +84,7 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo>",
-				0.5,
+				1.0,
 				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>()).Get<IFoo>()
 				);
 		}
@@ -94,7 +94,7 @@ namespace RoboContainer.Tests.Performance
 		{
 			Time(
 				"new Container().Get<IFoo — Never>",
-				0.5,
+				1.0,
 				() => new Container(c => c.ForPlugin<IFoo>().UsePluggable<Foo>().ReusePluggable(ReusePolicy.Never)).Get<IFoo>()
 				);
 		}

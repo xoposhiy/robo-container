@@ -53,6 +53,9 @@
     <Compile Include="Core\IExternalConfigurator.cs" />
     <Compile Include="Impl\Annotations.cs" />
     <Compile Include="Impl\AssembliesUtils.cs" />
+    <Compile Include="Impl\IConfigurationModule.cs" />
+    <Compile Include="Impl\LazyConfigurationModule.cs" />
+    <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />
     <Compile Include="Impl\DependenciesBag.cs" />
     <Compile Include="Impl\Disposable.cs" />
     <Compile Include="Impl\ExternalConfigurator.cs" />
