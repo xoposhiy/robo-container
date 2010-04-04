@@ -1,12 +1,46 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using RoboContainer.Core;
+using System.Linq;
 
 namespace RoboContainer.Tests.Laziness
 {
 	[TestFixture]
 	public class Lazy_Test
 	{
+		[Test]
+		public void can_use_Func_as_lazy()
+		{
+			ShouldBeLazy.initialized = false;
+			var container = new Container();
+			var lazy = container.Get<Func<ShouldBeLazy>>();
+			ShouldBeLazy.initialized.ShouldBeFalse();
+			Assert.IsInstanceOf<ShouldBeLazy>(lazy());
+			ShouldBeLazy.initialized.ShouldBeTrue();
+		}
+
+		[Test]
+		public void compare_speed_of_Lazy_and_Func()
+		{
+			var container = new Container();
+			var sw = Stopwatch.StartNew();
+			const int count = 10000;
+			for(int i = 0; i < count; i++)
+				container.Get<Lazy<ShouldBeLazy>>().Get();
+			var lazyMillis = sw.ElapsedMilliseconds;
+			Console.WriteLine("container.Get<Lazy<T>>().Get()\t—  " + lazyMillis);
+			sw = Stopwatch.StartNew();
+			for(int i = 0; i < count; i++)
+				container.Get<Func<ShouldBeLazy>>()();
+			var funcMillis = sw.ElapsedMilliseconds;
+			Console.WriteLine("container.Get<Func<T>>()()    \t—  " + funcMillis);
+			Assert.IsTrue(funcMillis < 2*lazyMillis);
+			
+			
+		}
+
 		[Test]
 		public void can_use_lazy()
 		{
@@ -24,7 +58,6 @@ namespace RoboContainer.Tests.Laziness
 			var container = new Container();
 			var lazy1 = container.Get<Lazy<ShouldBeLazy>>();
 			var lazy2 = container.Get<Lazy<ShouldBeLazy>>();
-			Assert.AreNotSame(lazy1, lazy2);
 			Assert.AreSame(lazy1.Get(), lazy1.Get());
 			Assert.AreSame(lazy1.Get(), lazy2.Get());
 		}
@@ -37,7 +70,6 @@ namespace RoboContainer.Tests.Laziness
 			Console.WriteLine(container.LastConstructionLog);
 			var lazy1 = container.Get<Lazy<ShouldBeLazy, Reuse.Always>>();
 			var lazy2 = container.Get<Lazy<ShouldBeLazy, Reuse.Always>>();
-			Assert.AreNotSame(lazy1, lazy2);
 			Assert.AreSame(lazy1.Get(), lazy1.Get());
 			Assert.AreNotSame(lazy1.Get(), lazy2.Get());
 		}

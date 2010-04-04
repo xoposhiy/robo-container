@@ -21,14 +21,14 @@ namespace RoboContainer.Impl
 		public IContainerConfiguration Configuration { get; private set; }
 
 		[CanBeNull]
-		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts)
 		{
 			if(reuseValueSlot.Value != null)
 			{
 				logger.Reused(reuseValueSlot.Value.GetType());
 				return reuseValueSlot.Value;
 			}
-			return reuseValueSlot.Value = TryConstructAndLog(logger, typeToCreate); // it is ok — result of assignment operator is the right part of assignment (according to C# spec)
+			return reuseValueSlot.Value = TryConstructAndLog(logger, typeToCreate, requiredContracts); 
 		}
 
 		public IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
@@ -44,19 +44,19 @@ namespace RoboContainer.Impl
 		protected abstract IInstanceFactory DoCreateByPrototype(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
 		[CanBeNull]
-		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate)
+		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts)
 		{
-			object result = TryConstruct(typeToCreate);
+			object result = TryConstruct(typeToCreate, requiredContracts);
 			if(result == null) logger.ConstructionFailed(InstanceType);
 			else logger.Constructed(result.GetType());
 			return result;
 		}
 
 		[CanBeNull]
-		private object TryConstruct(Type typeToCreate)
+		private object TryConstruct(Type typeToCreate, ContractRequirement[] requiredContracts)
 		{
 			var container = new Container(Configuration);
-			object constructed = TryCreatePluggable(container, typeToCreate);
+			object constructed = TryCreatePluggable(container, typeToCreate, requiredContracts);
 			if(constructed == null) return null;
 			var initializablePluggable = constructed as IInitializablePluggable;
 			if(initializablePluggable != null) initializablePluggable.Initialize(container);
@@ -64,6 +64,6 @@ namespace RoboContainer.Impl
 		}
 
 		[CanBeNull]
-		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate);
+		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts);
 	}
 }

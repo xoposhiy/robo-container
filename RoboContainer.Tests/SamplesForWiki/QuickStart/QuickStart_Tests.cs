@@ -147,7 +147,7 @@ namespace RoboContainer.Tests.SamplesForWiki.QuickStart
 				c =>
 				c.ForPlugin<IWeapon>().ReusePluggable(ReusePolicy.Never)
 					.UseInstanceCreatedBy(
-					(aContainer, pluginType) =>
+					(aContainer, pluginType, contracts) =>
 					weaponIndex++%2 == 0 ? (IWeapon) new LaserWeapon() : new RocketWeapon())
 				);
 			Assert.IsInstanceOf<LaserWeapon>(container.Get<IWeapon>());

@@ -65,7 +65,7 @@ namespace RoboContainer.Tests.Generics
 					c =>
 					c.ForPlugin(typeof(IBaz_of_pair<,>))
 						.UseInstanceCreatedBy(
-						(cont, pluginType) =>
+						(cont, pluginType, contracts) =>
 							{
 								Type[] typeArgs = pluginType.GetGenericArguments();
 								if(typeArgs[0] == typeArgs[1] && typeArgs[1] == typeof(string)) return new Baz_of_twice<string>();

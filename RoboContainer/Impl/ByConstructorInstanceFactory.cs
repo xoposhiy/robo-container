@@ -24,7 +24,7 @@ namespace RoboContainer.Impl
 			return new ByConstructorInstanceFactory(aPluggable, reusePolicy, initializator, configuration);
 		}
 
-		protected override object TryCreatePluggable(Container container, Type pluginToCreate)
+		protected override object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts)
 		{
 			using(Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType))
 			{

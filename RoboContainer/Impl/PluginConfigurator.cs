@@ -335,7 +335,7 @@ namespace RoboContainer.Impl
 
 		public IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, params ContractDeclaration[] declaredContracts)
 		{
-			realConfigurator.UseInstanceCreatedBy((container, pluginType) => createPluggable(container, pluginType), declaredContracts);
+			realConfigurator.UseInstanceCreatedBy((container, pluginType, contracts) => createPluggable(container, pluginType, contracts), declaredContracts);
 			return this;
 		}
 	}
