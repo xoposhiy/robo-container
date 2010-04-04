@@ -65,7 +65,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void can_create_pluggable_by_delegate()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().UseInstanceCreatedBy((cont, pluginType) => new Foo0(new Foo1())));
+			var container = new Container(c => c.ForPlugin<IFoo>().UseInstanceCreatedBy((cont, pluginType, contracts) => new Foo0(new Foo1())));
 			Assert.IsInstanceOf<Foo0>(container.Get<IFoo>());
 		}
 
@@ -75,7 +75,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 			var container = new Container(
 				c =>
 				c.ForPlugin<IInitializable>()
-					.UseInstanceCreatedBy((cont, pluginType) => new Initializable())
+					.UseInstanceCreatedBy((cont, pluginType, contracts) => new Initializable())
 					.SetInitializer(
 					(initializable, cont) =>
 						{
@@ -238,7 +238,7 @@ namespace RoboContainer.Tests.PluginConfiguration
 		[Test]
 		public void pluggable_created_by_delegate_not_returned_by_GetPluggableTypes()
 		{
-			var container = new Container(c => c.ForPlugin<IFoo>().UseInstanceCreatedBy((cont, pluginType) => new Foo0(new Foo1())));
+			var container = new Container(c => c.ForPlugin<IFoo>().UseInstanceCreatedBy((cont, pluginType, contracts) => new Foo0(new Foo1())));
 			Assert.AreEqual(null, container.GetPluggableTypesFor<IFoo>().SingleOrDefault());
 			Assert.AreEqual(0, container.GetPluggableTypesFor<IFoo>().Count());
 		}

@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 	{
 		Type InstanceType { get; }
 		[CanBeNull]
-		object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate);
+		object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts);
 		IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 	}
 }
