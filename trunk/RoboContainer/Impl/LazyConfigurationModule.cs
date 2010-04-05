@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using RoboContainer.Core;
 
@@ -15,38 +14,23 @@ namespace RoboContainer.Impl
 			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc).ReusePluggable(ReusePolicy.Always);
 		}
 
+		private static readonly MethodInfo StronglyTypeGetterOfT = typeof(LazyConfigurationModule).GetMethod("MakeStronglyTyped", BindingFlags.NonPublic | BindingFlags.Static);
+		
+		[UsedImplicitly]
+		private static Func<T> MakeStronglyTyped<T>(Func<object> getter)
+		{
+			return () => (T) getter();
+		}
+
+		private static object CreateStronglyTypedFuncOfT(Type resultType, Func<object> weaklyTypedFunc)
+		{
+			return StronglyTypeGetterOfT.MakeGenericMethod(resultType).Invoke(null, new object[] { weaklyTypedFunc });
+		}
+
 		private static object CreateFunc(Container container, Type Func_Of_TResultType, ContractRequirement[] requiredContracts)
 		{
 			Type resultType = Func_Of_TResultType.GetGenericArguments().Last();
-			var e = Expression.Lambda(Func_Of_TResultType,
-				Expression.Convert(
-					Expression.Call(
-						Expression.Constant(new LazyObj(container, resultType, requiredContracts)),
-						LazyObj.GetMethod),
-					resultType
-					));
-			return e.Compile();
-		}
-
-		private class LazyObj
-		{
-			public LazyObj(IContainer container, Type type, ContractRequirement[] contracts)
-			{
-				this.container = container;
-				this.type = type;
-				this.contracts = contracts;
-			}
-
-			private readonly IContainer container;
-			private readonly Type type;
-			private readonly ContractRequirement[] contracts;
-			public static readonly MethodInfo GetMethod = typeof(LazyObj).GetMethod("Get");
-
-			[UsedImplicitly]
-			public object Get()
-			{
-				return container.Get(type, contracts);
-			}
+			return CreateStronglyTypedFuncOfT(resultType, () => container.Get(resultType, requiredContracts));
 		}
 	}
 }
