@@ -6,12 +6,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboContainer.Tests", "Robo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wiki", "wiki", "{981825CD-8AF7-4999-83B4-6478F6721E4D}"
 	ProjectSection(SolutionItems) = preProject
+		..\wiki\ChildContainer.wiki = ..\wiki\ChildContainer.wiki
 		..\wiki\Collections.wiki = ..\wiki\Collections.wiki
 		..\wiki\Configuration.wiki = ..\wiki\Configuration.wiki
+		..\wiki\Contracts.wiki = ..\wiki\Contracts.wiki
 		..\wiki\DIContainers.wiki = ..\wiki\DIContainers.wiki
 		..\wiki\Generics.wiki = ..\wiki\Generics.wiki
+		..\wiki\IDisposable.wiki = ..\wiki\IDisposable.wiki
 		..\wiki\Lazy.wiki = ..\wiki\Lazy.wiki
 		..\wiki\QuickStart.wiki = ..\wiki\QuickStart.wiki
+		..\wiki\ReusePolicies.wiki = ..\wiki\ReusePolicies.wiki
 		..\wiki\RoboConcept.wiki = ..\wiki\RoboConcept.wiki
 		..\wiki\Sidebar.wiki = ..\wiki\Sidebar.wiki
 		..\wiki\XmlConfiguration.wiki = ..\wiki\XmlConfiguration.wiki
@@ -22,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAppConfig", "TestAppConfig\TestAppConfig.csproj", "{CC0C9211-466A-4DF6-941E-5B0CBF58C018}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{6D9263A8-19DD-4B53-BB0C-2E3F259BCC2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{8D892638-C658-4C3F-A427-D8794867D2FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,5 +56,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3306639-B495-49AA-8FF5-CD987883E0FE} = {8D892638-C658-4C3F-A427-D8794867D2FB}
+		{75FB4AD8-34C6-45DC-8408-22FECA516630} = {8D892638-C658-4C3F-A427-D8794867D2FB}
+		{CC0C9211-466A-4DF6-941E-5B0CBF58C018} = {8D892638-C658-4C3F-A427-D8794867D2FB}
+		{6D9263A8-19DD-4B53-BB0C-2E3F259BCC2E} = {8D892638-C658-4C3F-A427-D8794867D2FB}
 	EndGlobalSection
 EndGlobal
