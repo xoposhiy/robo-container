@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<roboconfig xmlns="http://robo-container.googlecode.com/roboconfig">
+	<!-- c.ForPlugin<string>().UseInstance(".", "referencesPath");-->
+
+	<ForPlugin pluginType="System.String">
+		<UseInstance instance=".">
+			<declaredContracts item="referencesPath"/>
+		</UseInstance>
+	</ForPlugin>
+</roboconfig>
