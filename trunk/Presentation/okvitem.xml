@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Reference xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<OkvItem>
+		<code>8</code>
+		<rus>Лек</rus>
+		<inter>ALL</inter>
+		<countries>Албания</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>12</code>
+		<rus>Алжирский динар</rus>
+		<inter>DZD</inter>
+		<countries>Алжир</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>32</code>
+		<rus>Аргентинское песо</rus>
+		<inter>ARS</inter>
+		<countries>Аргентина</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>36</code>
+		<rus>Австралийский доллар</rus>
+		<inter>AUD</inter>
+		<countries>Австралия; Кирибати; Кокосовые (Килинг) острова; Науру; Остров Норфолк; Остров Рождества; Остров Херд и острова Макдональд; Тувалу</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>44</code>
+		<rus>Багамский доллар</rus>
+		<inter>BSD</inter>
+		<countries>Багамы</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>48</code>
+		<rus>Бахрейнский динар</rus>
+		<inter>BHD</inter>
+		<countries>Бахрейн</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>50</code>
+		<rus>Така</rus>
+		<inter>BDT</inter>
+		<countries>Бангладеш</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>51</code>
+		<rus>Армянский драм</rus>
+		<inter>AMD</inter>
+		<countries>Армения</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>52</code>
+		<rus>Барбадосский доллар</rus>
+		<inter>BBD</inter>
+		<countries>Барбадос</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>60</code>
+		<rus>Бермудский доллар</rus>
+		<inter>BMD</inter>
+		<countries>Бермуды</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>64</code>
+		<rus>Нгултрум</rus>
+		<inter>BTN</inter>
+		<countries>Бутан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>68</code>
+		<rus>Боливиано</rus>
+		<inter>BOB</inter>
+		<countries>Боливия, многонациональное государство</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>72</code>
+		<rus>Пула</rus>
+		<inter>BWP</inter>
+		<countries>Ботсвана</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>84</code>
+		<rus>Белизский доллар</rus>
+		<inter>BZD</inter>
+		<countries>Белиз</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>90</code>
+		<rus>Доллар Соломоновых Островов</rus>
+		<inter>SBD</inter>
+		<countries>Соломоновы Острова</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>96</code>
+		<rus>Брунейский доллар</rus>
+		<inter>BND</inter>
+		<countries>Бруней-Даруссалам</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>104</code>
+		<rus>Кьят</rus>
+		<inter>MMK</inter>
+		<countries>Мьянма</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>108</code>
+		<rus>Бурундийский франк</rus>
+		<inter>BIF</inter>
+		<countries>Бурунди</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>116</code>
+		<rus>Риель</rus>
+		<inter>KHR</inter>
+		<countries>Камбоджа</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>124</code>
+		<rus>Канадский доллар</rus>
+		<inter>CAD</inter>
+		<countries>Канада</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>132</code>
+		<rus>Эскудо Кабо-Верде</rus>
+		<inter>CVE</inter>
+		<countries>Кабо-Верде</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>136</code>
+		<rus>Доллар Островов Кайман</rus>
+		<inter>KYD</inter>
+		<countries>Острова Кайман</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>144</code>
+		<rus>Шри-Ланкийская рупия</rus>
+		<inter>LKR</inter>
+		<countries>Шри-Ланка</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>152</code>
+		<rus>Чилийское песо</rus>
+		<inter>CLР</inter>
+		<countries>Чили</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>156</code>
+		<rus>Юань</rus>
+		<inter>CNY</inter>
+		<countries>Китай</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>170</code>
+		<rus>Колумбийское песо</rus>
+		<inter>COP</inter>
+		<countries>Колумбия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>174</code>
+		<rus>Франк Комор</rus>
+		<inter>KMF</inter>
+		<countries>Коморы</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>188</code>
+		<rus>Костариканский колон</rus>
+		<inter>CRC</inter>
+		<countries>Коста-Рика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>191</code>
+		<rus>Хорватская куна</rus>
+		<inter>HRK</inter>
+		<countries>Хорватия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>192</code>
+		<rus>Кубинское песо</rus>
+		<inter>CUP</inter>
+		<countries>Куба</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>203</code>
+		<rus>Чешская крона</rus>
+		<inter>CZK</inter>
+		<countries>Чешская Республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>208</code>
+		<rus>Датская крона</rus>
+		<inter>DKK</inter>
+		<countries>Гренландия; Дания; Фарерские острова</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>214</code>
+		<rus>Доминиканское песо</rus>
+		<inter>DOP</inter>
+		<countries>Доминиканская Республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>222</code>
+		<rus>Сальвадорский колон</rus>
+		<inter>SVC</inter>
+		<countries>Эль-Сальвадор</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>230</code>
+		<rus>Эфиопский быр</rus>
+		<inter>ETB</inter>
+		<countries>Эфиопия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>232</code>
+		<rus>Накфа</rus>
+		<inter>ERN</inter>
+		<countries>Эритрея</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>233</code>
+		<rus>Крона</rus>
+		<inter>EEK</inter>
+		<countries>Эстония</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>238</code>
+		<rus>Фунт Фолклендских островов</rus>
+		<inter>FKP</inter>
+		<countries>Фолклендские острова (Мальвинские)</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>242</code>
+		<rus>Доллар Фиджи</rus>
+		<inter>FJD</inter>
+		<countries>Фиджи</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>262</code>
+		<rus>Франк Джибути</rus>
+		<inter>DJF</inter>
+		<countries>Джибути</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>270</code>
+		<rus>Даласи</rus>
+		<inter>GMD</inter>
+		<countries>Гамбия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>292</code>
+		<rus>Гибралтарский фунт</rus>
+		<inter>GIP</inter>
+		<countries>Гибралтар</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>320</code>
+		<rus>Кетсаль</rus>
+		<inter>GTQ</inter>
+		<countries>Гватемала</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>324</code>
+		<rus>Гвинейский франк</rus>
+		<inter>GNF</inter>
+		<countries>Гвинея</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>328</code>
+		<rus>Гайанский доллар</rus>
+		<inter>GYD</inter>
+		<countries>Гайана</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>332</code>
+		<rus>Гурд</rus>
+		<inter>HTG</inter>
+		<countries>Гаити</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>340</code>
+		<rus>Лемпира</rus>
+		<inter>HNL</inter>
+		<countries>Гондурас</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>344</code>
+		<rus>Гонконгский доллар</rus>
+		<inter>HKD</inter>
+		<countries>Гонконг</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>348</code>
+		<rus>Форинт</rus>
+		<inter>HUF</inter>
+		<countries>Венгрия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>352</code>
+		<rus>Исландская крона</rus>
+		<inter>ISK</inter>
+		<countries>Исландия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>356</code>
+		<rus>Индийская рупия</rus>
+		<inter>INR</inter>
+		<countries>Бутан; Индия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>360</code>
+		<rus>Рупия</rus>
+		<inter>IDR</inter>
+		<countries>Индонезия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>364</code>
+		<rus>Иранский риал</rus>
+		<inter>IRR</inter>
+		<countries>Иран (Исламская Республика)</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>368</code>
+		<rus>Иракский динар</rus>
+		<inter>IQD</inter>
+		<countries>Ирак</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>376</code>
+		<rus>Новый израильский шекель</rus>
+		<inter>ILS</inter>
+		<countries>Израиль</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>388</code>
+		<rus>Ямайский доллар</rus>
+		<inter>JMD</inter>
+		<countries>Ямайка</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>392</code>
+		<rus>Иена</rus>
+		<inter>JPY</inter>
+		<countries>Япония</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>398</code>
+		<rus>Тенге</rus>
+		<inter>KZT</inter>
+		<countries>Казахстан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>400</code>
+		<rus>Иорданский динар</rus>
+		<inter>JOD</inter>
+		<countries>Иордания</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>404</code>
+		<rus>Кенийский шиллинг</rus>
+		<inter>KES</inter>
+		<countries>Кения</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>408</code>
+		<rus>Северокорейская вона</rus>
+		<inter>KPW</inter>
+		<countries>Корея, народно-демократическая республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>410</code>
+		<rus>Вона</rus>
+		<inter>KRW</inter>
+		<countries>Корея, республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>414</code>
+		<rus>Кувейтский динар</rus>
+		<inter>KWD</inter>
+		<countries>Кувейт</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>417</code>
+		<rus>Сом</rus>
+		<inter>KGS</inter>
+		<countries>Киргизия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>418</code>
+		<rus>Кип</rus>
+		<inter>LAK</inter>
+		<countries>Лаосская Народно-Демократическая Республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>422</code>
+		<rus>Ливанский фунт</rus>
+		<inter>LBP</inter>
+		<countries>Ливан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>426</code>
+		<rus>Лоти</rus>
+		<inter>LSL</inter>
+		<countries>Лесото</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>428</code>
+		<rus>Латвийский лат</rus>
+		<inter>LVL</inter>
+		<countries>Латвия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>430</code>
+		<rus>Либерийский доллар</rus>
+		<inter>LRD</inter>
+		<countries>Либерия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>434</code>
+		<rus>Ливийский динар</rus>
+		<inter>LYD</inter>
+		<countries>Ливийская Арабская Джамахирия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>440</code>
+		<rus>Литовский лит</rus>
+		<inter>LTL</inter>
+		<countries>Литва</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>446</code>
+		<rus>Патака</rus>
+		<inter>MOP</inter>
+		<countries>Макао</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>454</code>
+		<rus>Квача</rus>
+		<inter>MWK</inter>
+		<countries>Малави</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>458</code>
+		<rus>Малайзийский ринггит</rus>
+		<inter>MYR</inter>
+		<countries>Малайзия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>462</code>
+		<rus>Руфия</rus>
+		<inter>MVR</inter>
+		<countries>Мальдивы</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>478</code>
+		<rus>Угия</rus>
+		<inter>MRO</inter>
+		<countries>Мавритания</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>480</code>
+		<rus>Маврикийская рупия</rus>
+		<inter>MUR</inter>
+		<countries>Маврикий</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>484</code>
+		<rus>Мексиканское песо</rus>
+		<inter>MXN</inter>
+		<countries>Мексика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>496</code>
+		<rus>Тугрик</rus>
+		<inter>MNT</inter>
+		<countries>Монголия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>498</code>
+		<rus>Молдавский лей</rus>
+		<inter>MDL</inter>
+		<countries>Молдова, республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>504</code>
+		<rus>Марокканский дирхам</rus>
+		<inter>MAD</inter>
+		<countries>Западная Сахара; Марокко</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>512</code>
+		<rus>Оманский риал</rus>
+		<inter>OMR</inter>
+		<countries>Оман</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>516</code>
+		<rus>Доллар Намибии</rus>
+		<inter>NAD</inter>
+		<countries>Намибия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>524</code>
+		<rus>Непальская рупия</rus>
+		<inter>NPR</inter>
+		<countries>Непал</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>532</code>
+		<rus>Нидерландский антильский гульден</rus>
+		<inter>ANG</inter>
+		<countries>Нидерландские Антилы</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>533</code>
+		<rus>Арубанский гульден</rus>
+		<inter>AWG</inter>
+		<countries>Аруба</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>548</code>
+		<rus>Вату</rus>
+		<inter>VUV</inter>
+		<countries>Вануату</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>554</code>
+		<rus>Новозеландский доллар</rus>
+		<inter>NZD</inter>
+		<countries>Ниуэ; Новая Зеландия; Острова Кука; Питкерн; Токелау</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>558</code>
+		<rus>Золотая кордоба</rus>
+		<inter>NIO</inter>
+		<countries>Никарагуа</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>566</code>
+		<rus>Найра</rus>
+		<inter>NGN</inter>
+		<countries>Нигерия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>578</code>
+		<rus>Норвежская крона</rus>
+		<inter>NOK</inter>
+		<countries>Норвегия; Остров Буве; Шпицберген и Ян Майен</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>586</code>
+		<rus>Пакистанская рупия</rus>
+		<inter>PKR</inter>
+		<countries>Пакистан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>590</code>
+		<rus>Бальбоа</rus>
+		<inter>PAB</inter>
+		<countries>Панама</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>598</code>
+		<rus>Кина</rus>
+		<inter>PGK</inter>
+		<countries>Папуа-Новая Гвинея</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>600</code>
+		<rus>Гуарани</rus>
+		<inter>PYG</inter>
+		<countries>Парагвай</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>604</code>
+		<rus>Новый соль</rus>
+		<inter>PEN</inter>
+		<countries>Перу</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>608</code>
+		<rus>Филиппинское песо</rus>
+		<inter>PНP</inter>
+		<countries>Филиппины</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>624</code>
+		<rus>Песо Гвинеи-Бисау</rus>
+		<inter>GWP</inter>
+		<countries>Гвинея-Бисау</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>634</code>
+		<rus>Катарский риал</rus>
+		<inter>QAR</inter>
+		<countries>Катар</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>643</code>
+		<rus>Российский рубль</rus>
+		<inter>RUB</inter>
+		<countries>Россия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>646</code>
+		<rus>Франк Руанды</rus>
+		<inter>RWF</inter>
+		<countries>Руанда</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>654</code>
+		<rus>Фунт Святой Елены</rus>
+		<inter>SHP</inter>
+		<countries>Святая Елена</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>678</code>
+		<rus>Добра</rus>
+		<inter>STD</inter>
+		<countries>Сан-Томе и Принсипи</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>682</code>
+		<rus>Саудовский риял</rus>
+		<inter>SAR</inter>
+		<countries>Саудовская Аравия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>690</code>
+		<rus>Сейшельская рупия</rus>
+		<inter>SCR</inter>
+		<countries>Сейшелы</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>694</code>
+		<rus>Леоне</rus>
+		<inter>SLL</inter>
+		<countries>Сьерра-Леоне</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>702</code>
+		<rus>Сингапурский доллар</rus>
+		<inter>SGD</inter>
+		<countries>Сингапур</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>704</code>
+		<rus>Донг</rus>
+		<inter>VND</inter>
+		<countries>Вьетнам</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>706</code>
+		<rus>Сомалийский шиллинг</rus>
+		<inter>SOS</inter>
+		<countries>Сомали</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>710</code>
+		<rus>Рэнд</rus>
+		<inter>ZAR</inter>
+		<countries>Лесото; Намибия; Южная Африка</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>748</code>
+		<rus>Лилангени</rus>
+		<inter>SZL</inter>
+		<countries>Свазиленд</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>752</code>
+		<rus>Шведская крона</rus>
+		<inter>SEK</inter>
+		<countries>Швеция</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>756</code>
+		<rus>Швейцарский франк</rus>
+		<inter>CHF</inter>
+		<countries>Лихтенштейн; Швейцария</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>760</code>
+		<rus>Сирийский фунт</rus>
+		<inter>SYP</inter>
+		<countries>Сирийская Арабская Республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>764</code>
+		<rus>Бат</rus>
+		<inter>THB</inter>
+		<countries>Таиланд</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>776</code>
+		<rus>Паанга</rus>
+		<inter>TOP</inter>
+		<countries>Тонга</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>780</code>
+		<rus>Доллар Тринидада и Тобаго</rus>
+		<inter>TTD</inter>
+		<countries>Тринидад и Тобаго</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>784</code>
+		<rus>Дирхам (ОАЭ)</rus>
+		<inter>AED</inter>
+		<countries>Объединенные Арабские Эмираты (ОАЭ)</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>788</code>
+		<rus>Тунисский динар</rus>
+		<inter>TND</inter>
+		<countries>Тунис</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>800</code>
+		<rus>Угандийский шиллинг</rus>
+		<inter>UGX</inter>
+		<countries>Уганда</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>807</code>
+		<rus>Денар</rus>
+		<inter>MKD</inter>
+		<countries>Македония, бывшая Югославская Республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>818</code>
+		<rus>Египетский фунт</rus>
+		<inter>ЕGP</inter>
+		<countries>Египет</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>826</code>
+		<rus>Фунт стерлингов</rus>
+		<inter>GBP</inter>
+		<countries>Соединенное королевство</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>834</code>
+		<rus>Танзанийский шиллинг</rus>
+		<inter>TZS</inter>
+		<countries>Танзания, объединенная республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>840</code>
+		<rus>Доллар США</rus>
+		<inter>USD</inter>
+		<countries>Американское Самоа; Британская территория в Индийском океане; Виргинские острова (Британские); Виргинские острова (США); Гаити; Гуам; Малые Тихоокеанские Отдаленные острова Соединенных Штатов; Маршалловы Острова; Микронезия, федеративные штаты; Острова Теркс и Кайкос; Палау; Панама; Пуэрто-Рико; Северные Марианские острова; Соединенные Штаты; Тимор-Лесте; Эквадор; Эль-Сальвадор</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>858</code>
+		<rus>Уругвайское песо</rus>
+		<inter>UYU</inter>
+		<countries>Уругвай</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>860</code>
+		<rus>Узбекский сум</rus>
+		<inter>UZS</inter>
+		<countries>Узбекистан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>882</code>
+		<rus>Тала</rus>
+		<inter>WST</inter>
+		<countries>Самоа</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>886</code>
+		<rus>Йеменский риал</rus>
+		<inter>YER</inter>
+		<countries>Йемен</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>894</code>
+		<rus>Замбийская квача</rus>
+		<inter>ZMK</inter>
+		<countries>Замбия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>901</code>
+		<rus>Новый тайваньский доллар</rus>
+		<inter>TWD</inter>
+		<countries>Тайвань (Китай)</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>931</code>
+		<rus>Конвертируемое песо</rus>
+		<inter>CUC</inter>
+		<countries>Куба</countries>
+		<comment>Пояснение: данная валюта действует с 1 марта 2009 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>932</code>
+		<rus>Доллар Зимбабве</rus>
+		<inter>ZWL</inter>
+		<countries>Зимбабве</countries>
+		<comment>Пояснение: данная валюта введена в действие с 1 февраля 2009 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>934</code>
+		<rus>Новый манат</rus>
+		<inter>TMT</inter>
+		<countries>Туркмения</countries>
+		<comment>Пояснение: данная валюта введена в действие с 1 января 2009 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>936</code>
+		<rus>Седи</rus>
+		<inter>GHS</inter>
+		<countries>Гана</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>937</code>
+		<rus>Боливар фуэрте</rus>
+		<inter>VEF</inter>
+		<countries>Венесуэла, боливарианская республика</countries>
+		<comment>Пояснение: данная валюта введена в действие с 1 января 2008 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>938</code>
+		<rus>Суданский фунт</rus>
+		<inter>SDG</inter>
+		<countries>Судан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>940</code>
+		<rus>Уругвайское песо в индексированных единицах</rus>
+		<inter>UYI</inter>
+		<countries>Уругвай</countries>
+		<comment>Пояснение: данная валюта действует с 11 ноября 2006 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>941</code>
+		<rus>Сербский динар</rus>
+		<inter>RSD</inter>
+		<countries>Сербия</countries>
+		<comment>Пояснение: данная валюта действует с 25 октября 2006 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>943</code>
+		<rus>Метикал</rus>
+		<inter>MZN</inter>
+		<countries>Мозамбик</countries>
+		<comment>Пояснение: данная валюта действует с 1 июля 2006 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>944</code>
+		<rus>Азербайджанский манат</rus>
+		<inter>AZN</inter>
+		<countries>Азербайджан</countries>
+		<comment>Пояснение: данная валюта вводится в действие с 1 января 2006 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>946</code>
+		<rus>Новый лей</rus>
+		<inter>RON</inter>
+		<countries>Румыния</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>949</code>
+		<rus>Турецкая лира</rus>
+		<inter>TRY</inter>
+		<countries>Турция</countries>
+		<comment>Пояснение: данная валюта введена в действие с 1 января 2009 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>950</code>
+		<rus>Франк КФА ВЕАС</rus>
+		<inter>XAF</inter>
+		<countries>Габон; Камерун; Конго; Центрально-Африканская Республика; Чад; Экваториальная Гвинея</countries>
+		<comment>Пояснение: Франк КФА ВЕАС - денежная единица Банка государств Центральной Африки</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>951</code>
+		<rus>Восточно-карибский доллар</rus>
+		<inter>XCD</inter>
+		<countries>Ангилья; Антигуа и Барбуда; Гренада; Доминика; Монтсеррат; Сент-Винсент и Гренадины; Сент-Китс и Невис; Сент-Люсия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>952</code>
+		<rus>Франк КФА ВСЕАО</rus>
+		<inter>XOF</inter>
+		<countries>Бенин; Буркина-Фасо; Гвинея-Бисау; Кот д'Ивуар; Мали; Нигер; Сенегал; Того</countries>
+		<comment>Пояснение: франк КФА ВСЕАО - денежная единица Центрального Банка государств Западной Африки</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>953</code>
+		<rus>Франк КФП</rus>
+		<inter>XPF</inter>
+		<countries>Новая Каледония; Французкая Полинезия; Уоллис и Футуна</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>960</code>
+		<rus>СДР (специальные права заимствования)</rus>
+		<inter>XDR</inter>
+		<countries>Международный валютный фонд (МВФ)</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>968</code>
+		<rus>Суринамский доллар</rus>
+		<inter>SRD</inter>
+		<countries>Суринам</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>969</code>
+		<rus>Малагасийский ариари</rus>
+		<inter>MGA</inter>
+		<countries>Мадагаскар</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>970</code>
+		<rus>Единица реальной стоимости</rus>
+		<inter>COU</inter>
+		<countries>Колумбия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>971</code>
+		<rus>Афгани</rus>
+		<inter>AFN</inter>
+		<countries>Афганистан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>972</code>
+		<rus>Сомони</rus>
+		<inter>TJS</inter>
+		<countries>Таджикистан</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>973</code>
+		<rus>Кванза</rus>
+		<inter>AOA</inter>
+		<countries>Ангола</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>974</code>
+		<rus>Белорусский рубль</rus>
+		<inter>BYR</inter>
+		<countries>Беларусь</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>975</code>
+		<rus>Болгарский лев</rus>
+		<inter>BGN</inter>
+		<countries>Болгария</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>976</code>
+		<rus>Конголезский франк</rus>
+		<inter>CDF</inter>
+		<countries>Конго, демократическая республика</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>977</code>
+		<rus>Конвертируемая марка</rus>
+		<inter>BAM</inter>
+		<countries>Босния и Герцеговина</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>978</code>
+		<rus>Евро</rus>
+		<inter>EUR</inter>
+		<countries>Австрия; Андорра; Бельгия; Гваделупа; Германия; Греция; Ирландия; Исландия; Испания; Италия; Кипр; Люксембург; Майотта; Мальта; Мартиника; Монако; Нидерланды; Папский Престол (Государство-город Ватикан); Португалия; Реюньон; Сан-Марино; Сен-Бартелеми; Сен-Мартен; Сент-Пьер и Микелон; Словакия; Словения; Финляндия; Франция; Французская Гвиана; Французские Южные территории; Черногория</countries>
+		<comment>Пояснение: данная валюта введена в действие для Словакии с 1 января 2009 г.</comment>
+	</OkvItem>
+	<OkvItem>
+		<code>980</code>
+		<rus>Гривна</rus>
+		<inter>UAH</inter>
+		<countries>Украина</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>981</code>
+		<rus>Лари</rus>
+		<inter>GEL</inter>
+		<countries>Грузия</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>985</code>
+		<rus>Злотый</rus>
+		<inter>PLN</inter>
+		<countries>Польша</countries>
+	</OkvItem>
+	<OkvItem>
+		<code>986</code>
+		<rus>Бразильский реал</rus>
+		<inter>BRL</inter>
+		<countries>Бразилия</countries>
+	</OkvItem>
+</Reference>
