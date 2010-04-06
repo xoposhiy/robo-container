@@ -16,6 +16,21 @@ namespace RoboContainer.Tests.CommonFunctionality
 		}
 
 		[Test]
+		public void can_use_Bind_extensions()
+		{
+			var container = new Container(
+				c =>
+					{
+						c.Bind<IFoo0, Foo0>();
+						c.Bind<IFoo0, Foo01>("named").ReusePluggable(ReusePolicy.Never);
+					});
+			Assert.IsInstanceOf<Foo0>(container.Get<IFoo0>());
+			var foo01 = container.Get<IFoo0>("named");
+			Assert.IsInstanceOf<Foo01>(foo01);
+			Assert.AreNotSame(foo01, container.Get<IFoo0>("named"));
+		}
+
+		[Test]
 		public void can_get_abstract_class()
 		{
 			var container = new Container();
@@ -206,6 +221,10 @@ namespace RoboContainer.Tests.CommonFunctionality
 	}
 
 	public class Foo0 : IFoo0
+	{
+	}
+
+	public class Foo01 : IFoo0
 	{
 	}
 
