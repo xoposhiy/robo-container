@@ -87,7 +87,7 @@ namespace RoboContainer.Tests.With
 		[Test]
 		public void With_override_plugin_ReusePolicy_1()
 		{
-			var container = new Container(c => c.Bind<IFoo, Foo1>(ReusePolicy.Never));
+			var container = new Container(c => c.Bind<IFoo, Foo1>().ReusePluggable(ReusePolicy.Never));
 			IContainer child = container.With(c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Always));
 			Assert.AreSame(child.Get<IFoo>(), child.Get<IFoo>());
 			Assert.AreNotSame(container.Get<IFoo>(), container.Get<IFoo>());
@@ -98,7 +98,7 @@ namespace RoboContainer.Tests.With
 		{
 			var container = new Container(c => c.ForPlugin<IFoo>().ReusePluggable(ReusePolicy.Never));
 
-			IContainer child = container.With(c => c.Bind<IFoo, Foo1>(ReusePolicy.Always));
+			IContainer child = container.With(c => c.Bind<IFoo, Foo1>().ReusePluggable(ReusePolicy.Always));
 			Assert.AreSame(child.Get<IFoo>(), child.Get<IFoo>());
 
 			child = container.With(c => c.Bind<IFoo, Foo1>());

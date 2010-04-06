@@ -93,27 +93,23 @@ namespace RoboContainer.Core
 	public static class ContainerConfigurationExtensions
 	{
 		/// <summary>
-		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UseInstance(value)</code>
+		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UseInstance(value, contracts)</code>
 		/// </summary>
-		public static void Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value)
+		public static IPluginConfigurator<TPlugin> Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value, params ContractDeclaration[] contracts)
 		{
-			configurator.ForPlugin<TPlugin>().UseInstance(value);
+			IPluginConfigurator<TPlugin> pluginConfigurator = configurator.ForPlugin<TPlugin>();
+			pluginConfigurator.UseInstance(value, contracts);
+			return pluginConfigurator;
 		}
 
 		/// <summary>
-		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;()</code>
+		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;(contracts)</code>
 		/// </summary>
-		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator) where TPluggable : TPlugin
+		public static IPluginConfigurator<TPlugin> Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, params ContractDeclaration[] contracts) where TPluggable : TPlugin
 		{
-			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>();
-		}
-
-		/// <summary>
-		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;().ReusePluggable(reusePolicy)</code>
-		/// </summary>
-		public static void Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, ReusePolicy reusePolicy) where TPluggable : TPlugin
-		{
-			configurator.ForPlugin<TPlugin>().UsePluggable<TPluggable>().ReusePluggable(reusePolicy);
+			IPluginConfigurator<TPlugin> pluginConfigurator = configurator.ForPlugin<TPlugin>();
+			pluginConfigurator.UsePluggable<TPluggable>(contracts);
+			return pluginConfigurator;
 		}
 	}
 
