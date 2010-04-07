@@ -83,6 +83,8 @@ namespace RoboContainer.Impl
 					.Select(a => (ContractRequirement) a.GetType())
 					.ToArray()
 				);
+			if (parameterInfo.GetCustomAttributes(typeof(NameIsContractAttribute), false).Any())
+				config.RequireContracts(parameterInfo.Name);
 			return config;
 		}
 	}

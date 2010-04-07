@@ -61,6 +61,7 @@
     <Compile Include="Impl\ExternalConfigurator.cs" />
     <Compile Include="Impl\MultiSet.cs" />
     <Compile Include="Impl\ResolutionRequest.cs" />
+    <Compile Include="Infection\NameIsContractAttribute.cs" />
     <Compile Include="Infection\UsePluggableAttribute.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />
     <Compile Include="RoboConfig\Configuration.cs" />
