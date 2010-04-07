@@ -9,6 +9,35 @@ namespace RoboContainer.Tests.Contracts
 	public class Contracts_Test
 	{
 		[Test]
+		public void Can_use_NameIsContractAttribute_for_contract_requirements()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPlugin<string>().UseInstance("default");
+					c.ForPlugin<string>().UseInstance("path", "referencesPath");
+				}
+					);
+			Assert.AreEqual("path", container.Get<Root_With_NameIsContractAttribute>().referencesPath);
+		}
+
+		[Test]
+		public void Can_mix_NameIsContractAttribute_with_other_contract_requirements()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPlugin<string>().UseInstance("default");
+					c.ForPlugin<string>().UseInstance("path", "referencesPath");
+					c.ForPlugin<string>().UseInstance("local path", "referencesPath", "local");
+					c.ForPlugin<string>().UseInstance("best local path", "referencesPath", "local", "best");
+					c.ForPluggable<Root_With_NameIsContractAttribute_And_Other_Contracts>().Dependency("referencesPath").RequireContracts("best");
+				}
+					);
+			Assert.AreEqual("best local path", container.Get<Root_With_NameIsContractAttribute_And_Other_Contracts>().referencesPath);
+		}
+
+		[Test]
 		public void Can_declare_contracts_for_plugin()
 		{
 			var container = new Container(
@@ -170,6 +199,26 @@ namespace RoboContainer.Tests.Contracts
 	[DeclareContract("fast")]
 	public class FastPluggable : IPluginWithAttributes
 	{
+	}
+
+	public class Root_With_NameIsContractAttribute
+	{
+		public readonly string referencesPath;
+
+		public Root_With_NameIsContractAttribute([NameIsContract] string referencesPath)
+		{
+			this.referencesPath = referencesPath;
+		}
+	}
+	
+	public class Root_With_NameIsContractAttribute_And_Other_Contracts
+	{
+		public readonly string referencesPath;
+
+		public Root_With_NameIsContractAttribute_And_Other_Contracts([NameIsContract] [RequireContract("local")]string referencesPath)
+		{
+			this.referencesPath = referencesPath;
+		}
 	}
 
 	public class Root
