@@ -6,11 +6,11 @@ namespace RoboContainer.Impl
 {
 	public class TypesMap
 	{
-		private readonly IDictionary<Type, IList<Type>> dic;
+		private readonly IDictionary<Type, HashSet<Type>> dic;
 
 		public TypesMap(IEnumerable<Type> types)
 		{
-			dic = new Dictionary<Type, IList<Type>>();
+			dic = new Dictionary<Type, HashSet<Type>>();
 			types.ForEach(type => ProcessType(NormalizeGenericType(type)));
 		}
 
@@ -31,9 +31,12 @@ namespace RoboContainer.Impl
 			return Inheritors(baseTypeOrInterface);
 		}
 
-		private IList<Type> Inheritors(Type baseTypeOrInterface)
+		private HashSet<Type> Inheritors(Type baseTypeOrInterface)
 		{
-			return dic.GetOrCreate(baseTypeOrInterface, () => new List<Type>());
+			return
+				dic.GetOrCreate(baseTypeOrInterface,
+					() => baseTypeOrInterface.Constructable() ? new HashSet<Type> {baseTypeOrInterface} : new HashSet<Type>()
+					);
 		}
 	}
 }

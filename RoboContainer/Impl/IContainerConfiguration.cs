@@ -9,7 +9,7 @@ namespace RoboContainer.Impl
 	{
 		IDisposable StartResolve(Type t, ContractRequirement[] contracts);
 		IContainerConfigurator Configurator { get; }
-		bool HasAssemblies();
+		bool WasAssembliesExplicitlyConfigured { get; }
 		IEnumerable<Type> GetScannableTypes();
 		IEnumerable<Type> GetScannableTypes(Type pluginType);
 		[CanBeNull]

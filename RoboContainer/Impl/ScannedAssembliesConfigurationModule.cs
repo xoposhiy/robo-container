@@ -4,7 +4,7 @@
 	{
 		public void Configure(IContainerConfiguration configuration)
 		{
-			if(!configuration.HasAssemblies())
+			if(!configuration.WasAssembliesExplicitlyConfigured)
 			{
 				configuration.Configurator.ScanLoadedCompanyAssemblies();
 				configuration.Configurator.ScanCallingAssembly();

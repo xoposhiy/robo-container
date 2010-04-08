@@ -26,6 +26,7 @@ namespace RoboContainer.Impl
 		public void ScanAssemblies(IEnumerable<Assembly> assembliesToScan)
 		{
 			assembliesToScan.Exclude(assemblies.Contains).ForEach(assemblies.Add);
+			WasAssembliesExplicitlyConfigured = true;
 		}
 
 		public virtual IEnumerable<Type> GetScannableTypes()
@@ -84,10 +85,7 @@ namespace RoboContainer.Impl
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
-		public virtual bool HasAssemblies()
-		{
-			return assemblies.Any();
-		}
+		public virtual bool WasAssembliesExplicitlyConfigured { get; private set; }
 
 		public IDisposable StartResolve(Type t, ContractRequirement[] contracts)
 		{
