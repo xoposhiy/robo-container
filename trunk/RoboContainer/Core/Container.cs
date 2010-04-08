@@ -65,7 +65,7 @@ namespace RoboContainer.Core
 		[DebuggerStepThrough]
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
 		{
-			return GetAll(typeof(TPlugin)).Cast<TPlugin>().ToList();
+			return GetAll(typeof(TPlugin), requiredContracts).Cast<TPlugin>().ToList();
 		}
 
 		#endregion
@@ -211,7 +211,8 @@ namespace RoboContainer.Core
 		{
 			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
 			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {ContractRequirement.Default};
-			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger).ToList();
+			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger);
+			if(pluginType == typeof(IContainer)) configuredPluggables = configuredPluggables.Concat(new IConfiguredPluggable[] { new ConfiguredInstancePluggable(this, new[]{ContractDeclaration.Default}) });
 			return configuredPluggables
 				.Where(
 					p => p.ByContractsFilterWithLogging(requiredContracts, ConstructionLogger)

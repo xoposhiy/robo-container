@@ -9,6 +9,16 @@ namespace RoboContainer.Tests.CommonFunctionality
 	public class Container_Test
 	{
 		[Test]
+		public void can_get_container_from_itself()
+		{
+			var container = new Container();
+			Assert.AreSame(container, container.Get<IContainer>());
+			Assert.IsNull(container.TryGet<IContainer>("some contract"));
+			CollectionAssert.AreEqual(new[]{container}, container.GetAll<IContainer>());
+			CollectionAssert.AreEqual(new IContainer[0], container.GetAll<IContainer>("some contract"));
+		}
+		
+		[Test]
 		public void can_create_type_without_args()
 		{
 			var container = new Container();
@@ -224,6 +234,8 @@ namespace RoboContainer.Tests.CommonFunctionality
 	{
 	}
 
+	
+	[IgnoredPluggable]
 	public class Foo01 : IFoo0
 	{
 	}

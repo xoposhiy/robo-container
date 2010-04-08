@@ -30,6 +30,13 @@ namespace Presentation
 
 	public class ShowLog : IOperation
 	{
+		private readonly IContainer container;
+
+		public ShowLog(IContainer container)
+		{
+			this.container = container;
+		}
+
 		public string Name
 		{
 			get { return "log"; }
@@ -37,17 +44,15 @@ namespace Presentation
 
 		public void Execute(string[] args)
 		{
-			Console.WriteLine(Log);
+			Console.WriteLine(container.LastConstructionLog);
 		}
-
-		public string Log;
 	}
 
 	public class Help : IOperation
 	{
-		private readonly Func<IEnumerable<IOperation>> knownOperations;
+		private readonly Lazy<IOperation[]> knownOperations;
 
-		public Help(Func<IEnumerable<IOperation>> knownOperations)
+		public Help(Lazy<IOperation[]> knownOperations)
 		{
 			this.knownOperations = knownOperations;
 		}
@@ -59,9 +64,9 @@ namespace Presentation
 
 		public void Execute(string[] args)
 		{
-			foreach(var operation in knownOperations())
+			foreach(var knownOperation in knownOperations.Get())
 			{
-				Console.WriteLine(" * " + operation.Name);
+				Console.WriteLine(" * " + knownOperation.Name);
 			}
 		}
 	}
@@ -87,7 +92,7 @@ namespace Presentation
 		private readonly TItem[] items;
 		private readonly XmlSerializer serializer = new XmlSerializer(typeof(TItem[]), new XmlRootAttribute("Reference"));
 
-		public InMemoryNotIndexedReference([RequireContract("referencesPath")]string directoryPath)
+		public InMemoryNotIndexedReference([RequireContract("referencesDir")]string directoryPath)
 		{
 			using(var s = new FileStream(Path.Combine(directoryPath, typeof(TItem).Name + ".xml"), FileMode.Open))
 				items = (TItem[])serializer.Deserialize(s);
@@ -99,15 +104,6 @@ namespace Presentation
 		}
 	}
 
-	[IgnoredPluggable]
-	public class TestReference : IReference<OkvItem>
-	{
-		public OkvItem Find(Func<OkvItem, bool> predicate)
-		{
-			return null;
-		}
-	}
-
 	public class ConvertByReference<TItem> : IOperation where TItem : class
 	{
 		private readonly Func<TItem, string> getFrom;
@@ -115,7 +111,9 @@ namespace Presentation
 		private readonly string opName;
 		private readonly IReference<TItem> reference;
 
-		public ConvertByReference(IReference<TItem> reference, string opName, Func<TItem, string> getFrom, Func<TItem, string> getTo)
+		public ConvertByReference(
+			IReference<TItem> reference, 
+			string opName, Func<TItem, string> getFrom, Func<TItem, string> getTo)
 		{
 			this.reference = reference;
 			this.opName = opName;
@@ -159,15 +157,22 @@ namespace Presentation
 		{
 			try
 			{
-				var container = new Container(c => c.ConfigureBy.XmlFile("settings.xml"));
+				var container = new Container(
+					c =>
+						{
+							c.ScanLoadedCompanyAssemblies();
+							c.ConfigureBy.XmlFile("settings.xml");
+							c.ForPluggable<string>().UseConstructor(typeof(string), typeof(int));
+						}
+					);
 				IEnumerable<IOperation> operations = container.GetAll<IOperation>();
-				string log = container.LastConstructionLog;
-				container.Get<ShowLog>().Log = log;
-				
 				string command;
 				while((command = Console.ReadLine()) != null)
 				{
-					string[] args = command.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+					string[] args = 
+						command.Split(
+							new[] { ' ' }, 
+							StringSplitOptions.RemoveEmptyEntries);
 					if(args.Length == 0) continue;
 					IOperation operation = operations.SingleOrDefault(o => o.Name == args[0]);
 					if(operation != null)
@@ -178,7 +183,7 @@ namespace Presentation
 			}
 			catch(Exception e)
 			{
-				Console.WriteLine(e.Message);
+				Console.WriteLine(e);
 			}
 		}
 	}
