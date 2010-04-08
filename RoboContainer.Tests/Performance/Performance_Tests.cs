@@ -115,14 +115,13 @@ namespace RoboContainer.Tests.Performance
 		{
 			var codeProvider = new CSharpCodeProvider();
 			var options = new CompilerParameters();
-			CompilerResults result = codeProvider.CompileAssemblyFromSource(options, GenerateVeryDeepHierarchySource(1000));
+			CompilerResults result = codeProvider.CompileAssemblyFromSource(options, GenerateVeryDeepHierarchySource(500));
 			CollectionAssert.IsEmpty(result.Errors);
 			Assembly assembly = result.CompiledAssembly;
 			TimeDepth(assembly, 0, 100);
 			TimeDepth(assembly, 100, 100);
 			TimeDepth(assembly, 200, 150);
 			TimeDepth(assembly, 500, 300);
-			TimeDepth(assembly, 1000, 600);
 		}
 
 		[Test]
