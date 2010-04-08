@@ -17,7 +17,7 @@
 + Доработка With подчистить TODO-шки.
 + DependencyOfType<IService>().UseInstance(service)
 + Container Reuse Scope
-
++ Самоинжектирующийся контейнер. container.Get<IContainer>() == container
 
 Infectionless Atributed configuration. см. InjectionContracts
 
