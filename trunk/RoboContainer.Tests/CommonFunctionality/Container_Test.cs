@@ -9,6 +9,14 @@ namespace RoboContainer.Tests.CommonFunctionality
 	public class Container_Test
 	{
 		[Test]
+		public void can_instantiate_unknown_class()
+		{
+			var container = new Container( c=> c.ScanLoadedAssemblies(a => false));
+			container.Get<Foo0>();
+			CollectionAssert.IsEmpty(container.GetAll<IFoo0>());
+		}
+
+		[Test]
 		public void can_get_container_from_itself()
 		{
 			var container = new Container();
@@ -78,6 +86,14 @@ namespace RoboContainer.Tests.CommonFunctionality
 			var container = new Container();
 			var m = container.Get<Multiconstructor_with_attributes>();
 			Assert.AreEqual(666, m.x);
+			Assert.IsNotNull(m.foo);
+		}
+
+		[Test]
+		public void select_most_parameters_constructor()
+		{
+			var container = new Container();
+			var m = container.Get<Multiconstructor_without_attributes>();
 			Assert.IsNotNull(m.foo);
 		}
 
@@ -208,6 +224,21 @@ namespace RoboContainer.Tests.CommonFunctionality
 	{
 	}
 
+	public class Multiconstructor_without_attributes
+	{
+		public readonly Foo0 foo;
+
+		public Multiconstructor_without_attributes()
+		{
+		}
+
+		public Multiconstructor_without_attributes(Foo0 foo)
+		{
+			this.foo = foo;
+		}
+		
+	}
+	
 	public class Multiconstructor_with_attributes
 	{
 		public readonly Foo0 foo;

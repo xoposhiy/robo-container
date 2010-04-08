@@ -46,27 +46,15 @@ namespace RoboContainer.Impl
 			return type.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 		}
 
-		public static ConstructorInfo GetInjectableConstructor(this Type type, [CanBeNull]Type[] argsTypes)
+		public static IEnumerable<ConstructorInfo> GetInjectableConstructors(this Type type, [CanBeNull]Type[] argsTypes)
 		{
-			IEnumerable<ConstructorInfo> constructors =
-				argsTypes == null
-					? GetInjectableConstructors(type)
-					: GetExactInjectableConstructor(type, argsTypes);
+			if(argsTypes != null) return GetExactInjectableConstructor(type, argsTypes);
+			IEnumerable<ConstructorInfo> constructors = GetInjectableConstructors(type);
 			if(constructors.Count() == 0) throw new ContainerException("Type {0} has no injectable constructors", type);
-			if(constructors.Count() > 1)
-			{
-				IEnumerable<ConstructorInfo> marked =
-					constructors.Where(c => c.GetCustomAttributes(typeof(ContainerConstructorAttribute), false).Any());
-				if(marked.Count() > 1)
-					throw new ContainerException(
-						"Type {0} has more than one injectable constructors marked with ContainerConstructorAttribute",
-						type);
-				if(marked.Count() == 0)
-					throw new ContainerException(
-						"Type {0} has more than one injectable constructors but no one is marked with ContainerConstructorAttribute", type);
-				return marked.First();
-			}
-			return constructors.First();
+			IEnumerable<ConstructorInfo> marked =
+				constructors.Where(c => c.GetCustomAttributes(typeof(ContainerConstructorAttribute), false).Any());
+			if(marked.Any()) return marked;
+			return constructors;
 		}
 
 		private static IEnumerable<ConstructorInfo> GetExactInjectableConstructor(Type type, Type[] argsTypes)

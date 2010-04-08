@@ -24,9 +24,9 @@ namespace RoboContainer.Impl
 			plugins.Clear();
 		}
 
-		public override bool HasAssemblies()
+		public override bool WasAssembliesExplicitlyConfigured
 		{
-			return base.HasAssemblies() || parent.HasAssemblies();
+			get { return base.WasAssembliesExplicitlyConfigured || parent.WasAssembliesExplicitlyConfigured; }
 		}
 
 		public override IEnumerable<Type> GetScannableTypes()

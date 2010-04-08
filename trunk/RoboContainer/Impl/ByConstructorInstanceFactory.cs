@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using RoboContainer.Core;
 
@@ -28,10 +30,14 @@ namespace RoboContainer.Impl
 		{
 			using(Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType))
 			{
-				ConstructorInfo constructorInfo = InstanceType.GetInjectableConstructor(pluggable.InjectableConstructorArgsTypes);
-				var actualArgs = pluggable.Dependencies.TryGetActualArgs(constructorInfo, container);
+				IEnumerable<ConstructorInfo> constructors = 
+					InstanceType.GetInjectableConstructors(pluggable.InjectableConstructorArgsTypes);
+				var bestConstructor = constructors.First();
+				foreach(var c in constructors)
+					if(c.GetParameters().Length > bestConstructor.GetParameters().Length) bestConstructor = c;
+				var actualArgs = pluggable.Dependencies.TryGetActualArgs(bestConstructor, container);
 				if(actualArgs == null) return null;
-				return constructorInfo.Invoke(actualArgs);
+				return bestConstructor.Invoke(actualArgs);
 			}
 		}
 	}
