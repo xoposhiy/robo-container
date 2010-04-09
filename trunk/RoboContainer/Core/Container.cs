@@ -105,9 +105,9 @@ namespace RoboContainer.Core
 				using(configuration.StartResolve(pluginType, requiredContracts))
 					return PlainGetAll(pluginType, requiredContracts);
 			}
-			catch(ContainerException)
+			catch(ContainerException e)
 			{
-				throw;
+				throw new ContainerException(e, e.Message);
 			}
 			catch(Exception e)
 			{
