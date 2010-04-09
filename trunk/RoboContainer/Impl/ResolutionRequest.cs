@@ -31,7 +31,11 @@ namespace RoboContainer.Impl
 		{
 			unchecked
 			{
-				return RequestedType.GetHashCode()*397 ^ (RequestedContracts.Sum(c => c.GetHashCode()));
+				int v = RequestedType.GetHashCode()*397;
+				int contractsHash = 0;
+				foreach (var contract in RequestedContracts)
+					unchecked { contractsHash += contract.GetHashCode(); }
+				return v ^ contractsHash;
 			}
 		}
 
