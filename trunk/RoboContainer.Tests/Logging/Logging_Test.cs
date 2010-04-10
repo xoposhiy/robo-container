@@ -51,6 +51,42 @@ namespace RoboContainer.Tests.Logging
 ",
 				container.LastConstructionLog);
 		}
+
+		[Test]
+		public void Cant_reconfigure_logging_in_child_container()
+		{
+			var container = new Container();
+			Assert.Throws<ContainerException>(
+				() => container.With(c => c.Logging.Disable())
+			);
+		}
+
+		[Test]
+		public void LastConstructionLog_for_child_container()
+		{
+			var container = new Container().With(c => c.ForPluggable<JpgExporter>().DontUseIt());
+			container.Get<IExportFileScreen>();
+			Console.WriteLine(container.LastConstructionLog);
+			Assert.AreEqual(
+				@"Get IExportFileScreen
+	Constructing ExportFileScreen
+		Get IExporter[]
+			Get IExporter
+				Constructing BmpExporter
+				Constructed BmpExporter
+				Constructing PngExporter
+				Constructed PngExporter
+	Constructed ExportFileScreen
+",
+				container.LastConstructionLog);
+			container.Get<BmpExporter>();
+			Console.WriteLine(container.LastConstructionLog);
+			Assert.AreEqual(
+				@"Get BmpExporter
+	Reused BmpExporter
+",
+				container.LastConstructionLog);
+		}
 	}
 
 	public class MockConstructionLogger : IConstructionLogger

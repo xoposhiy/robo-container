@@ -107,11 +107,11 @@ namespace RoboContainer.Core
 			}
 			catch(ContainerException e)
 			{
-				throw new ContainerException(e, e.Message);
+				throw ContainerException.WithLog(LastConstructionLog, e);
 			}
 			catch(Exception e)
 			{
-				throw new ContainerException(e, e.Message + Environment.NewLine + ConstructionLogger.ToString());
+				throw ContainerException.WithLog(LastConstructionLog, e);
 			}
 		}
 
@@ -149,13 +149,13 @@ namespace RoboContainer.Core
 
 		private ContainerException NoPluggablesException(Type pluginType)
 		{
-			return new ContainerException("Plugguble for {0} not found." + Environment.NewLine + LastConstructionLog, pluginType.Name);
+			return ContainerException.WithLog(LastConstructionLog, "Plugguble for {0} not found.", pluginType.Name);
 		}
 
 		private ContainerException HasManyPluggablesException(Type pluginType, IEnumerable<object> items)
 		{
-			return new ContainerException(
-				"Plugin {0} has many pluggables:{1}" + Environment.NewLine + LastConstructionLog,
+			return ContainerException.WithLog(LastConstructionLog, 
+				"Plugin {0} has many pluggables:{1}",
 				pluginType.Name,
 				items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
 		}

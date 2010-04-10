@@ -30,14 +30,22 @@ namespace RoboContainer.Impl
 		{
 			using(Configuration.GetConfiguredLogging().GetLogger().StartConstruction(InstanceType))
 			{
-				IEnumerable<ConstructorInfo> constructors = 
+				IEnumerable<ConstructorInfo> constructors =
 					InstanceType.GetInjectableConstructors(pluggable.InjectableConstructorArgsTypes);
 				var bestConstructor = constructors.First();
 				foreach(var c in constructors)
 					if(c.GetParameters().Length > bestConstructor.GetParameters().Length) bestConstructor = c;
 				var actualArgs = pluggable.Dependencies.TryGetActualArgs(bestConstructor, container);
 				if(actualArgs == null) return null;
-				return bestConstructor.Invoke(actualArgs);
+				try
+				{
+					return bestConstructor.Invoke(actualArgs);
+				}
+				catch(TargetInvocationException e)
+				{
+					if(e.InnerException != null) throw ContainerException.NoLog(e.InnerException.Message);
+					throw;
+				}
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RoboContainer.Core;
 using RoboContainer.Infection;
 
 namespace RoboContainer.Impl
@@ -50,7 +51,7 @@ namespace RoboContainer.Impl
 		{
 			if(argsTypes != null) return GetExactInjectableConstructor(type, argsTypes);
 			IEnumerable<ConstructorInfo> constructors = GetInjectableConstructors(type);
-			if(constructors.Count() == 0) throw new ContainerException("Type {0} has no injectable constructors", type);
+			if(constructors.Count() == 0) throw ContainerException.NoLog("Type {0} has no injectable constructors", type);
 			IEnumerable<ConstructorInfo> marked =
 				constructors.Where(c => c.GetCustomAttributes(typeof(ContainerConstructorAttribute), false).Any());
 			if(marked.Any()) return marked;

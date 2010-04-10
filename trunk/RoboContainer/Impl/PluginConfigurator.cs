@@ -153,7 +153,7 @@ namespace RoboContainer.Impl
 
 		private ContainerException NotPluggableException(Type pluggableType)
 		{
-			return new ContainerException("'{0}' is not pluggable into '{1}'", pluggableType.Name, PluginType.Name);
+			return ContainerException.NoLog("'{0}' is not pluggable into '{1}'", pluggableType.Name, PluginType.Name);
 		}
 
 		private void UseProvidedParts(object part)
@@ -169,7 +169,7 @@ namespace RoboContainer.Impl
 				}
 				catch(ContainerException e)
 				{
-					throw new ContainerException(e, "Provided part {0}. {1}", partDescription.Name, e.Message);
+					throw ContainerException.NoLog(e, "Provided part {0}. {1}", partDescription.Name, e.Message);
 				}
 			}
 		}
