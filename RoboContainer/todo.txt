@@ -19,26 +19,38 @@
 + Container Reuse Scope
 + Самоинжектирующийся контейнер. container.Get<IContainer>() == container
 
+Прокаченные инициализаторы. 
+  public interface IPluggableInitializer{
+	object Initialize(object o);
+	[Pure] // кэшируется контейнером для производительности
+	bool WantToRun(Type pluggableType, ContractDeclaration[] decls); 
+  }
+  
+setter-injection на основе инициализаторов + contaienr.BuildUp(obj) - заполнение свойств.
+
+field и method-injection по аналогии с setter-injection.
+
 Infectionless Atributed configuration. см. InjectionContracts
 
-Больше информации в логе.
+Получение инстансов из фабрик.
+	class AFactory{
+		[ProvidePart]X TheX{ get{...}}
+	}
+	class Consumer{
+		Consumer(X someX){...}
+	}
+	container.Get<Consumer>() приводит к созданию фабрики, для того, чтобы получить из нее X.
+
+Структурированный лог. Больше информации в логе.
 
 Документация
 
-Фасилити / Registry / Module
-
-Сделать экспорт частей из синглтонов. Ворнинги в логе при не экспорте из несинглтонов. Подумать...
-
-Структурированный лог
+Доработать идею с модулями.
 
 container.AssertConfigurationIsValid(); ?!?!?!
 
-setter injection
-field injection
-method injection
-
 клевый интерфейс для получения generic-а если значения его параметров типа известны только в рантайме.
-IGenericInterface gi = container.GetGeneric(typeof(IGeneric<,>), object1.GetType(), object2.GetType()).As<IGenericInterface>();
+IGenericInterface gi = container.GetGeneric(typeof(IGeneric<,>), object1.GetType(), object2.GetType()) as IGenericInterface;
 вместо:
 IGenericInterface gi = (IGenericInterface)container.Get(typeof(IGeneric<,>).GetGenericTypeDefinition().MakeGeneric(object1.GetType(), object2.GetType());
 

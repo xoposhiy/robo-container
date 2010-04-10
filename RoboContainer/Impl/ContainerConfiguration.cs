@@ -87,7 +87,7 @@ namespace RoboContainer.Impl
 
 		public virtual bool WasAssembliesExplicitlyConfigured { get; private set; }
 
-		public IDisposable StartResolve(Type t, ContractRequirement[] contracts)
+		public IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts)
 		{
 			var request = new ResolutionRequest(t, contracts);
 			if(resolutionStack.Contains(request))

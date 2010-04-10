@@ -36,5 +36,11 @@ namespace RoboContainer.Core
 		{
 			return Contract.ToString();
 		}
+
+		public override bool Satisfy(ContractDeclaration declaration)
+		{
+			var castedDeclaration = declaration as SimpleContractDeclaration<TContract>;
+			return castedDeclaration != null && Contract.Equals(castedDeclaration.Contract);
+		}
 	}
 }

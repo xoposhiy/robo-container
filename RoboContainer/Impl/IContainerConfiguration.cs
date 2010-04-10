@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 {
 	public interface IContainerConfiguration : IDisposable
 	{
-		IDisposable StartResolve(Type t, ContractRequirement[] contracts);
+		IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts);
 		IContainerConfigurator Configurator { get; }
 		bool WasAssembliesExplicitlyConfigured { get; }
 		IEnumerable<Type> GetScannableTypes();

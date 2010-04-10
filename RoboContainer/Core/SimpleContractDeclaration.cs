@@ -1,10 +1,9 @@
 ﻿using System.Diagnostics;
-using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
 	[DebuggerDisplay("{Contract}")]
-	public class SimpleContractDeclaration<TContract> : BaseContractDeclaration<SimpleContractRequirement<TContract>>
+	public class SimpleContractDeclaration<TContract> : ContractDeclaration
 	{
 		public TContract Contract { get; private set; }
 
@@ -36,11 +35,6 @@ namespace RoboContainer.Core
 		public override int GetHashCode()
 		{
 			return Contract.GetHashCode();
-		}
-
-		protected override bool Satisfy(SimpleContractRequirement<TContract> requirement)
-		{
-			return Contract.Equals(requirement.Contract);
 		}
 	}
 }

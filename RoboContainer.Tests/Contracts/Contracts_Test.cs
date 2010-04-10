@@ -9,6 +9,15 @@ namespace RoboContainer.Tests.Contracts
 	public class Contracts_Test
 	{
 		[Test]
+		public void Can_get_pluggables_with_any_contract()
+		{
+			var container = new Container();
+			var plugins = container.GetAll<IPluginWithAttributes>();
+			CollectionAssert.Contains(plugins, container.Get<HiddenPluggable>("hidden"));
+			CollectionAssert.Contains(plugins, container.Get<FastHiddenPluggable>("fast"));
+		}
+
+		[Test]
 		public void Can_use_NameIsContractAttribute_for_contract_requirements()
 		{
 			var container = new Container(
