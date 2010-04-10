@@ -105,7 +105,6 @@
     <Compile Include="Core\ContractDeclaration.cs" />
     <Compile Include="Core\IDependencyConfigurator.cs" />
     <Compile Include="Infection\IInitializablePluggable.cs" />
-    <Compile Include="Impl\BaseContractDeclaration.cs" />
     <Compile Include="Impl\ConfiguredByDelegatePluggable.cs" />
     <Compile Include="Impl\ConfiguredByPluginPluggable.cs" />
     <Compile Include="Impl\ContainerConfigurator.cs" />

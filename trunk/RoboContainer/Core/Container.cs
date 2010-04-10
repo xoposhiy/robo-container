@@ -102,12 +102,8 @@ namespace RoboContainer.Core
 			try
 			{
 				using(ConstructionLogger.StartResolving(pluginType))
-				using(configuration.StartResolve(pluginType, requiredContracts))
+				using(configuration.DependencyCycleCheck(pluginType, requiredContracts))
 					return PlainGetAll(pluginType, requiredContracts);
-			}
-			catch(ContainerException e)
-			{
-				throw ContainerException.WithLog(LastConstructionLog, e);
 			}
 			catch(Exception e)
 			{

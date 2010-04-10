@@ -14,9 +14,28 @@ namespace RoboContainer.Core
 		static ContractRequirement()
 		{
 			Default = "DEFAULT";
+			Anyone = new AnyoneRequirement();
+		}
+
+		private class AnyoneRequirement : ContractRequirement
+		{
+			public override bool Satisfy(ContractDeclaration declaration)
+			{
+				return true;
+			}
 		}
 
 		public static ContractRequirement Default { get; private set; }
+
+		/// <summary>
+		/// В наследниках, метод должен определять, подходит ли данный контракт под требование.
+		/// </summary>
+		public abstract bool Satisfy(ContractDeclaration declaration);
+
+		public static ContractRequirement Anyone
+		{
+			get; private set;
+		}
 
 		public static implicit operator ContractRequirement(string value)
 		{

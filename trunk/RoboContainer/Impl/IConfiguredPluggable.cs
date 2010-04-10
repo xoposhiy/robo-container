@@ -93,7 +93,7 @@ namespace RoboContainer.Impl
 		public static bool ByContractsFilterWithLogging(this IConfiguredPluggable p,
 			IEnumerable<ContractRequirement> requiredContracts, IConstructionLogger logger)
 		{
-			bool fitContracts = requiredContracts.All(req => p.GetAllContracts().Any(c => c.Satisfy(req)));
+			bool fitContracts = requiredContracts.All(req => p.GetAllContracts().Any(req.Satisfy));
 			if(!fitContracts)
 			{
 				logger.Declined(
