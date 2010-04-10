@@ -120,7 +120,7 @@
     <Compile Include="Impl\ByConstructorInstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
     <Compile Include="Impl\DictionaryExtensions.cs" />
-    <Compile Include="Impl\ContainerException.cs" />
+    <Compile Include="Core\ContainerException.cs" />
     <Compile Include="Core\IContainer.cs" />
     <Compile Include="Core\IContainerConfigurator.cs" />
     <Compile Include="Impl\IInstanceFactory.cs" />

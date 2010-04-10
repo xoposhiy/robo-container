@@ -89,9 +89,9 @@ namespace RoboContainer.Impl
 			if(!parent.ReusePolicy.Overridable)
 			{
 				if(child.ReuseSpecified && parent.ReusePolicy != child.ReusePolicy)
-					throw new ContainerException("Нельзя переопределить политику переиспользования для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
+					throw ContainerException.NoLog("Нельзя переопределить политику переиспользования для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
 				if(child.InitializePluggable != null)
-					throw new ContainerException("Нельзя переопределить инициализатор для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
+					throw ContainerException.NoLog("Нельзя переопределить инициализатор для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
 				return parent.GetFactory();
 			}
 			return parent.GetFactory().CreateByPrototype(this, child.ReusePolicy, child.InitializePluggable, childConfiguration);

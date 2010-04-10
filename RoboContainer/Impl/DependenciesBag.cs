@@ -40,7 +40,7 @@ namespace RoboContainer.Impl
 				return newDep;
 			}
 			if(deps.Count() > 1)
-				throw new ContainerException("Несогласованное конфигурирование зависимостей плагина {0}", deps.First().PluggableType);
+				throw ContainerException.NoLog("Несогласованное конфигурирование зависимостей плагина {0}", deps.First().PluggableType);
 			return deps.Single();
 		}
 

@@ -18,7 +18,7 @@ namespace RoboContainer.Impl
 		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
 		private TypesMap typesMap;
 
-		public IConfiguredLogging GetConfiguredLogging()
+		public virtual IConfiguredLogging GetConfiguredLogging()
 		{
 			return loggerConfigurator;
 		}
@@ -91,10 +91,7 @@ namespace RoboContainer.Impl
 		{
 			var request = new ResolutionRequest(t, contracts);
 			if(resolutionStack.Contains(request))
-			{
-				var message = string.Format("Type {0} has cyclic dependencies.", t);
-				throw new ContainerException(message + Environment.NewLine + GetConfiguredLogging().GetLogger().ToString());
-			}
+				throw ContainerException.NoLog("Type {0} has cyclic dependencies.", t);
 			resolutionStack.Add(request);
 			return new Disposable(() => resolutionStack.Remove(request));
 		}

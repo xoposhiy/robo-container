@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
@@ -13,6 +14,16 @@ namespace RoboContainer.Impl
 		public ChildConfiguration(IContainerConfiguration parent)
 		{
 			this.parent = parent;
+		}
+
+		public override IConfiguredLogging GetConfiguredLogging()
+		{
+			return parent.GetConfiguredLogging();
+		}
+
+		public override ILoggingConfigurator GetLoggingConfigurator()
+		{
+			throw ContainerException.NoLog("Cant reconfigure parent logging");
 		}
 
 		public override void Dispose()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
@@ -110,6 +111,11 @@ namespace RoboContainer.Core
 			IPluginConfigurator<TPlugin> pluginConfigurator = configurator.ForPlugin<TPlugin>();
 			pluginConfigurator.UsePluggable<TPluggable>(contracts);
 			return pluginConfigurator;
+		}
+
+		public static string LastConstructionLog(this IContainerConfiguration configuration)
+		{
+			return configuration.GetConfiguredLogging().GetLogger().ToString();
 		}
 	}
 
