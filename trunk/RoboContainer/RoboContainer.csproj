@@ -57,6 +57,7 @@
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\IConfigurationModule.cs" />
     <Compile Include="Impl\IContainerImpl.cs" />
+    <Compile Include="Impl\InjectEverywhere.cs" />
     <Compile Include="Infection\InjectAttribute.cs" />
     <Compile Include="Impl\LazyConfigurationModule.cs" />
     <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Impl\ExternalConfigurator.cs" />
     <Compile Include="Impl\MultiSet.cs" />
     <Compile Include="Impl\ResolutionRequest.cs" />
-    <Compile Include="Impl\SetterInjectionInitializer.cs" />
+    <Compile Include="Impl\SetterInjection.cs" />
     <Compile Include="Infection\NameIsContractAttribute.cs" />
     <Compile Include="Infection\UsePluggableAttribute.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />

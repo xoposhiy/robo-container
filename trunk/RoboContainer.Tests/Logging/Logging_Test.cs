@@ -114,6 +114,10 @@ namespace RoboContainer.Tests.Logging
 		{
 		}
 
+		public void Injected(Type createdType, string dependencyName, Type injectedType)
+		{
+		}
+
 		public void Declined(Type pluggableType, string reason)
 		{
 		}
@@ -130,7 +134,7 @@ namespace RoboContainer.Tests.Logging
 		{
 		}
 
-		public void Reused(Type pluggableType)
+		public void Reused(object value)
 		{
 		}
 

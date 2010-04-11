@@ -27,7 +27,7 @@ namespace RoboContainer.Impl
 		{
 		}
 
-		public void Reused(Type pluggableType)
+		public void Reused(object value)
 		{
 		}
 
@@ -37,6 +37,10 @@ namespace RoboContainer.Impl
 		}
 
 		public void UseSpecifiedValue(Type dependencyType, object value)
+		{
+		}
+
+		public void Injected(Type createdType, string dependencyName, Type injectedType)
 		{
 		}
 

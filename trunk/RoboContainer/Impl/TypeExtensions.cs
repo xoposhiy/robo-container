@@ -20,6 +20,12 @@ namespace RoboContainer.Impl
 			return memberInfo.GetAttributes<TAttribute>().SingleOrDefault();
 		}
 
+		public static bool HasAttribute<TAttribute>(this MemberInfo memberInfo)
+			where TAttribute : Attribute
+		{
+			return memberInfo.GetAttributes<TAttribute>().Any();
+		}
+
 		public static IEnumerable<TAttribute> GetAttributes<TAttribute>(this MemberInfo memberInfo)
 			where TAttribute : Attribute
 		{

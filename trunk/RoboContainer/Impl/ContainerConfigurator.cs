@@ -65,6 +65,11 @@ namespace RoboContainer.Impl
 			return configuration.GetPluginConfigurator(pluginType);
 		}
 
+		public void InjectEverywhere<TPlugin>(params ContractRequirement[] requiredContracts)
+		{
+			RegisterInitializer(new InjectEverywhere<TPlugin>(requiredContracts));
+		}
+
 		public void ScanLoadedCompanyAssemblies()
 		{
 			string callingAssemblyName = AssembliesUtils.GetTheCallingAssembly().FullName;

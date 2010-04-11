@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using RoboContainer.Impl;
+using RoboContainer.Infection;
 
 namespace RoboContainer.Core
 {
@@ -97,6 +98,12 @@ namespace RoboContainer.Core
 		/// Конфигурирование создания реализаций сервиса <paramref name="pluginType"/>.
 		/// </summary>
 		IPluginConfigurator ForPlugin(Type pluginType);
+
+		/// <summary>
+		/// Инжектирование <typeparam name="TPlugin"/> в поля и свойства, даже если они не помечены атрибутом <see cref="InjectAttribute"/>.
+		/// Отменить инжектирование можно с помощью атрибута <see cref="DontInjectAttribute"/>.
+		/// </summary>
+		void InjectEverywhere<TPlugin>(params ContractRequirement[] requiredContracts);
 	}
 
 	public static class ContainerConfigurationExtensions

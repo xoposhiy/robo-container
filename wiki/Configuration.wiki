@@ -68,6 +68,7 @@ IPluggableConfigurator ForPluggable(Type pluggableType);
 IPluggableConfigurator<TPluggable> ForPluggable<TPluggable>();
 IPluginConfigurator<TPlugin> ForPlugin<TPlugin>();
 IPluginConfigurator ForPlugin(Type pluginType);
+void InjectEverywhere<TPlugin>(ContractRequirement[] requiredContracts);
 IExternalConfigurator ConfigureBy { get; }
 ILoggingConfigurator Logging { get; }
 

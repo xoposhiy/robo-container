@@ -14,7 +14,7 @@ namespace RoboContainer.Impl
 		[CanBeNull]
 		private bool TryGetActualArg(Container container, ParameterInfo formalArg, out object actualArg)
 		{
-			var dep = DependencyConfigurator.FromAttributes(formalArg);
+			var dep = DependencyConfigurator.FromAttributes(formalArg.Name, formalArg.ParameterType, formalArg);
 			dep = dep.CombineWith(Get(formalArg.Name, formalArg.ParameterType));
 			return dep.TryGetValue(formalArg.ParameterType, container, out actualArg);
 		}
@@ -22,9 +22,17 @@ namespace RoboContainer.Impl
 		[CanBeNull]
 		public bool TryGetValue(IContainerImpl container, PropertyInfo property, out object actualArg)
 		{
-			var dep = DependencyConfigurator.FromAttributes(property);
+			var dep = DependencyConfigurator.FromAttributes(property.Name, property.PropertyType, property);
 			dep = dep.CombineWith(Get(property.Name, property.PropertyType));
 			return dep.TryGetValue(property.PropertyType, container, out actualArg);
+		}
+
+		[CanBeNull]
+		public bool TryGetValue(IContainerImpl container, string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider, out object actualArg)
+		{
+			var dep = DependencyConfigurator.FromAttributes(dependencyName, dependencyType, attributeProvider);
+			dep = dep.CombineWith(Get(dependencyName, dependencyType));
+			return dep.TryGetValue(dependencyType, container, out actualArg);
 		}
 
 		[CanBeNull]

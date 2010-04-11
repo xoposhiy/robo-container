@@ -21,17 +21,14 @@ namespace RoboContainer.Impl
 		public IContainerConfiguration Configuration { get; private set; }
 
 		[CanBeNull]
-		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, out bool justCreated)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject)
 		{
 			if(reuseValueSlot.Value != null)
 			{
-				logger.Reused(reuseValueSlot.Value.GetType());
-				justCreated = false;
+				logger.Reused(reuseValueSlot.Value);
 				return reuseValueSlot.Value;
 			}
-			var result = TryConstructAndLog(logger, typeToCreate, requiredContracts);
-			justCreated = result != null;
-			return reuseValueSlot.Value = result;
+			return reuseValueSlot.Value = TryConstruct(logger, typeToCreate, requiredContracts, initializeJustCreatedObject);
 		}
 
 		public IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
@@ -47,26 +44,20 @@ namespace RoboContainer.Impl
 		protected abstract IInstanceFactory DoCreateByPrototype(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
 		[CanBeNull]
-		private object TryConstructAndLog(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts)
+		private object TryConstruct(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject)
 		{
-			object result = TryConstruct(typeToCreate, requiredContracts);
-			if(result == null) logger.ConstructionFailed(InstanceType);
-			else logger.Constructed(result.GetType());
+			var container = new Container(Configuration);
+			object constructed = TryCreatePluggable(container, typeToCreate, requiredContracts, initializeJustCreatedObject);
+			if(constructed == null) return null;
+			var initializablePluggable = constructed as IInitializablePluggable;
+			if(initializablePluggable != null) initializablePluggable.Initialize(container);
+			var result = initializePluggable != null ? initializePluggable(constructed, container) : constructed;
+			if(result != null) logger.Constructed(result.GetType());
+			else logger.ConstructionFailed(InstanceType);
 			return result;
 		}
 
 		[CanBeNull]
-		private object TryConstruct(Type typeToCreate, ContractRequirement[] requiredContracts)
-		{
-			var container = new Container(Configuration);
-			object constructed = TryCreatePluggable(container, typeToCreate, requiredContracts);
-			if(constructed == null) return null;
-			var initializablePluggable = constructed as IInitializablePluggable;
-			if(initializablePluggable != null) initializablePluggable.Initialize(container);
-			return initializePluggable != null ? initializePluggable(constructed, container) : constructed;
-		}
-
-		[CanBeNull]
-		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts);
+		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject);
 	}
 }

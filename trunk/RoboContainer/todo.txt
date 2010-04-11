@@ -26,8 +26,8 @@
   }
 + setter-injection на основе инициализаторов
 + container.BuildUp(obj); — setter / field / method injection / ... Применение всех инициализаторов.
-
-field и method-injection по аналогии с setter-injection.
++ field по аналогии с setter-injection.
++ InjectEverywhere
 
 Infectionless Atributed configuration. см. InjectionContracts
 

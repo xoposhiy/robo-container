@@ -35,9 +35,7 @@ namespace RoboContainer.Impl
 
 		public static object TryGetOrCreate(this IConfiguredPluggable pluggable, IConstructionLogger logger, Type pluginType, ContractRequirement[] requiredContracts, IContainerConfiguration configuration)
 		{
-			bool justCreated;
-			var result = pluggable.GetFactory().TryGetOrCreate(logger, pluginType, requiredContracts, out justCreated);
-			return justCreated ? configuration.Initialize(result, pluggable) : result;
+			return pluggable.GetFactory().TryGetOrCreate(logger, pluginType, requiredContracts, o => configuration.Initialize(o, pluggable));
 		}
 
 		public static string DumpDebugInfo(this IConfiguredPluggable pluggable)
