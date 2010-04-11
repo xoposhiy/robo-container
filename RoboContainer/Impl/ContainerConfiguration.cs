@@ -30,11 +30,11 @@ namespace RoboContainer.Impl
 			WasAssembliesExplicitlyConfigured = true;
 		}
 
-		public object Initialize(object justCreatedObject, ContractDeclaration[] declaredContracts, IConfiguredPluggable pluggable)
+		public object Initialize(object justCreatedObject, IConfiguredPluggable pluggable)
 		{
 			foreach(var initializer in initializers)
 			{
-				if(initializer.WantToRun(justCreatedObject.GetType(), declaredContracts))
+				if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.GetAllContracts().ToArray()))
 					justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
 			}
 			return justCreatedObject;

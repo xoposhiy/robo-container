@@ -11,7 +11,7 @@ namespace RoboContainer.Impl
 		IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts);
 		IContainerConfigurator Configurator { get; }
 		bool WasAssembliesExplicitlyConfigured { get; }
-		object Initialize(object justCreatedObject, ContractDeclaration[] declaredContracts, IConfiguredPluggable pluggable);
+		object Initialize(object justCreatedObject, [CanBeNull]IConfiguredPluggable pluggable);
 		IEnumerable<Type> GetScannableTypes();
 		IEnumerable<Type> GetScannableTypes(Type pluginType);
 		[CanBeNull]

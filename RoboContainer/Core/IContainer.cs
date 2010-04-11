@@ -82,6 +82,14 @@ namespace RoboContainer.Core
 		IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts);
 
 		/// <summary>
+		/// Инициализирует объект <paramref name="plugin"/> применяя все зарегистрированные инициализаторы.
+		/// </summary>
+		/// <typeparam name="TPlugin"></typeparam>
+		/// <param name="plugin"></param>
+		/// <returns></returns>
+		TPlugin BuildUp<TPlugin>(TPlugin plugin);
+
+		/// <summary>
 		/// Создает дочерний контейнер, который можно доконфигурировать. 
 		/// Конфигурирование дочернего контейнера никак не влияет на контейнер-родитель.
 		/// </summary>

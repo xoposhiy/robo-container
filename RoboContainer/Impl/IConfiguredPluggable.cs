@@ -37,7 +37,7 @@ namespace RoboContainer.Impl
 		{
 			bool justCreated;
 			var result = pluggable.GetFactory().TryGetOrCreate(logger, pluginType, requiredContracts, out justCreated);
-			return justCreated ? configuration.Initialize(result, pluggable.AllDeclaredContracts().ToArray(), pluggable) : result;
+			return justCreated ? configuration.Initialize(result, pluggable) : result;
 		}
 
 		public static string DumpDebugInfo(this IConfiguredPluggable pluggable)

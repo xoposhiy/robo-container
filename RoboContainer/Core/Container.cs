@@ -116,6 +116,12 @@ namespace RoboContainer.Core
 			return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
 		}
 
+		public TPlugin BuildUp<TPlugin>(TPlugin plugin)
+		{
+			var configuredPluggable = configuration.TryGetConfiguredPluggable(typeof(TPlugin));
+			return (TPlugin) configuration.Initialize(plugin, configuredPluggable);
+		}
+
 		public IContainer With(Action<IContainerConfigurator> configure)
 		{
 			var childConfiguration = new ChildConfiguration(configuration);

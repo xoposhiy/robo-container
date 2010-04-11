@@ -25,10 +25,9 @@
 	bool WantToRun(Type pluggableType, ContractDeclaration[] decls); 
   }
 + setter-injection на основе инициализаторов
++ container.BuildUp(obj); — setter / field / method injection / ... Применение всех инициализаторов.
 
 field и method-injection по аналогии с setter-injection.
-
-container.BuildUp(obj); — setter / field / method injection
 
 Infectionless Atributed configuration. см. InjectionContracts
 
