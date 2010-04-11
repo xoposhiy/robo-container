@@ -18,11 +18,12 @@ namespace RoboContainer.Impl
 	{
 		public object Initialize(object o, IContainerImpl container, IConfiguredPluggable pluggable)
 		{
+			var dependenciesBag = pluggable != null ? pluggable.Dependencies : new DependenciesBag();
 			var propertyInfos = o.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
 			foreach(var propertyInfo in propertyInfos.Where(p => p.GetCustomAttributes(typeof(InjectAttribute), true).Any()))
 			{
 				object result;
-				if (pluggable.Dependencies.TryGetValue(container, propertyInfo, out result))
+				if (dependenciesBag.TryGetValue(container, propertyInfo, out result))
 					propertyInfo.SetValue(o, result, null);
 			}
 			return o;
