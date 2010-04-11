@@ -73,70 +73,118 @@ namespace Presentation
 
 	public class OkvInternationalToRussian : ConvertByReference<OkvItem>
 	{
-		public OkvInternationalToRussian(IReference<OkvItem> reference)
-			: base(reference, "int2rus", i => i.InternationalName, i => i.RussianName)
+		public OkvInternationalToRussian(ILoader<OkvItem> reference)
+			: base(
+				reference,
+				i => i.InternationalName,
+				i => i.RussianName)
 		{
+		}
+
+		public override string Name
+		{
+			get { return "int2rus"; }
 		}
 	}
 
 	public class OkvCodeToInternational : ConvertByReference<OkvItem>
 	{
-		public OkvCodeToInternational(IReference<OkvItem> reference)
-			: base(reference, "code2int", i => i.Code, i => i.InternationalName)
+		public OkvCodeToInternational(ILoader<OkvItem> reference)
+			: base(
+				reference,
+				i => i.Code,
+				i => i.InternationalName)
 		{
+		}
+
+		public override string Name
+		{
+			get { return "code2int"; }
 		}
 	}
 
-	public class InMemoryNotIndexedReference<TItem> : IReference<TItem>
+	public class XmlLoader<TItem> : ILoader<TItem>
 	{
-		private readonly TItem[] items;
+		private readonly string directoryPath;
 		private readonly XmlSerializer serializer = new XmlSerializer(typeof(TItem[]), new XmlRootAttribute("Reference"));
 
-		public InMemoryNotIndexedReference([RequireContract("referencesDir")]string directoryPath)
+		private readonly ILog log = new NullLogger();
+		private TItem[] result;
+
+		public XmlLoader([RequireContract("referencesDir")] string directoryPath)
 		{
-			using(var s = new FileStream(Path.Combine(directoryPath, typeof(TItem).Name + ".xml"), FileMode.Open))
-				items = (TItem[])serializer.Deserialize(s);
+			this.directoryPath = directoryPath;
 		}
 
-		public TItem Find(Func<TItem, bool> predicate)
+		public TItem[] Load()
 		{
-			return items.SingleOrDefault(predicate);
+			if (result != null) return result;
+			try
+			{
+				var path = Path.Combine(directoryPath, typeof(TItem).Name + ".xml");
+				using(var s = new FileStream(path, FileMode.Open))
+				{
+					result = (TItem[]) serializer.Deserialize(s);
+					log.Log("Loaded " + result.Length + " items from path " + path);
+					return result;
+				}
+			}
+			catch(Exception e)
+			{
+				log.Log(e.ToString());
+				throw;
+			}
 		}
 	}
 
-	public class ConvertByReference<TItem> : IOperation where TItem : class
+	[IgnoredPluggable]
+	public class NullLogger : ILog
+	{
+		public void Log(string message)
+		{
+		}
+	}
+
+	public class ConsoleLogger : ILog
+	{
+		public void Log(string message)
+		{
+			Console.WriteLine(message);
+		}
+	}
+
+	internal interface ILog
+	{
+		void Log(string message);
+	}
+
+	public abstract class ConvertByReference<TItem> : IOperation where TItem : class
 	{
 		private readonly Func<TItem, string> getFrom;
 		private readonly Func<TItem, string> getTo;
-		private readonly string opName;
-		private readonly IReference<TItem> reference;
+		private readonly TItem[] items;
 
-		public ConvertByReference(
-			IReference<TItem> reference, 
-			string opName, Func<TItem, string> getFrom, Func<TItem, string> getTo)
+		protected ConvertByReference(
+			ILoader<TItem> loader,
+			Func<TItem, string> getFrom, Func<TItem, string> getTo)
 		{
-			this.reference = reference;
-			this.opName = opName;
+			items = loader.Load();
 			this.getFrom = getFrom;
 			this.getTo = getTo;
 		}
 
-		public string Name
-		{
-			get { return opName; }
-		}
+		public abstract string Name { get; }
 
 		public void Execute(string[] args)
 		{
-			string originalItem = args[0];
-			var item = reference.Find(i => getFrom(i) == originalItem);
-			Console.WriteLine("> " + (item != null ? getTo(item) : "not found"));
+			TItem exactItem = items.FirstOrDefault(item => getFrom(item) == args[0]);
+			Console.WriteLine("> " + (exactItem != null ? getTo(exactItem) : "not found"));
 		}
 	}
 
-	public interface IReference<TItem>
+	public interface ILoader<TItem>
 	{
-		TItem Find(Func<TItem, bool> predicate);
+		TItem[] Load();
 	}
 
 	public class OkvItem
@@ -158,25 +206,21 @@ namespace Presentation
 			try
 			{
 				var container = new Container(
-					c =>
-						{
-							c.ScanLoadedCompanyAssemblies();
-							c.ConfigureBy.XmlFile("settings.xml");
-							c.ForPluggable<string>().UseConstructor(typeof(string), typeof(int));
-						}
+					c => c.ConfigureBy.XmlFile("settings.xml"),
+					c => c.InjectEverywhere<ILog>()
 					);
-				IEnumerable<IOperation> operations = container.GetAll<IOperation>();
+				IEnumerable<IOperation> ops = container.GetAll<IOperation>();
 				string command;
 				while((command = Console.ReadLine()) != null)
 				{
-					string[] args = 
+					string[] args =
 						command.Split(
-							new[] { ' ' }, 
+							new[] {' '},
 							StringSplitOptions.RemoveEmptyEntries);
 					if(args.Length == 0) continue;
-					IOperation operation = operations.SingleOrDefault(o => o.Name == args[0]);
-					if(operation != null)
-						operation.Execute(args.Skip(1).ToArray());
+					IOperation op = ops.SingleOrDefault(o => o.Name == args[0]);
+					if(op != null)
+						op.Execute(args.Skip(1).ToArray());
 					else
 						Console.WriteLine("unknown operation " + args[0]);
 				}

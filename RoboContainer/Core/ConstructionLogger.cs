@@ -62,9 +62,13 @@ namespace RoboContainer.Core
 			Write("Constructed {0}", Format(pluggableType));
 		}
 
-		public void Reused(Type pluggableType)
+		public void Reused(object value)
 		{
-			Write("Reused {0}", Format(pluggableType));
+			var type = value.GetType();
+			if (type.IsPrimitive || type.IsEnum || type == typeof(string))
+				Write("Reused {0}: {1}", Format(type), value);
+			else
+				Write("Reused {0}", Format(type));
 		}
 
 		public void Initialized(Type pluggableType)
@@ -80,6 +84,11 @@ namespace RoboContainer.Core
 		public void UseSpecifiedValue(Type dependencyType, object value)
 		{
 			Write("Used value for {0}: '{1}'", Format(dependencyType), value);
+		}
+
+		public void Injected(Type createdType, string dependencyName, Type injectedType)
+		{
+			Write("Injected {0} into {1}.{2}", Format(injectedType), Format(createdType), dependencyName);
 		}
 
 		public void Declined(Type pluggableType, string reason)

@@ -72,12 +72,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
-		{
-			return FromAttributes(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo);
-		}
-
-		private static DependencyConfigurator FromAttributes(string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider)
+		public static DependencyConfigurator FromAttributes(string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider)
 		{
 			var dependencyId = new DependencyId(dependencyName, dependencyType);
 			var config = new DependencyConfigurator(dependencyId);
@@ -94,11 +89,6 @@ namespace RoboContainer.Impl
 				config.RequireContracts(dependencyName);
 			}
 			return config;
-		}
-
-		public static DependencyConfigurator FromAttributes(PropertyInfo propertyInfo)
-		{
-			return FromAttributes(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo);
 		}
 	}
 }

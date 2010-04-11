@@ -35,7 +35,7 @@ namespace RoboContainer.Core
 		/// <summary>
 		/// Вызывается контейнером, если при запросе экземпляра <paramref name="pluggableType"/> контейнер возвращает объект, созданный ранее.
 		/// </summary>
-		void Reused(Type pluggableType);
+		void Reused(object value);
 
 		/// <summary>
 		/// Вызывается контейнером, когда реализация <paramref name="pluggableType"/> была отвергнута контейнером по некоторой причине. 
@@ -46,5 +46,7 @@ namespace RoboContainer.Core
 		string ToString();
 		
 		void UseSpecifiedValue(Type dependencyType, object value);
+		
+		void Injected(Type createdType, string dependencyName, Type injectedType);
 	}
 }

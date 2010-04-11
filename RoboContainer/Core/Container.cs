@@ -24,10 +24,10 @@ namespace RoboContainer.Core
 
 		/// <summary>
 		/// Основной конструктор контейнера. 
-		/// Используйте делегат <paramref name="configure"/>, чтобы сконфигурировать контейнер.
+		/// Используйте делегат <paramref name="configures"/>, чтобы сконфигурировать контейнер.
 		/// </summary>
-		public Container(Action<IContainerConfigurator> configure)
-			: this(CreateConfiguration(configure))
+		public Container(params Action<IContainerConfigurator>[] configures)
+			: this(CreateConfiguration(configures))
 		{
 		}
 
@@ -186,10 +186,11 @@ namespace RoboContainer.Core
 			return null;
 		}
 
-		private static IContainerConfiguration CreateConfiguration(Action<IContainerConfigurator> configure)
+		private static IContainerConfiguration CreateConfiguration(params Action<IContainerConfigurator>[] configures)
 		{
 			var configuration = new ContainerConfiguration();
-			configure(configuration.Configurator);
+			foreach(var configure in configures)
+				configure(configuration.Configurator);
 			foreach(var module in defaultModules)
 				module.Configure(configuration);
 			return configuration;

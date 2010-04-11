@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Impl;
 using RoboContainer.Infection;
@@ -21,6 +17,8 @@ namespace RoboContainer.Tests.SetterInjection
 			Assert.AreSame(theBar, foo.PublicBar);
 			Assert.AreSame(theBar, foo.GetPrivateBarValue());
 			Assert.AreSame(theBar, foo.PrivateSetterBar);
+			Assert.AreSame(theBar, foo.fieldBar);
+			Assert.AreSame(theBar, foo.GetPrivateFieldBar());
 		}
 		
 		[Test]
@@ -33,10 +31,35 @@ namespace RoboContainer.Tests.SetterInjection
 			Assert.AreSame(theBar, foo.Fast);
 		}
 
+		[Test]
+		public void Inject_Everywhere()
+		{
+			var container = new Container(c => c.InjectEverywhere<Bar>());
+			var obj = container.Get<WithoutAttributes>();
+			var theBar = container.Get<Bar>();
+			Assert.AreSame(theBar, obj.Property);
+			Assert.AreSame(theBar, obj.GetPrivateProperty());
+			Assert.AreSame(theBar, obj.PrivateSetter);
+			Assert.AreSame(theBar, obj.field);
+			Assert.AreSame(theBar, obj.GetPrivateField());
+		}
+
 		public class Bar{}
 
 		public class Foo
 		{
+			[Inject]
+			public Bar fieldBar;
+
+			[Inject]
+			[UsedImplicitly]
+			private Bar privateFieldBar;
+
+			public Bar GetPrivateFieldBar() 
+			{
+				return privateFieldBar; 
+			}
+
 			[Inject]
 			public Bar PublicBar { get; set; }
 			
@@ -69,6 +92,26 @@ namespace RoboContainer.Tests.SetterInjection
 			[Inject]
 			[NameIsContract]
 			public Bar Fast { get; set; }
+		}
+
+		public class WithoutAttributes
+		{
+			[UsedImplicitly]
+			private Bar privateField;
+			public Bar field;
+			public Bar Property { get; set; }
+			[UsedImplicitly]
+			public Bar PrivateSetter { get; private set; }
+			[UsedImplicitly]
+			private Bar PrivateProperty { get; set; }
+			public Bar GetPrivateProperty()
+			{
+				return PrivateProperty;
+			}
+			public Bar GetPrivateField()
+			{
+				return privateField;
+			}
 		}
 	}
 

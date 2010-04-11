@@ -76,7 +76,7 @@ namespace RoboContainer.Impl
 
 		public DependenciesBag Dependencies
 		{
-			get { throw new NotSupportedException(); }
+			get { return null; }
 		}
 
 		public void Dispose()
