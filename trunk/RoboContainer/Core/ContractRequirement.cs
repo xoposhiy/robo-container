@@ -39,7 +39,7 @@ namespace RoboContainer.Core
 
 		public static implicit operator ContractRequirement(string value)
 		{
-			return new SimpleContractRequirement<string>(value);
+			return new StringContractRequirement(value);
 		}
 
 		public static implicit operator ContractRequirement(Type type)

@@ -8,6 +8,7 @@ namespace RoboContainer.Impl
 {
 	public class ContainerConfiguration : IContainerConfiguration
 	{
+		private readonly List<IPluggableInitializer> initializers = new List<IPluggableInitializer>();
 		private readonly MultiSet<ResolutionRequest> resolutionStack = new MultiSet<ResolutionRequest>();
 		private readonly List<Assembly> assemblies = new List<Assembly>();
 		private readonly LoggingConfigurator loggerConfigurator = new LoggingConfigurator();
@@ -27,6 +28,16 @@ namespace RoboContainer.Impl
 		{
 			assembliesToScan.Exclude(assemblies.Contains).ForEach(assemblies.Add);
 			WasAssembliesExplicitlyConfigured = true;
+		}
+
+		public object Initialize(object justCreatedObject, ContractDeclaration[] declaredContracts, IConfiguredPluggable pluggable)
+		{
+			foreach(var initializer in initializers)
+			{
+				if(initializer.WantToRun(justCreatedObject.GetType(), declaredContracts))
+					justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
+			}
+			return justCreatedObject;
 		}
 
 		public virtual IEnumerable<Type> GetScannableTypes()
@@ -51,6 +62,11 @@ namespace RoboContainer.Impl
 		public virtual ILoggingConfigurator GetLoggingConfigurator()
 		{
 			return loggerConfigurator;
+		}
+
+		public void RegisterInitializer(params IPluggableInitializer[] pluggableInitializers)
+		{
+			initializers.AddRange(pluggableInitializers);
 		}
 
 		// use

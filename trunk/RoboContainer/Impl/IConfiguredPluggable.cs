@@ -33,6 +33,13 @@ namespace RoboContainer.Impl
 			return new []{ContractDeclaration.Default};
 		}
 
+		public static object TryGetOrCreate(this IConfiguredPluggable pluggable, IConstructionLogger logger, Type pluginType, ContractRequirement[] requiredContracts, IContainerConfiguration configuration)
+		{
+			bool justCreated;
+			var result = pluggable.GetFactory().TryGetOrCreate(logger, pluginType, requiredContracts, out justCreated);
+			return justCreated ? configuration.Initialize(result, pluggable.AllDeclaredContracts().ToArray(), pluggable) : result;
+		}
+
 		public static string DumpDebugInfo(this IConfiguredPluggable pluggable)
 		{
 			var b = new StringBuilder();

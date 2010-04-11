@@ -97,6 +97,11 @@ namespace RoboContainer.Impl
 			get { return new ExternalConfigurator(this); }
 		}
 
+		public void RegisterInitializer(params IPluggableInitializer[] initializers)
+		{
+			configuration.RegisterInitializer(initializers);
+		}
+
 		public ILoggingConfigurator Logging
 		{
 			get { return configuration.GetLoggingConfigurator(); }

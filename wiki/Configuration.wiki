@@ -55,6 +55,7 @@ var container = new Container(
 
 <wiki:comment>[IContainerConfigurator.interface</wiki:comment>
 {{{
+void RegisterInitializer(IPluggableInitializer[] initializers);
 void ScanAssemblies(Assembly[] assembliesToScan);
 void ScanAssemblies(IEnumerable<Assembly> assembliesToScan);
 void ScanCallingAssembly();

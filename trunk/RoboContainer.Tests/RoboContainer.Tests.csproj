@@ -64,6 +64,7 @@
     <Compile Include="Generics\Generics_Test.cs" />
     <Compile Include="Generics\GenericTypes_Test.cs" />
     <Compile Include="Generics\TestClasses.cs" />
+    <Compile Include="Initializers\Initializers_Test.cs" />
     <Compile Include="Laziness\Lazy_Test.cs" />
     <Compile Include="Logging\Logging_Test.cs" />
     <Compile Include="Parts\Parts_Test.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="SamplesForWiki\QuickStart\QuickStart_Tests.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="SetterInjection\SetterInjection_Test.cs" />
     <Compile Include="TestingExtensions.cs" />
     <Compile Include="Threading\Threading_Test.cs" />
     <Compile Include="With\PluggableConfig_Test.cs" />

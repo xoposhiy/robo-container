@@ -40,7 +40,12 @@ namespace RoboContainer.Core
 		public override bool Satisfy(ContractDeclaration declaration)
 		{
 			var castedDeclaration = declaration as SimpleContractDeclaration<TContract>;
-			return castedDeclaration != null && Contract.Equals(castedDeclaration.Contract);
+			return castedDeclaration != null && ContractEquals(Contract, castedDeclaration.Contract);
+		}
+
+		protected virtual bool ContractEquals(TContract required, TContract declared)
+		{
+			return required.Equals(declared);
 		}
 	}
 }

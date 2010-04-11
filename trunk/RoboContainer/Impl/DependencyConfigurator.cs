@@ -74,18 +74,31 @@ namespace RoboContainer.Impl
 
 		public static DependencyConfigurator FromAttributes(ParameterInfo parameterInfo)
 		{
-			var config = new DependencyConfigurator(new DependencyId(parameterInfo));
-			IEnumerable<RequireContractAttribute> requirementAttributes = parameterInfo.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
+			return FromAttributes(parameterInfo.Name, parameterInfo.ParameterType, parameterInfo);
+		}
+
+		private static DependencyConfigurator FromAttributes(string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider)
+		{
+			var dependencyId = new DependencyId(dependencyName, dependencyType);
+			var config = new DependencyConfigurator(dependencyId);
+			IEnumerable<RequireContractAttribute> requirementAttributes = attributeProvider.GetCustomAttributes(typeof(RequireContractAttribute), false).Cast<RequireContractAttribute>();
 			config.RequireContracts(requirementAttributes.SelectMany(att => att.Contracts).ToArray());
 			config.RequireContracts(
-				parameterInfo.GetCustomAttributes(false)
+				attributeProvider.GetCustomAttributes(false)
 					.Where(InjectionContracts.IsContractAttribute)
 					.Select(a => (ContractRequirement) a.GetType())
 					.ToArray()
 				);
-			if (parameterInfo.GetCustomAttributes(typeof(NameIsContractAttribute), false).Any())
-				config.RequireContracts(parameterInfo.Name);
+			if (attributeProvider.GetCustomAttributes(typeof(NameIsContractAttribute), false).Any())
+			{
+				config.RequireContracts(dependencyName);
+			}
 			return config;
+		}
+
+		public static DependencyConfigurator FromAttributes(PropertyInfo propertyInfo)
+		{
+			return FromAttributes(propertyInfo.Name, propertyInfo.PropertyType, propertyInfo);
 		}
 	}
 }

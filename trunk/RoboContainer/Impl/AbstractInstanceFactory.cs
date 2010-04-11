@@ -21,14 +21,17 @@ namespace RoboContainer.Impl
 		public IContainerConfiguration Configuration { get; private set; }
 
 		[CanBeNull]
-		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, out bool justCreated)
 		{
 			if(reuseValueSlot.Value != null)
 			{
 				logger.Reused(reuseValueSlot.Value.GetType());
+				justCreated = false;
 				return reuseValueSlot.Value;
 			}
-			return reuseValueSlot.Value = TryConstructAndLog(logger, typeToCreate, requiredContracts); 
+			var result = TryConstructAndLog(logger, typeToCreate, requiredContracts);
+			justCreated = result != null;
+			return reuseValueSlot.Value = result;
 		}
 
 		public IInstanceFactory CreateByPrototype(IConfiguredPluggable newPluggable, IReusePolicy newReusePolicy, InitializePluggableDelegate<object> newInitializator, IContainerConfiguration configuration)
