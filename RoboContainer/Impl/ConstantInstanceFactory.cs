@@ -17,9 +17,10 @@ namespace RoboContainer.Impl
 			get { return instance.GetType(); }
 		}
 
-		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, out bool justCreated)
 		{
 			logger.Reused(instance.GetType());
+			justCreated = false;
 			return instance;
 		}
 

@@ -19,7 +19,15 @@ namespace RoboContainer.Core
 	/// </summary>
 	public interface IContainerConfigurator
 	{
+		/// <summary>
+		/// Внешнее конфигурирование.
+		/// </summary>
 		IExternalConfigurator ConfigureBy { get; }
+
+		/// <summary>
+		/// Регистрация универсального инициализатора. Он может вызываться при каждом создании любого объекта контейнером.
+		/// </summary>
+		void RegisterInitializer(params IPluggableInitializer[] initializers);
 
 		/// <summary>
 		/// Конфигурирование подсистемы логгирования.

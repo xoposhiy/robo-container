@@ -10,7 +10,7 @@
 + Primitive arguments
 + Управление журналированием
 + Расширяемый Reuse policy
-+ Переработка Lazy. Reuse policy!!!
++ Переработка Lazy. Reuse policy
 + Переработка AddPart и экспорта частей.
 + IDisposable
 + Xml-конфигурирование.
@@ -18,17 +18,17 @@
 + DependencyOfType<IService>().UseInstance(service)
 + Container Reuse Scope
 + Самоинжектирующийся контейнер. container.Get<IContainer>() == container
-
-Прокаченные инициализаторы. 
++ Прокаченные инициализаторы. 
   public interface IPluggableInitializer{
 	object Initialize(object o);
 	[Pure] // кэшируется контейнером для производительности
 	bool WantToRun(Type pluggableType, ContractDeclaration[] decls); 
   }
-  
-setter-injection на основе инициализаторов + contaienr.BuildUp(obj) - заполнение свойств.
++ setter-injection на основе инициализаторов
 
 field и method-injection по аналогии с setter-injection.
+
+container.BuildUp(obj); — setter / field / method injection
 
 Infectionless Atributed configuration. см. InjectionContracts
 

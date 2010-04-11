@@ -51,9 +51,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\IExternalConfigurator.cs" />
+    <Compile Include="Core\IPluggableInitializer.cs" />
+    <Compile Include="Core\StringContractRequirement.cs" />
     <Compile Include="Impl\Annotations.cs" />
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\IConfigurationModule.cs" />
+    <Compile Include="Impl\IContainerImpl.cs" />
+    <Compile Include="Infection\InjectAttribute.cs" />
     <Compile Include="Impl\LazyConfigurationModule.cs" />
     <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />
     <Compile Include="Impl\DependenciesBag.cs" />
@@ -61,6 +65,7 @@
     <Compile Include="Impl\ExternalConfigurator.cs" />
     <Compile Include="Impl\MultiSet.cs" />
     <Compile Include="Impl\ResolutionRequest.cs" />
+    <Compile Include="Impl\SetterInjectionInitializer.cs" />
     <Compile Include="Infection\NameIsContractAttribute.cs" />
     <Compile Include="Infection\UsePluggableAttribute.cs" />
     <Compile Include="RoboConfig\ArrayDeserializer.cs" />

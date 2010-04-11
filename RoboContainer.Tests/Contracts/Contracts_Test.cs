@@ -18,6 +18,14 @@ namespace RoboContainer.Tests.Contracts
 		}
 
 		[Test]
+		public void String_contracts_are_CaseInvariant()
+		{
+			var container = new Container();
+			var plugin = container.Get<IPluginWithAttributes>("FaST", "hiDDen");
+			Assert.IsInstanceOf<FastHiddenPluggable>(plugin);
+		}
+
+		[Test]
 		public void Can_use_NameIsContractAttribute_for_contract_requirements()
 		{
 			var container = new Container(

@@ -34,7 +34,7 @@ namespace RoboContainer.Impl
 			return result;
 		}
 
-		public static bool TryGetValue(this IConfiguredDependency me, Type dependencyType, Container container, out object result)
+		public static bool TryGetValue(this IConfiguredDependency me, Type dependencyType, IContainerImpl container, out object result)
 		{
 			if(me.ValueSpecified)
 			{
@@ -45,6 +45,5 @@ namespace RoboContainer.Impl
 			result = container.TryGet(me.PluggableType ?? dependencyType, me.Contracts.ToArray());
 			return result != null;
 		}
-
 	}
 }

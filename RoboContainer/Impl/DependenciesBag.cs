@@ -20,6 +20,14 @@ namespace RoboContainer.Impl
 		}
 
 		[CanBeNull]
+		public bool TryGetValue(IContainerImpl container, PropertyInfo property, out object actualArg)
+		{
+			var dep = DependencyConfigurator.FromAttributes(property);
+			dep = dep.CombineWith(Get(property.Name, property.PropertyType));
+			return dep.TryGetValue(property.PropertyType, container, out actualArg);
+		}
+
+		[CanBeNull]
 		public object[] TryGetActualArgs(ConstructorInfo constructorInfo, Container container)
 		{
 			ParameterInfo[] formalArgs = constructorInfo.GetParameters();

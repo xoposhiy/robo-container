@@ -7,12 +7,12 @@ using RoboContainer.Impl;
 namespace RoboContainer.Core
 {
 	/// <summary>Контейнер. Главный класс библиотеки, с которого нужно начинать ее использование.</summary>
-	public class Container : IContainer
+	public class Container : IContainerImpl
 	{
 		private readonly IContainerConfiguration configuration;
 
 		private static readonly IEnumerable<IConfigurationModule> defaultModules =
-			new IConfigurationModule[] {new LazyConfigurationModule(), new ScannedAssembliesConfigurationModule()};
+			new IConfigurationModule[] {new LazyConfigurationModule(), new ScannedAssembliesConfigurationModule(), new SetterInjectionModule()};
 
 		/// <summary>
 		/// Если контейнер не нуждается в конфигурировании, подойдет этот конструктор. Иначе, используйте одну из его перегрузок.
@@ -164,7 +164,7 @@ namespace RoboContainer.Core
 				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
 				//				configuredPluggables.ForEach(p => Console.WriteLine(p.DumpDebugInfo()));
 				pluggables = configuredPluggables.Select(
-					c => c.GetFactory().TryGetOrCreate(ConstructionLogger, pluginType, requiredContracts)
+					c => c.TryGetOrCreate(ConstructionLogger, pluginType, requiredContracts, configuration)
 					).Where(p => p != null).ToList();
 			}
 			return pluggables;
