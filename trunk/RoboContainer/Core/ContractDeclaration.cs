@@ -11,9 +11,15 @@ namespace RoboContainer.Core
 		static ContractDeclaration()
 		{
 			Default = "DEFAULT";
+			Any = "*";
 		}
 
 		public static ContractDeclaration Default { get; private set; }
+
+		public static ContractDeclaration Any
+		{
+			get; private set;
+		}
 
 
 		public static implicit operator ContractDeclaration(string contractName)

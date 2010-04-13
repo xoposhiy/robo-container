@@ -14,10 +14,10 @@ namespace RoboContainer.Core
 		static ContractRequirement()
 		{
 			Default = "DEFAULT";
-			Anyone = new AnyoneRequirement();
+			Any = new AnyRequirement();
 		}
 
-		private class AnyoneRequirement : ContractRequirement
+		private class AnyRequirement : ContractRequirement
 		{
 			public override bool Satisfy(ContractDeclaration declaration)
 			{
@@ -32,7 +32,7 @@ namespace RoboContainer.Core
 		/// </summary>
 		public abstract bool Satisfy(ContractDeclaration declaration);
 
-		public static ContractRequirement Anyone
+		public static ContractRequirement Any
 		{
 			get; private set;
 		}

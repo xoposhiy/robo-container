@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using RoboContainer.Core;
 using RoboContainer.Infection;
@@ -8,6 +9,33 @@ namespace RoboContainer.Tests.Contracts
 	[TestFixture]
 	public class Contracts_Test
 	{
+		[Test]
+		public void Can_use_Any_requirement()
+		{
+			var container = new Container(
+				c =>
+				{
+					c.ForPluggable<PluggableWithContracts1>().DeclareContracts("a");
+					c.ForPluggable<PluggableWithContracts2>().DeclareContracts("B", "c");
+					c.ForPluggable<PluggableWithContracts3>().DeclareContracts();
+					c.ForPluggable<PluggableWithContracts4>().DeclareContracts("B", "a", "C");
+				}
+				);
+			var plugins = container.GetAll<IPluginWithContract>(ContractRequirement.Any);
+			Assert.AreEqual(4, plugins.Count());
+		}
+
+		[Test]
+		public void Can_use_Any_declaration()
+		{
+			var container = new Container(
+				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts(ContractDeclaration.Any));
+			var plugin = container.Get<IPluginWithContract>("safasdfas", "asfd");
+			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>());
+			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>("srf234rqwerwerwer"));
+			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>(ContractRequirement.Any));
+		}
+
 		[Test]
 		public void Can_get_pluggables_with_any_contract()
 		{

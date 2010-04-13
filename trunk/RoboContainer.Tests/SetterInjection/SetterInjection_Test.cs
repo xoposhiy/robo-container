@@ -25,7 +25,7 @@ namespace RoboContainer.Tests.SetterInjection
 		public void Inject_setters_according_to_contract_requirements()
 		{
 			var container = new Container(c => c.ForPluggable<FooWithContracts>().DependencyOfType<Bar>().RequireContracts("hidden"));
-			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Anyone);
+			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
 			var foo = container.Get<FooWithContracts>();
 			Assert.AreSame(theBar, foo.PublicBar);
 			Assert.AreSame(theBar, foo.Fast);

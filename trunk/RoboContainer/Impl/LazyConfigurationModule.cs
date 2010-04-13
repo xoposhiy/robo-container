@@ -9,9 +9,10 @@ namespace RoboContainer.Impl
 	{
 		public void Configure(IContainerConfiguration configuration)
 		{
-			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>)).ReusePluggable(ReusePolicy.Always);
-			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>)).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc).ReusePluggable(ReusePolicy.Always);
+			//TODO Lazy<> - плохо работают с контрактами :(
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>), ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>), ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc, ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
 		}
 
 		private static readonly MethodInfo StronglyTypeGetterOfT = typeof(LazyConfigurationModule).GetMethod("MakeStronglyTyped", BindingFlags.NonPublic | BindingFlags.Static);
