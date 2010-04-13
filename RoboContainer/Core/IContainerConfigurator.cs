@@ -101,9 +101,9 @@ namespace RoboContainer.Core
 
 		/// <summary>
 		/// Инжектирование <typeparam name="TPlugin"/> в поля и свойства, даже если они не помечены атрибутом <see cref="InjectAttribute"/>.
-		/// Отменить инжектирование можно с помощью атрибута <see cref="DontInjectAttribute"/>.
+		/// Отменить такое инжектирование в отдельных случаях можно с помощью атрибута <see cref="DontInjectAttribute"/>.
 		/// </summary>
-		void InjectEverywhere<TPlugin>(params ContractRequirement[] requiredContracts);
+		void ForceInjectionOf<TPlugin>(params ContractRequirement[] requiredContracts);
 	}
 
 	public static class ContainerConfigurationExtensions

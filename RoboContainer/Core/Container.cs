@@ -11,8 +11,11 @@ namespace RoboContainer.Core
 	{
 		private readonly IContainerConfiguration configuration;
 
-		private static readonly IEnumerable<IConfigurationModule> defaultModules =
-			new IConfigurationModule[] {new LazyConfigurationModule(), new ScannedAssembliesConfigurationModule(), new SetterInjectionModule()};
+		private static readonly IEnumerable<IConfigurationModule> preModules =
+			new IConfigurationModule[] { new LazyConfigurationModule(), new SetterInjectionModule() };
+
+		private static readonly IEnumerable<IConfigurationModule> postModules =
+			new IConfigurationModule[] {new ScannedAssembliesConfigurationModule() };
 
 		/// <summary>
 		/// Если контейнер не нуждается в конфигурировании, подойдет этот конструктор. Иначе, используйте одну из его перегрузок.
@@ -189,10 +192,9 @@ namespace RoboContainer.Core
 		private static IContainerConfiguration CreateConfiguration(params Action<IContainerConfigurator>[] configures)
 		{
 			var configuration = new ContainerConfiguration();
-			foreach(var configure in configures)
-				configure(configuration.Configurator);
-			foreach(var module in defaultModules)
-				module.Configure(configuration);
+			foreach(var module in preModules) module.Configure(configuration);
+			foreach(var configure in configures) configure(configuration.Configurator);
+			foreach(var module in postModules) module.Configure(configuration);
 			return configuration;
 		}
 
