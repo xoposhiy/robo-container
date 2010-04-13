@@ -28,6 +28,7 @@ namespace RoboContainer.Impl
 		IPluginConfigurator GetPluginConfigurator(Type pluginType);
 		ILoggingConfigurator GetLoggingConfigurator();
 		void RegisterInitializer(params IPluggableInitializer[] initializers);
+		void ForceInjectionOf(Type dependencyType, ContractRequirement[] requiredContracts);
 	}
 
 }

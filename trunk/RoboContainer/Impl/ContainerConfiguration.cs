@@ -69,6 +69,14 @@ namespace RoboContainer.Impl
 			initializers.AddRange(pluggableInitializers);
 		}
 
+		public void ForceInjectionOf(Type dependencyType, ContractRequirement[] requiredContracts)
+		{
+			var setterInjections = initializers.OfType<SetterInjection>();
+			if (setterInjections.Count() != 1)
+				throw ContainerException.NoLog("Container does not support setter/field injection");
+			setterInjections.First().ForceInjectionOf(dependencyType, requiredContracts);
+		}
+
 		// use
 		[CanBeNull]
 		public IConfiguredPluggable TryGetConfiguredPluggable(Type pluginType, Type pluggableType)

@@ -207,7 +207,7 @@ namespace Presentation
 			{
 				var container = new Container(
 					c => c.ConfigureBy.XmlFile("settings.xml"),
-					c => c.InjectEverywhere<ILog>()
+					c => c.ForceInjectionOf<ILog>()
 					);
 				IEnumerable<IOperation> ops = container.GetAll<IOperation>();
 				string command;

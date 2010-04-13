@@ -32,9 +32,9 @@ namespace RoboContainer.Tests.SetterInjection
 		}
 
 		[Test]
-		public void Inject_Everywhere()
+		public void Forced_Injection()
 		{
-			var container = new Container(c => c.InjectEverywhere<Bar>());
+			var container = new Container(c => c.ForceInjectionOf<Bar>());
 			var obj = container.Get<WithoutAttributes>();
 			var theBar = container.Get<Bar>();
 			Assert.AreSame(theBar, obj.Property);
@@ -42,6 +42,34 @@ namespace RoboContainer.Tests.SetterInjection
 			Assert.AreSame(theBar, obj.PrivateSetter);
 			Assert.AreSame(theBar, obj.field);
 			Assert.AreSame(theBar, obj.GetPrivateField());
+			Assert.AreSame(container.Get<FastHiddenBar>(ContractRequirement.Any), obj.fastField);
+		}
+
+		[Test]
+		public void Forced_Injection_with_contracts()
+		{
+			var container = new Container(c => c.ForceInjectionOf<Bar>("fast", "hidden"));
+			var obj = container.Get<WithoutAttributes>();
+			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
+			Assert.AreSame(theBar, obj.Property);
+			Assert.AreSame(theBar, obj.GetPrivateProperty());
+			Assert.AreSame(theBar, obj.PrivateSetter);
+			Assert.AreSame(theBar, obj.field);
+			Assert.AreSame(theBar, obj.GetPrivateField());
+			Assert.AreSame(container.Get<FastHiddenBar>(ContractRequirement.Any), obj.fastField);
+		}
+
+		[Test]
+		public void Forced_Injection_is_ignored_on_regular_injection()
+		{
+			var container = new Container(
+				c => c.ForPluggable<FooWithContracts>().DependencyOfType<Bar>().RequireContracts("hidden"),
+				c => c.ForceInjectionOf<FooWithContracts>(ContractRequirement.Default)
+				);
+			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
+			var foo = container.Get<FooWithContracts>();
+			Assert.AreSame(theBar, foo.PublicBar);
+			Assert.AreSame(theBar, foo.Fast);
 		}
 
 		public class Bar{}
@@ -99,6 +127,8 @@ namespace RoboContainer.Tests.SetterInjection
 			[UsedImplicitly]
 			private Bar privateField;
 			public Bar field;
+			[RequireContract("fast", "hidden")]
+			public Bar fastField;
 			public Bar Property { get; set; }
 			[UsedImplicitly]
 			public Bar PrivateSetter { get; private set; }
