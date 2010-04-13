@@ -16,7 +16,7 @@ namespace RoboContainer.Infection
 	/// <seealso cref="IDependencyConfigurator.RequireContracts(ContractRequirement[])"/>
 	/// <seealso cref="IGenericPluginConfigurator{TPlugin,TSelf}.RequireContracts(ContractRequirement[])"/>
 	/// <seealso cref="RequireContractAttribute"/>
-	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false)]
 	public class NameIsContractAttribute : Attribute
 	{
 	}
