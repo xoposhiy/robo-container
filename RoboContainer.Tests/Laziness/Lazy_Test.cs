@@ -9,6 +9,19 @@ namespace RoboContainer.Tests.Laziness
 	public class Lazy_Test
 	{
 		[Test]
+		public void LazyWithContract()
+		{
+			ShouldBeLazy.initialized = false;
+			var container = new Container(c => c.ForPluggable<ShouldBeLazy>().DeclareContracts("xxx"));
+			var lazy = container.Get<Func<ShouldBeLazy>>("xxx");
+			var defaultLazy = container.Get<Func<ShouldBeLazy>>();
+			ShouldBeLazy.initialized.ShouldBeFalse();
+			Assert.IsInstanceOf<ShouldBeLazy>(lazy());
+			ShouldBeLazy.initialized.ShouldBeTrue();
+			Assert.Throws<ContainerException>(() => defaultLazy());
+		}
+
+		[Test]
 		public void can_use_Func_as_lazy()
 		{
 			ShouldBeLazy.initialized = false;

@@ -34,7 +34,7 @@ namespace RoboContainer.Impl
 		{
 			foreach(var initializer in initializers)
 			{
-				if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.GetAllContracts().ToArray()))
+				if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.AllDeclaredContracts().ToArray()))
 					justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
 			}
 			return justCreatedObject;
