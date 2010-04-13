@@ -83,6 +83,22 @@ namespace RoboContainer.Tests.Contracts
 		}
 
 		[Test]
+		public void Can_use_NameIsContractAttribute_for_contract_declarations()
+		{
+			var container = new Container();
+			Assert.IsInstanceOf<ClassWithNameIsContract>(container.Get<ClassWithNameIsContract>("classWithNameIsContract"));
+			Assert.IsInstanceOf<ClassWithNameIsContract>(container.Get<IPlugin>("classWithNameIsContract"));
+		}
+		
+		public interface IPlugin { }
+
+		[NameIsContract]
+		public class ClassWithNameIsContract : IPlugin
+		{
+			
+		}
+		
+		[Test]
 		public void Can_declare_contracts_for_plugin()
 		{
 			var container = new Container(

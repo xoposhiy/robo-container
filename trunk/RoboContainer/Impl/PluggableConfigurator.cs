@@ -184,6 +184,8 @@ namespace RoboContainer.Impl
 					.Where(InjectionContracts.IsContractAttribute)
 					.Select(o => (ContractDeclaration) o.GetType())
 					.ToArray());
+			if (PluggableType.HasAttribute<NameIsContractAttribute>())
+				DeclareContracts(PluggableType.Name);
 		}
 	}
 
