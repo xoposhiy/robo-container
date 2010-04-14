@@ -18,6 +18,7 @@ namespace RoboContainer.Impl
 
 		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
 		private TypesMap typesMap;
+		private readonly object lockObject = new object();
 
 		public virtual IConfiguredLogging GetConfiguredLogging()
 		{
@@ -28,6 +29,11 @@ namespace RoboContainer.Impl
 		{
 			assembliesToScan.Exclude(assemblies.Contains).ForEach(assemblies.Add);
 			WasAssembliesExplicitlyConfigured = true;
+		}
+
+		public virtual object Lock
+		{
+			get { return lockObject; }
 		}
 
 		public object Initialize(object justCreatedObject, IConfiguredPluggable pluggable)
@@ -105,7 +111,7 @@ namespace RoboContainer.Impl
 		[CanBeNull]
 		public virtual IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
-			if(!pluggableType.Constructable()) return null;
+			if(pluggableType == null || !pluggableType.Constructable()) return null;
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 

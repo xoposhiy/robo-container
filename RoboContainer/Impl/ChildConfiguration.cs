@@ -21,6 +21,11 @@ namespace RoboContainer.Impl
 			return parent.GetConfiguredLogging();
 		}
 
+		public override object Lock
+		{
+			get { return parent.Lock; }
+		}
+
 		public override ILoggingConfigurator GetLoggingConfigurator()
 		{
 			throw ContainerException.NoLog("Cant reconfigure parent logging");
@@ -78,9 +83,9 @@ namespace RoboContainer.Impl
 			return result;
 		}
 
-		public IConfiguredPluggable GetChildConfiguredPluggable(Type pluggableType)
+		public IConfiguredPluggable GetChildConfiguredPluggable(IConfiguredPluggable pluggable)
 		{
-			return base.TryGetConfiguredPluggable(pluggableType);
+			return base.TryGetConfiguredPluggable(pluggable.PluggableType) ?? pluggable; //TODO разобраться с этой строкой.
 		}
 	}
 }

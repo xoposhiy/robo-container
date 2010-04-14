@@ -104,6 +104,7 @@ namespace RoboContainer.Core
 		{
 			try
 			{
+				lock(configuration.Lock)
 				using(ConstructionLogger.StartResolving(pluginType))
 				using(configuration.DependencyCycleCheck(pluginType, requiredContracts))
 					return PlainGetAll(pluginType, requiredContracts);
@@ -116,7 +117,8 @@ namespace RoboContainer.Core
 
 		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts)
 		{
-			return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
+			lock(configuration.Lock)
+				return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
 		}
 
 		public TPlugin BuildUp<TPlugin>(TPlugin plugin)
