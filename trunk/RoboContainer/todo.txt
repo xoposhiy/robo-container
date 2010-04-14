@@ -28,8 +28,8 @@
 + container.BuildUp(obj); — setter / field / method injection / ... Применение всех инициализаторов.
 + field по аналогии с setter-injection.
 + InjectEverywhere
++ Многопотоковое использование + Lazy. Написать мегатест и выловить проблемы.
 
-Многопотоковое использование + Lazy. Написать мегатест и выловить проблемы.
 ForPluggable<T>().UseInstance(i);
 ForPluggable<T>().UseInstanceCreatedBy(delegate);
 

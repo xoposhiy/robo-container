@@ -53,7 +53,7 @@ namespace RoboContainer.Impl
 		{
 			return 
 				parent.GetExplicitlySpecifiedPluggables(logger)
-				.Select(p => new CombinedConfiguredPluggable(p, childConfiguration.GetChildConfiguredPluggable(p.PluggableType), childConfiguration))
+				.Select(p => new CombinedConfiguredPluggable(p, childConfiguration.GetChildConfiguredPluggable(p), childConfiguration))
 				.Cast<IConfiguredPluggable>()
 				.Concat(child.GetExplicitlySpecifiedPluggables(logger));
 		}

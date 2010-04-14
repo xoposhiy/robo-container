@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using RoboContainer.Core;
@@ -11,6 +10,7 @@ namespace RoboContainer.Impl
 		IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts);
 		IContainerConfigurator Configurator { get; }
 		bool WasAssembliesExplicitlyConfigured { get; }
+		object Lock { get; }
 		object Initialize(object justCreatedObject, [CanBeNull]IConfiguredPluggable pluggable);
 		IEnumerable<Type> GetScannableTypes();
 		IEnumerable<Type> GetScannableTypes(Type pluginType);
