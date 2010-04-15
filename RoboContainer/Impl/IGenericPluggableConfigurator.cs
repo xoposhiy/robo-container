@@ -61,6 +61,13 @@ namespace RoboContainer.Impl
 		TSelf UseConstructor(params Type[] argsTypes);
 
 		/// <summary>
+		/// Задает способ создания данного конкретного типа.
+		/// При повторном вызове старое значение заменяется новым.
+		/// </summary>
+		[Overridable]
+		TSelf CreateItBy(CreatePluggableDelegate<TPluggable> create);
+
+		/// <summary>
 		/// Указание делегата, который будет выполнен сразу после создания каждого экземпляра данного типа.
 		/// При повторном вызове старое значение заменяется новым.
 		/// </summary>

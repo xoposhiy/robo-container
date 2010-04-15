@@ -59,9 +59,17 @@ namespace RoboContainer.Impl
 
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
+		public CreatePluggableDelegate<object> CreateDelegate { get; private set; }
+
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = new ByConstructorInstanceFactory(this, Configuration));
+			return factory ?? (factory = CreateFactory());
+		}
+
+		private IInstanceFactory CreateFactory()
+		{
+			if(CreateDelegate == null) return new ByConstructorInstanceFactory(this, Configuration);
+			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, CreateDelegate, Configuration);
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
@@ -102,6 +110,12 @@ namespace RoboContainer.Impl
 		public IPluggableConfigurator UseConstructor(params Type[] argsTypes)
 		{
 			InjectableConstructorArgsTypes = argsTypes;
+			return this;
+		}
+
+		public IPluggableConfigurator CreateItBy(CreatePluggableDelegate<object> create)
+		{
+			CreateDelegate = create;
 			return this;
 		}
 
@@ -219,6 +233,12 @@ namespace RoboContainer.Impl
 		public IPluggableConfigurator<TPluggable> UseConstructor(params Type[] argsTypes)
 		{
 			pluggableConfigurator.UseConstructor(argsTypes);
+			return this;
+		}
+
+		public IPluggableConfigurator<TPluggable> CreateItBy(CreatePluggableDelegate<TPluggable> create)
+		{
+			pluggableConfigurator.CreateItBy((container, type, contracts) => create(container, type, contracts));
 			return this;
 		}
 

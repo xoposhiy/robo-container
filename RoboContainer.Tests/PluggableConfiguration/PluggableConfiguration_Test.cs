@@ -10,6 +10,17 @@ namespace RoboContainer.Tests.PluggableConfiguration
 	public class PluggableConfiguration_Test
 	{
 		[Test]
+		public void can_create_pluggable_by_delegate()
+		{
+			var container = new Container(
+				c =>
+				c.ForPluggable<Multiconstructor>()
+					.CreateItBy((container1, type, contracts) => new Multiconstructor(521)
+					));
+			Assert.AreEqual(521, container.Get<Multiconstructor>().x);
+		}
+
+		[Test]
 		public void can_initialize_pluggable()
 		{
 			var container = new Container(
