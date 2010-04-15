@@ -30,9 +30,7 @@
 + InjectEverywhere
 + Многопотоковое использование + Lazy. Написать мегатест и выловить проблемы.
 + ForPluggable<T>().UseInstanceCreatedBy(delegate);
-
-ForPluggable<T>().UseInstance(i);
-
++ ForPluggable<T>().UseInstance(i);
 
 Infectionless Atributed configuration. см. InjectionContracts
 

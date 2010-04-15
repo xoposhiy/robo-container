@@ -130,6 +130,7 @@ IPluggableConfigurator<TPluggable> ReuseIt(IReusePolicy reusePolicy);
 IPluggableConfigurator<TPluggable> DontUseIt();
 IPluggableConfigurator<TPluggable> UseConstructor(Type[] argsTypes);
 IPluggableConfigurator<TPluggable> CreateItBy(CreatePluggableDelegate<TPluggable> create);
+IPluggableConfigurator<TPluggable> UseInstance(TPluggable instance);
 IPluggableConfigurator<TPluggable> SetInitializer(InitializePluggableDelegate<TPluggable> initializePluggable);
 IPluggableConfigurator<TPluggable> SetInitializer(Action<TPluggable> initializePluggable);
 IDependencyConfigurator Dependency(String dependencyName);
