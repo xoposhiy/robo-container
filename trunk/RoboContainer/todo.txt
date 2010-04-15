@@ -29,9 +29,9 @@
 + field по аналогии с setter-injection.
 + InjectEverywhere
 + Многопотоковое использование + Lazy. Написать мегатест и выловить проблемы.
++ ForPluggable<T>().UseInstanceCreatedBy(delegate);
 
 ForPluggable<T>().UseInstance(i);
-ForPluggable<T>().UseInstanceCreatedBy(delegate);
 
 
 Infectionless Atributed configuration. см. InjectionContracts
