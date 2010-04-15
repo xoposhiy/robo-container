@@ -119,6 +119,14 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
+		public IPluggableConfigurator UseInstance(object instance)
+		{
+			if (instance.GetType() != PluggableType)
+				throw ContainerException.NoLog("Instance should be of type {0}", PluggableType);
+			CreateDelegate = (container, type, requiredContracts) => instance;
+			return this;
+		}
+
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
 			return dependencies.Get(dependencyName, null);
@@ -239,6 +247,12 @@ namespace RoboContainer.Impl
 		public IPluggableConfigurator<TPluggable> CreateItBy(CreatePluggableDelegate<TPluggable> create)
 		{
 			pluggableConfigurator.CreateItBy((container, type, contracts) => create(container, type, contracts));
+			return this;
+		}
+
+		public IPluggableConfigurator<TPluggable> UseInstance(TPluggable instance)
+		{
+			pluggableConfigurator.UseInstance(instance);
 			return this;
 		}
 

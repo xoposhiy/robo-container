@@ -21,6 +21,15 @@ namespace RoboContainer.Tests.PluggableConfiguration
 		}
 
 		[Test]
+		public void can_use_constant_as_pluggable()
+		{
+			var obj = new Multiconstructor(128);
+			var container = new Container(
+				c => c.ForPluggable<Multiconstructor>().UseInstance(obj));
+			Assert.AreEqual(obj, container.Get<Multiconstructor>());
+		}
+
+		[Test]
 		public void can_initialize_pluggable()
 		{
 			var container = new Container(

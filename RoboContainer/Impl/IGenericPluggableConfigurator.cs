@@ -68,6 +68,13 @@ namespace RoboContainer.Impl
 		TSelf CreateItBy(CreatePluggableDelegate<TPluggable> create);
 
 		/// <summary>
+		/// Задание конкретного экземпляра, который нужно использовать для типа <typeparamref name="TPluggable"/>.
+		/// При повторном вызове старое значение заменяется новым.
+		/// </summary>
+		[Overridable]
+		TSelf UseInstance(TPluggable instance);
+
+		/// <summary>
 		/// Указание делегата, который будет выполнен сразу после создания каждого экземпляра данного типа.
 		/// При повторном вызове старое значение заменяется новым.
 		/// </summary>
