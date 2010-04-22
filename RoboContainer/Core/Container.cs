@@ -197,6 +197,7 @@ namespace RoboContainer.Core
 			foreach(var module in preModules) module.Configure(configuration);
 			foreach(var configure in configures) configure(configuration.Configurator);
 			foreach(var module in postModules) module.Configure(configuration);
+			configuration.AfterConfiguration();
 			return configuration;
 		}
 

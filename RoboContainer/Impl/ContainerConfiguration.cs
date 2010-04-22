@@ -8,6 +8,7 @@ namespace RoboContainer.Impl
 {
 	public class ContainerConfiguration : IContainerConfiguration
 	{
+		private readonly IList<ScannerDelegate> scanners = new List<ScannerDelegate>();
 		private readonly List<IPluggableInitializer> initializers = new List<IPluggableInitializer>();
 		private readonly MultiSet<ResolutionRequest> resolutionStack = new MultiSet<ResolutionRequest>();
 		private readonly List<Assembly> assemblies = new List<Assembly>();
@@ -81,6 +82,11 @@ namespace RoboContainer.Impl
 			if (setterInjections.Count() != 1)
 				throw ContainerException.NoLog("Container does not support setter/field injection");
 			setterInjections.First().ForceInjectionOf(dependencyType, requiredContracts);
+		}
+
+		public void AddScanner(ScannerDelegate scanner)
+		{
+			scanners.Add(scanner);
 		}
 
 		// use
@@ -173,6 +179,11 @@ namespace RoboContainer.Impl
 				PluginType = pluginType;
 				Pluggables = pluggables;
 			}
+		}
+
+		public void AfterConfiguration()
+		{
+			GetScannableTypes().ForEach(t => scanners.ForEach(s => s(Configurator, t)));
 		}
 	}
 }

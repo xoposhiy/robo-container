@@ -29,6 +29,7 @@ namespace RoboContainer.Impl
 		ILoggingConfigurator GetLoggingConfigurator();
 		void RegisterInitializer(params IPluggableInitializer[] initializers);
 		void ForceInjectionOf(Type dependencyType, ContractRequirement[] requiredContracts);
+		void AddScanner(ScannerDelegate scanner);
 	}
 
 }
