@@ -39,11 +39,12 @@ namespace RoboContainer.Impl
 
 		public object Initialize(object justCreatedObject, IConfiguredPluggable pluggable)
 		{
-			foreach(var initializer in initializers)
-			{
-				if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.AllDeclaredContracts().ToArray()))
-					justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
-			}
+			if (justCreatedObject != null)
+				foreach(var initializer in initializers)
+				{
+					if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.AllDeclaredContracts().ToArray()))
+						justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
+				}
 			return justCreatedObject;
 		}
 

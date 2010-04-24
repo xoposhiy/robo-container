@@ -43,7 +43,8 @@ namespace RoboContainer.Impl
 				}
 				catch(TargetInvocationException e)
 				{
-					if(e.InnerException != null) throw ContainerException.NoLog(e.InnerException.Message);
+					if(e.InnerException != null)
+						throw ContainerException.Wrap(e.InnerException);
 					throw;
 				}
 			}

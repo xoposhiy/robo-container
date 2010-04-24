@@ -42,6 +42,19 @@ namespace RoboContainer.Core
 			: base(CreateMessageWithLog(log, messageWithoutLog), innerException)
 		{
 			MessageWithoutLog = messageWithoutLog;
+			Log = log;
+		}
+
+		protected string Log
+		{
+			get; private set;
+		}
+
+		public static ContainerException Wrap(Exception innerException)
+		{
+			var contEx = innerException as ContainerException;
+			if (contEx == null) return new ContainerException(innerException, null, innerException.Message);
+			return new ContainerException(contEx, contEx.Log, contEx.MessageWithoutLog);
 		}
 	}
 }
