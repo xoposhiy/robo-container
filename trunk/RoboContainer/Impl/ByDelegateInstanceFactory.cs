@@ -25,7 +25,9 @@ namespace RoboContainer.Impl
 		[CanBeNull]
 		protected override object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject)
 		{
-			return initializeJustCreatedObject(createPluggable(container, pluginToCreate, requiredContracts));
+			var pluggable = createPluggable(container, pluginToCreate, requiredContracts);
+			if (pluggable != null) pluggable = initializeJustCreatedObject(pluggable);
+			return pluggable;
 		}
 	}
 }
