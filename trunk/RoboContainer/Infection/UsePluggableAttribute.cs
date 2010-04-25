@@ -10,22 +10,22 @@ namespace RoboContainer.Infection
 		public UsePluggableAttribute(Type pluggableType, params string[] declaredContracts)
 		{
 			PluggableType = pluggableType;
-			DeclaredContracts = declaredContracts.Select(c => (ContractDeclaration)c).ToArray();
+			DeclaredContracts = declaredContracts.Select(c => (string)c).ToArray();
 		}
 
 		public UsePluggableAttribute(Type pluggableType)
 		{
 			PluggableType = pluggableType;
-			DeclaredContracts = new ContractDeclaration[0];
+			DeclaredContracts = new string[0];
 		}
 
 		public UsePluggableAttribute(Type pluggableType, params Type[] declaredContracts)
 		{
 			PluggableType = pluggableType;
-			DeclaredContracts = declaredContracts.Select(c => (ContractDeclaration)c).ToArray();
+			DeclaredContracts = declaredContracts.Select(c => c.Name).ToArray();
 		}
 
 		public Type PluggableType { get; private set; }
-		public ContractDeclaration[] DeclaredContracts { get; set; }
+		public string[] DeclaredContracts { get; set; }
 	}
 }

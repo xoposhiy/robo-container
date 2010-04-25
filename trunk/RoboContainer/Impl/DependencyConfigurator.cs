@@ -9,14 +9,14 @@ namespace RoboContainer.Impl
 {
 	public class DependencyConfigurator : IDependencyConfigurator, IConfiguredDependency
 	{
-		private readonly List<ContractRequirement> contracts = new List<ContractRequirement>();
+		private readonly List<string> contracts = new List<string>();
 
 		public DependencyConfigurator(DependencyId id)
 		{
 			Id = id;
 		}
 
-		public IEnumerable<ContractRequirement> Contracts
+		public IEnumerable<string> Contracts
 		{
 			get { return contracts; }
 		}
@@ -45,7 +45,7 @@ namespace RoboContainer.Impl
 			private set;
 		}
 
-		public IDependencyConfigurator RequireContracts(params ContractRequirement[] requiredContracts)
+		public IDependencyConfigurator RequireContracts(params string[] requiredContracts)
 		{
 			contracts.AddRange(requiredContracts);
 			return this;
@@ -81,7 +81,7 @@ namespace RoboContainer.Impl
 			config.RequireContracts(
 				attributeProvider.GetCustomAttributes(false)
 					.Where(InjectionContracts.IsContractAttribute)
-					.Select(a => (ContractRequirement) a.GetType())
+					.Select(a => a.GetType().Name)
 					.ToArray()
 				);
 			if (attributeProvider.GetCustomAttributes(typeof(NameIsContractAttribute), false).Any())

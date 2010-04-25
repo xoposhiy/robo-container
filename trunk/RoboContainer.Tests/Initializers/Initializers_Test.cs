@@ -139,7 +139,7 @@ namespace RoboContainer.Tests.Initializers
 			return result ?? o;
 		}
 
-		public bool WantToRun(Type pluggableType, ContractDeclaration[] decls)
+		public bool WantToRun(Type pluggableType, string[] decls)
 		{
 			return wantToInitialize;
 		}

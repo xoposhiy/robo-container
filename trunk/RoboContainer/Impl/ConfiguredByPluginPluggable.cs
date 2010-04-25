@@ -67,7 +67,7 @@ namespace RoboContainer.Impl
 			configuredPluggable.DumpDebugInfo(l => writeLine("\t" + l));
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return configuredPluggable.ExplicitlyDeclaredContracts; }
 		}

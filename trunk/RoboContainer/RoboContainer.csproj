@@ -50,9 +50,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Contract.cs" />
     <Compile Include="Core\IExternalConfigurator.cs" />
+    <Compile Include="Core\InjectionContracts.cs" />
     <Compile Include="Core\IPluggableInitializer.cs" />
-    <Compile Include="Core\StringContractRequirement.cs" />
     <Compile Include="Impl\Annotations.cs" />
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\IConfigurationModule.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="Core\IConstructionLogger.cs" />
     <Compile Include="Core\ILoggingConfigurator.cs" />
     <Compile Include="Core\IReusePolicy.cs" />
-    <Compile Include="Core\SimpleContractDeclaration.cs" />
     <Compile Include="Core\Reuse.cs" />
     <Compile Include="Core\TypeParameters.cs" />
     <Compile Include="Impl\AbstractInstanceFactory.cs" />
@@ -106,8 +106,6 @@
     <Compile Include="Infection\PluginAttribute.cs" />
     <Compile Include="Infection\RequireContractAttribute.cs" />
     <Compile Include="Core\Container.cs" />
-    <Compile Include="Core\ContractRequirement.cs" />
-    <Compile Include="Core\ContractDeclaration.cs" />
     <Compile Include="Core\IDependencyConfigurator.cs" />
     <Compile Include="Infection\IInitializablePluggable.cs" />
     <Compile Include="Impl\ConfiguredByDelegatePluggable.cs" />
@@ -136,7 +134,6 @@
     <Compile Include="Core\IPluggableConfigurator.cs" />
     <Compile Include="Core\IPluginConfigurator.cs" />
     <Compile Include="Core\Lazy.cs" />
-    <Compile Include="Core\SimpleContractRequirement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoboConfig\ConvertableFromStringDeserializer.cs" />
     <Compile Include="RoboConfig\DeserializerOf.cs" />

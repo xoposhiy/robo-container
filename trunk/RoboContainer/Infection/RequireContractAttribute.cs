@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using RoboContainer.Core;
 using RoboContainer.Impl;
 using System.Linq;
@@ -19,26 +18,21 @@ namespace RoboContainer.Infection
 	/// Список поддерживаемых контрактов может быть расширен при явном динамическом конфигурировании.
 	/// </para>
 	/// </summary>
-	/// <seealso cref="IDependencyConfigurator.RequireContracts(ContractRequirement[])"/>
-	/// <seealso cref="IGenericPluginConfigurator{TPlugin,TSelf}.RequireContracts(ContractRequirement[])"/>
+	/// <seealso cref="IDependencyConfigurator.RequireContracts(string[])"/>
+	/// <seealso cref="IGenericPluginConfigurator{TPlugin,TSelf}.RequireContracts(string[])"/>
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
 	public class RequireContractAttribute : Attribute
 	{
 		public RequireContractAttribute(params string[] contracts)
-			: this(contracts.Select(c => (ContractRequirement)c))
 		{
+			Contracts = contracts;
 		}
 
 		public RequireContractAttribute(params Type[] contracts)
-			: this(contracts.Select(c => (ContractRequirement)c))
+			: this(contracts.Select(c => c.Name).ToArray())
 		{
 		}
 
-		public RequireContractAttribute(IEnumerable<ContractRequirement> contracts)
-		{
-			Contracts = contracts.ToArray();
-		}
-
-		public ContractRequirement[] Contracts { get; private set; }
+		public string[] Contracts { get; private set; }
 	}
 }

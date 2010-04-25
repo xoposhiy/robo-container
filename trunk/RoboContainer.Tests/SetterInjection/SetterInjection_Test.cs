@@ -25,7 +25,7 @@ namespace RoboContainer.Tests.SetterInjection
 		public void Inject_setters_according_to_contract_requirements()
 		{
 			var container = new Container(c => c.ForPluggable<FooWithContracts>().DependencyOfType<Bar>().RequireContracts("hidden"));
-			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
+			var theBar = container.Get<FastHiddenBar>(Contract.Any);
 			var foo = container.Get<FooWithContracts>();
 			Assert.AreSame(theBar, foo.PublicBar);
 			Assert.AreSame(theBar, foo.Fast);
@@ -42,7 +42,7 @@ namespace RoboContainer.Tests.SetterInjection
 			Assert.AreSame(theBar, obj.PrivateSetter);
 			Assert.AreSame(theBar, obj.field);
 			Assert.AreSame(theBar, obj.GetPrivateField());
-			Assert.AreSame(container.Get<FastHiddenBar>(ContractRequirement.Any), obj.fastField);
+			Assert.AreSame(container.Get<FastHiddenBar>(Contract.Any), obj.fastField);
 		}
 
 		[Test]
@@ -50,13 +50,13 @@ namespace RoboContainer.Tests.SetterInjection
 		{
 			var container = new Container(c => c.ForceInjectionOf<Bar>("fast", "hidden"));
 			var obj = container.Get<WithoutAttributes>();
-			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
+			var theBar = container.Get<FastHiddenBar>(Contract.Any);
 			Assert.AreSame(theBar, obj.Property);
 			Assert.AreSame(theBar, obj.GetPrivateProperty());
 			Assert.AreSame(theBar, obj.PrivateSetter);
 			Assert.AreSame(theBar, obj.field);
 			Assert.AreSame(theBar, obj.GetPrivateField());
-			Assert.AreSame(container.Get<FastHiddenBar>(ContractRequirement.Any), obj.fastField);
+			Assert.AreSame(container.Get<FastHiddenBar>(Contract.Any), obj.fastField);
 		}
 
 		[Test]
@@ -64,9 +64,9 @@ namespace RoboContainer.Tests.SetterInjection
 		{
 			var container = new Container(
 				c => c.ForPluggable<FooWithContracts>().DependencyOfType<Bar>().RequireContracts("hidden"),
-				c => c.ForceInjectionOf<FooWithContracts>(ContractRequirement.Default)
+				c => c.ForceInjectionOf<FooWithContracts>(Contract.Default)
 				);
-			var theBar = container.Get<FastHiddenBar>(ContractRequirement.Any);
+			var theBar = container.Get<FastHiddenBar>(Contract.Any);
 			var foo = container.Get<FooWithContracts>();
 			Assert.AreSame(theBar, foo.PublicBar);
 			Assert.AreSame(theBar, foo.Fast);

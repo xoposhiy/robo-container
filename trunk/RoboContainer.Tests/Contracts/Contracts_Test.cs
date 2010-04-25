@@ -21,7 +21,7 @@ namespace RoboContainer.Tests.Contracts
 					c.ForPluggable<PluggableWithContracts4>().DeclareContracts("B", "a", "C");
 				}
 				);
-			var plugins = container.GetAll<IPluginWithContract>(ContractRequirement.Any);
+			var plugins = container.GetAll<IPluginWithContract>(Contract.Any);
 			Assert.AreEqual(4, plugins.Count());
 		}
 
@@ -29,11 +29,11 @@ namespace RoboContainer.Tests.Contracts
 		public void Can_use_Any_declaration()
 		{
 			var container = new Container(
-				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts(ContractDeclaration.Any));
+				c => c.ForPluggable<PluggableWithContracts1>().DeclareContracts(Contract.Any));
 			var plugin = container.Get<IPluginWithContract>("safasdfas", "asfd");
 			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>());
 			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>("srf234rqwerwerwer"));
-			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>(ContractRequirement.Any));
+			Assert.AreEqual(plugin, container.Get<PluggableWithContracts1>(Contract.Any));
 		}
 
 		[Test]
@@ -173,7 +173,7 @@ namespace RoboContainer.Tests.Contracts
 						c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
 					});
 			container.Get<IPluginWithContract>().ShouldBeInstanceOf<PluggableWithContracts2>();
-			container.Get<IPluginWithContract>(ContractRequirement.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
+			container.Get<IPluginWithContract>(Contract.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
 		}
 
 		[Test]
@@ -183,19 +183,19 @@ namespace RoboContainer.Tests.Contracts
 				c =>
 					{
 						c.ForPluggable<PluggableWithContracts1>().DeclareContracts("1");
-						c.ForPluggable<PluggableWithContracts2>().DeclareContracts(ContractDeclaration.Default);
+						c.ForPluggable<PluggableWithContracts2>().DeclareContracts(Contract.Default);
 						c.ForPluggable<PluggableWithContracts3>().DeclareContracts("3");
 						c.ForPluggable<PluggableWithContracts4>().DeclareContracts("4");
 					});
 			container.Get<IPluginWithContract>().ShouldBeInstanceOf<PluggableWithContracts2>();
-			container.Get<IPluginWithContract>(ContractRequirement.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
+			container.Get<IPluginWithContract>(Contract.Default).ShouldBeInstanceOf<PluggableWithContracts2>();
 		}
 
 		[Test]
 		public void Contracts_without_code_infection()
 		{
 			var container = new Container();
-			var hidden = container.Get<IPluginWithAttributes>(typeof(FastAndHiddenAttribute));
+			var hidden = container.Get<IPluginWithAttributes>(typeof(FastAndHiddenAttribute).Name);
 			Assert.IsInstanceOf<FastHiddenPluggable>(hidden);
 			Assert.IsInstanceOf<FastHiddenPluggable>(container.Get<Framework>().Plugin);
 			Assert.IsInstanceOf<BestFramework>(container.Get<IFramework>());

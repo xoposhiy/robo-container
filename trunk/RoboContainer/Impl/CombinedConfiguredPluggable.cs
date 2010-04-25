@@ -64,7 +64,7 @@ namespace RoboContainer.Impl
 			get { return child.InitializePluggable ?? parent.InitializePluggable; }
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return parent.ExplicitlyDeclaredContracts.Union(child.ExplicitlyDeclaredContracts); }
 		}

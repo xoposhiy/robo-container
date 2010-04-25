@@ -24,7 +24,7 @@ namespace RoboContainer.Impl
 		/// Контракты родительского и дочернего контейнера объединяются.
 		/// </summary>
 		[Additive]
-		TSelf DeclareContracts(params ContractDeclaration[] contractsDeclaration);
+		TSelf DeclareContracts(params string[] contractsDeclaration);
 
 		/// <summary>
 		/// Определяет политику повторного использования созданных экземпляров данного типа.

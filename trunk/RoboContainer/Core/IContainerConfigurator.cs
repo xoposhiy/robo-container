@@ -103,7 +103,7 @@ namespace RoboContainer.Core
 		/// Инжектирование <typeparam name="TPlugin"/> в поля и свойства, даже если они не помечены атрибутом <see cref="InjectAttribute"/>.
 		/// Отменить такое инжектирование в отдельных случаях можно с помощью атрибута <see cref="DontInjectAttribute"/>.
 		/// </summary>
-		void ForceInjectionOf<TPlugin>(params ContractRequirement[] requiredContracts);
+		void ForceInjectionOf<TPlugin>(params string[] requiredContracts);
 	}
 
 	public static class ContainerConfigurationExtensions
@@ -111,7 +111,7 @@ namespace RoboContainer.Core
 		/// <summary>
 		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UseInstance(value, contracts)</code>
 		/// </summary>
-		public static IPluginConfigurator<TPlugin> Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value, params ContractDeclaration[] contracts)
+		public static IPluginConfigurator<TPlugin> Bind<TPlugin>(this IContainerConfigurator configurator, TPlugin value, params string[] contracts)
 		{
 			IPluginConfigurator<TPlugin> pluginConfigurator = configurator.ForPlugin<TPlugin>();
 			pluginConfigurator.UseInstance(value, contracts);
@@ -121,7 +121,7 @@ namespace RoboContainer.Core
 		/// <summary>
 		/// Сокращенная запись для <code>ForPlugin&lt;TPlugin&gt;().UsePluggable&lt;TPluggable&gt;(contracts)</code>
 		/// </summary>
-		public static IPluginConfigurator<TPlugin> Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, params ContractDeclaration[] contracts) where TPluggable : TPlugin
+		public static IPluginConfigurator<TPlugin> Bind<TPlugin, TPluggable>(this IContainerConfigurator configurator, params string[] contracts) where TPluggable : TPlugin
 		{
 			IPluginConfigurator<TPlugin> pluginConfigurator = configurator.ForPlugin<TPlugin>();
 			pluginConfigurator.UsePluggable<TPluggable>(contracts);

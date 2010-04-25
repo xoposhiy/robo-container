@@ -5,7 +5,7 @@ namespace RoboContainer.Impl
 {
 	public class PartDescription
 	{
-		public PartDescription(string name, bool useOnlyThis, Type asPlugin, Func<object> part, ContractDeclaration[] declaredContracts)
+		public PartDescription(string name, bool useOnlyThis, Type asPlugin, Func<object> part, string[] declaredContracts)
 		{
 			Name = name;
 			UseOnlyThis = useOnlyThis;
@@ -18,6 +18,6 @@ namespace RoboContainer.Impl
 		public bool UseOnlyThis { get; private set; }
 		public Type AsPlugin { get; private set; }
 		public Func<object> Part { get; private set; }
-		public ContractDeclaration[] DeclaredContracts { get; private set; }
+		public string[] DeclaredContracts { get; private set; }
 	}
 }

@@ -21,7 +21,7 @@ namespace RoboContainer.Impl
 		public IContainerConfiguration Configuration { get; private set; }
 
 		[CanBeNull]
-		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject)
+		public object TryGetOrCreate(IConstructionLogger logger, Type typeToCreate, string[] requiredContracts, Func<object, object> initializeJustCreatedObject)
 		{
 			if(reuseValueSlot.Value != null)
 			{
@@ -44,7 +44,7 @@ namespace RoboContainer.Impl
 		protected abstract IInstanceFactory DoCreateByPrototype(IConfiguredPluggable pluggable, IReusePolicy reusePolicy, InitializePluggableDelegate<object> initializator, IContainerConfiguration configuration);
 
 		[CanBeNull]
-		private object TryConstruct(IConstructionLogger logger, Type typeToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject)
+		private object TryConstruct(IConstructionLogger logger, Type typeToCreate, string[] requiredContracts, Func<object, object> initializeJustCreatedObject)
 		{
 			var container = new Container(Configuration);
 			object constructed = TryCreatePluggable(container, typeToCreate, requiredContracts, initializeJustCreatedObject);
@@ -58,6 +58,6 @@ namespace RoboContainer.Impl
 		}
 
 		[CanBeNull]
-		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate, ContractRequirement[] requiredContracts, Func<object, object> initializeJustCreatedObject);
+		protected abstract object TryCreatePluggable(Container container, Type pluginToCreate, string[] requiredContracts, Func<object, object> initializeJustCreatedObject);
 	}
 }

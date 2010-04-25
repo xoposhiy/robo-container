@@ -17,9 +17,9 @@ namespace RoboContainer.Impl
 
 	public class SetterInjection : IPluggableInitializer
 	{
-		private readonly IDictionary<Type, ContractRequirement[]> forcedInjections = new Dictionary<Type, ContractRequirement[]>();
+		private readonly IDictionary<Type, string[]> forcedInjections = new Dictionary<Type, string[]>();
 		
-		public void ForceInjectionOf(Type dependencyType, ContractRequirement[] requirements)
+		public void ForceInjectionOf(Type dependencyType, string[] requirements)
 		{
 			if (forcedInjections.ContainsKey(dependencyType))
 				throw ContainerException.NoLog("Injection of dependency {0} is already forced", dependencyType);
@@ -40,7 +40,7 @@ namespace RoboContainer.Impl
 			foreach(var propertyInfo in propertyInfos.Where(p => p.CanWrite))
 			{
 				bool isMarkedWithInjectAttribute = propertyInfo.GetCustomAttributes(typeof(InjectAttribute), true).Any();
-				var contracts = new ContractRequirement[0];
+				var contracts = new string[0];
 				if(!isMarkedWithInjectAttribute && !IsForced(propertyInfo, propertyInfo.PropertyType, ref contracts)) continue;
 				object result;
 				if(dependenciesBag.TryGetValue(container, propertyInfo.Name, propertyInfo.PropertyType, propertyInfo, contracts, out result))
@@ -51,7 +51,7 @@ namespace RoboContainer.Impl
 			}
 		}
 
-		private bool IsForced(ICustomAttributeProvider attributeProvider, Type dependencyType, ref ContractRequirement[] contracts)
+		private bool IsForced(ICustomAttributeProvider attributeProvider, Type dependencyType, ref string[] contracts)
 		{
 			return !attributeProvider.IsDefined(typeof(DontInjectAttribute), true) && forcedInjections.TryGetValue(dependencyType, out contracts);
 		}
@@ -62,7 +62,7 @@ namespace RoboContainer.Impl
 			foreach(var fieldInfo in fieldInfos)
 			{
 				bool isMarkedWithInjectAttribute = fieldInfo.GetCustomAttributes(typeof(InjectAttribute), true).Any();
-				var contracts = new ContractRequirement[0];
+				var contracts = new string[0];
 				if(!isMarkedWithInjectAttribute && !IsForced(fieldInfo, fieldInfo.FieldType, ref contracts)) continue;
 				object result;
 				if(dependenciesBag.TryGetValue(container, fieldInfo.Name, fieldInfo.FieldType, fieldInfo, contracts, out result))
@@ -73,7 +73,7 @@ namespace RoboContainer.Impl
 			}
 		}
 
-		public bool WantToRun(Type pluggableType, ContractDeclaration[] decls)
+		public bool WantToRun(Type pluggableType, string[] decls)
 		{
 			return true;
 		}

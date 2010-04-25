@@ -10,7 +10,7 @@ namespace RoboContainer.Impl
 	[DebuggerDisplay("Pluggable {PluggableType}")]
 	public class PluggableConfigurator : IPluggableConfigurator, IConfiguredPluggable
 	{
-		private readonly List<ContractDeclaration> contracts = new List<ContractDeclaration>();
+		private readonly List<string> contracts = new List<string>();
 		private readonly DependenciesBag dependencies = new DependenciesBag();
 		private IInstanceFactory factory;
 
@@ -42,7 +42,7 @@ namespace RoboContainer.Impl
 			get { return dependencies; }
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return contracts; }
 		}
@@ -163,7 +163,7 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluggableConfigurator DeclareContracts(params ContractDeclaration[] contractsDeclaration)
+		public IPluggableConfigurator DeclareContracts(params string[] contractsDeclaration)
 		{
 			contracts.AddRange(contractsDeclaration);
 			return this;
@@ -204,7 +204,7 @@ namespace RoboContainer.Impl
 			DeclareContracts(
 				PluggableType.GetCustomAttributes(false)
 					.Where(InjectionContracts.IsContractAttribute)
-					.Select(o => (ContractDeclaration) o.GetType())
+					.Select(o => o.GetType().Name)
 					.ToArray());
 			if (PluggableType.HasAttribute<NameIsContractAttribute>())
 				DeclareContracts(PluggableType.Name);
@@ -287,7 +287,7 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluggableConfigurator<TPluggable> DeclareContracts(params ContractDeclaration[] contractsDeclaration)
+		public IPluggableConfigurator<TPluggable> DeclareContracts(params string[] contractsDeclaration)
 		{
 			pluggableConfigurator.DeclareContracts(contractsDeclaration);
 			return this;

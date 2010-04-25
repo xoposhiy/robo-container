@@ -12,7 +12,7 @@ namespace RoboContainer.Impl
 		private readonly IContainerConfiguration configuration;
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
-		private readonly List<ContractRequirement> requiredContracts = new List<ContractRequirement>();
+		private readonly List<string> requiredContracts = new List<string>();
 		private IConfiguredPluggable[] pluggables;
 		private bool? autoSearch;
 
@@ -49,7 +49,7 @@ namespace RoboContainer.Impl
 			return this.GetAutoFoundPluggables(configuration, logger);
 		}
 
-		public IEnumerable<ContractRequirement> RequiredContracts
+		public IEnumerable<string> RequiredContracts
 		{
 			get { return requiredContracts; }
 		}
@@ -77,12 +77,12 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator UsePluggable<TPluggable>(params string[] declaredContracts)
 		{
 			return UsePluggable(typeof(TPluggable), declaredContracts);
 		}
 
-		public IPluginConfigurator UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator UsePluggable(Type pluggableType, params string[] declaredContracts)
 		{
 			CheckPluggablility(pluggableType);
 			explicitlySpecifiedPluggables.Add(new ConfiguredTypePluggable(() => configuration.TryGetConfiguredPluggable(pluggableType), declaredContracts));
@@ -90,7 +90,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator UseInstance(object instance, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator UseInstance(object instance, params string[] declaredContracts)
 		{
 			CheckPluggablility(instance.GetType());
 			explicitlySpecifiedPluggables.Add(new ConfiguredInstancePluggable(instance, declaredContracts));
@@ -111,7 +111,7 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		public IPluginConfigurator UseInstanceCreatedBy(CreatePluggableDelegate<object> createPluggable, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator UseInstanceCreatedBy(CreatePluggableDelegate<object> createPluggable, params string[] declaredContracts)
 		{
 			explicitlySpecifiedPluggables.Add(new ConfiguredByDelegatePluggable(this, createPluggable, declaredContracts, configuration));
 			autoSearch = false;
@@ -134,7 +134,7 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluginConfigurator RequireContracts(params ContractRequirement[] requirements)
+		public IPluginConfigurator RequireContracts(params string[] requirements)
 		{
 			requiredContracts.AddRange(requirements);
 			return this;
@@ -226,7 +226,7 @@ namespace RoboContainer.Impl
 			RequireContracts(
 				PluginType.GetCustomAttributes(false)
 					.Where(InjectionContracts.IsContractAttribute)
-					.Select(a => (ContractRequirement) a.GetType())
+					.Select(a => a.GetType().Name)
 					.ToArray());
 		}
 
@@ -309,31 +309,31 @@ namespace RoboContainer.Impl
 					});
 		}
 
-		public IPluginConfigurator<TPlugin> RequireContracts(params ContractRequirement[] requiredContracts)
+		public IPluginConfigurator<TPlugin> RequireContracts(params string[] requiredContracts)
 		{
 			realConfigurator.RequireContracts(requiredContracts);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts) where TPluggable : TPlugin
+		public IPluginConfigurator<TPlugin> UsePluggable<TPluggable>(params string[] declaredContracts) where TPluggable : TPlugin
 		{
 			realConfigurator.UsePluggable(typeof(TPluggable), declaredContracts);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator<TPlugin> UsePluggable(Type pluggableType, params string[] declaredContracts)
 		{
 			realConfigurator.UsePluggable(pluggableType, declaredContracts);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator<TPlugin> UseInstance(TPlugin instance, params string[] declaredContracts)
 		{
 			realConfigurator.UseInstance(instance, declaredContracts);
 			return this;
 		}
 
-		public IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, params ContractDeclaration[] declaredContracts)
+		public IPluginConfigurator<TPlugin> UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, params string[] declaredContracts)
 		{
 			realConfigurator.UseInstanceCreatedBy((container, pluginType, contracts) => createPluggable(container, pluginType, contracts), declaredContracts);
 			return this;

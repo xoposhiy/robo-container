@@ -6,10 +6,10 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredInstancePluggable : IConfiguredPluggable
 	{
-		private readonly ContractDeclaration[] declaredContracts;
+		private readonly string[] declaredContracts;
 		private object part;
 
-		public ConfiguredInstancePluggable(object part, ContractDeclaration[] declaredContracts)
+		public ConfiguredInstancePluggable(object part, string[] declaredContracts)
 		{
 			this.part = part;
 			this.declaredContracts = declaredContracts;
@@ -40,7 +40,7 @@ namespace RoboContainer.Impl
 			get { return null; }
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return declaredContracts; }
 		}

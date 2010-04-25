@@ -6,7 +6,7 @@ namespace RoboContainer.Impl
 {
 	internal class ResolutionRequest
 	{
-		public ResolutionRequest(Type requestedType, ContractRequirement[] requestedContracts)
+		public ResolutionRequest(Type requestedType, string[] requestedContracts)
 		{
 			RequestedType = requestedType;
 			RequestedContracts = requestedContracts;
@@ -40,6 +40,6 @@ namespace RoboContainer.Impl
 		}
 
 		public Type RequestedType { get; private set; }
-		public ContractRequirement[] RequestedContracts { get; private set; }
+		public string[] RequestedContracts { get; private set; }
 	}
 }

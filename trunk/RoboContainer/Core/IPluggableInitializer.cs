@@ -11,6 +11,6 @@ namespace RoboContainer.Core
 		/// Отдельный метод нужен, чтобы потом, если понадобится, можно было бы сделать оптимизацию.
 		/// Считаем, что этот метод чисто-функциональный (на одинаковых аргументах возвращает одно и то же значение каждый раз)
 		/// </summary>
-		bool WantToRun(Type pluggableType, ContractDeclaration[] decls);
+		bool WantToRun(Type pluggableType, string[] decls);
 	}
 }

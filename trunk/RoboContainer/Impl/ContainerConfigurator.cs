@@ -65,7 +65,7 @@ namespace RoboContainer.Impl
 			return configuration.GetPluginConfigurator(pluginType);
 		}
 
-		public void ForceInjectionOf<TPlugin>(params ContractRequirement[] requiredContracts)
+		public void ForceInjectionOf<TPlugin>(params string[] requiredContracts)
 		{
 			configuration.ForceInjectionOf(typeof(TPlugin), requiredContracts);
 		}

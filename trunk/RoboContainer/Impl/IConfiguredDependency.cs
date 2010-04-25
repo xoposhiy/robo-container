@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 {
 	public interface IConfiguredDependency
 	{
-		IEnumerable<ContractRequirement> Contracts { get; }
+		IEnumerable<string> Contracts { get; }
 
 		bool ValueSpecified { get; }
 
