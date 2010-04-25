@@ -15,7 +15,7 @@ namespace RoboContainer.Impl
 		bool ReuseSpecified { get; }
 		[CanBeNull]
 		InitializePluggableDelegate<object> InitializePluggable { get; }
-		IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts { get; }
+		IEnumerable<string> ExplicitlyDeclaredContracts { get; }
 		DependenciesBag Dependencies { get; }
 		[CanBeNull]
 		Type[] InjectableConstructorArgsTypes { get; }
@@ -27,22 +27,22 @@ namespace RoboContainer.Impl
 
 	public static class ConfiguredPluggableExtensions
 	{
-		public static IEnumerable<ContractDeclaration> AllDeclaredContracts(this IConfiguredPluggable pluggable)
+		public static IEnumerable<string> AllDeclaredContracts(this IConfiguredPluggable pluggable)
 		{
 			if(pluggable.ExplicitlyDeclaredContracts.Any()) return pluggable.ExplicitlyDeclaredContracts;
-			return new []{ContractDeclaration.Default};
+			return new []{Contract.Default};
 		}
 
-		public static object TryGetOrCreate(this IConfiguredPluggable pluggable, IConstructionLogger logger, Type pluginType, ContractRequirement[] requiredContracts, IContainerConfiguration configuration)
+		public static object TryGetOrCreate(this IConfiguredPluggable pluggable, IConstructionLogger logger, Type pluginType, string[] requiredContracts, IContainerConfiguration configuration)
 		{
 			return pluggable.GetFactory().TryGetOrCreate(logger, pluginType, requiredContracts, o => configuration.Initialize(o, pluggable));
 		}
 
 		public static bool ByContractsFilterWithLogging(this IConfiguredPluggable p,
-			IEnumerable<ContractRequirement> requiredContracts, IConstructionLogger logger)
+			IEnumerable<string> requiredContracts, IConstructionLogger logger)
 		{
 			var declared = p.AllDeclaredContracts();
-			bool fitContracts =  declared.Any(d => ContractDeclaration.Any.Equals(d)) || requiredContracts.All(req => declared.Any(req.Satisfy));
+			bool fitContracts =  declared.Any(d => Contract.Any.Equals(d)) || requiredContracts.All(req => declared.Any(req.Satisfy));
 			if (!fitContracts)
 			{
 				logger.Declined(

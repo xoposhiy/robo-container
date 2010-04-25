@@ -29,7 +29,7 @@ namespace RoboContainer.Impl
 			}
 		}
 
-		public IEnumerable<ContractRequirement> RequiredContracts
+		public IEnumerable<string> RequiredContracts
 		{
 			get { return parent.RequiredContracts.Union(child.RequiredContracts); }
 		}

@@ -19,13 +19,13 @@ namespace RoboContainer.Core
 		/// Случилась ошибка при создании реализации.
 		/// </exception>
 		[CanBeNull]
-		TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts);
+		TPlugin TryGet<TPlugin>(params string[] requiredContracts);
 
 		/// <summary>
 		/// Нетипизированная версия метода <see cref="TryGet{TPlugin}"/>.
 		/// </summary>
 		[CanBeNull]
-		object TryGet(Type pluginType, params ContractRequirement[] requiredContracts);
+		object TryGet(Type pluginType, params string[] requiredContracts);
 
 		/// <summary>
 		/// Создает или возвращает созданный ранее экземпляр типа <typeparamref name="TPlugin"/>,
@@ -37,12 +37,12 @@ namespace RoboContainer.Core
 		/// Нашлось более одной подходящей реализации.
 		/// Случилась ошибка при создании реализации.
 		/// </exception>
-		TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts);
+		TPlugin Get<TPlugin>(params string[] requiredContracts);
 
 		/// <summary>
 		/// Нетипизированная версия метода <see cref="Get{TPlugin}"/>.
 		/// </summary>
-		object Get(Type pluginType, params ContractRequirement[] requiredContracts);
+		object Get(Type pluginType, params string[] requiredContracts);
 
 		/// <summary>
 		/// Создает или возвращает созданные ранее экземпляры типа <typeparamref name="TPlugin"/>, 
@@ -53,12 +53,12 @@ namespace RoboContainer.Core
 		/// <exception cref="ContainerException">
 		/// Случилась ошибка при создании одной из реализаций.
 		/// </exception>
-		IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts);
+		IEnumerable<TPlugin> GetAll<TPlugin>(params string[] requiredContracts);
 
 		/// <summary>
 		/// Нетипизированная версия метода <see cref="GetAll{TPlugin}"/>.
 		/// </summary>
-		IEnumerable<object> GetAll(Type pluginType, params ContractRequirement[] requiredContracts);
+		IEnumerable<object> GetAll(Type pluginType, params string[] requiredContracts);
 
 		/// <summary>
 		/// Возвращает все типы, которые могут использоваться в качестве реализаций сервиса <typeparamref name="TPlugin"/>,
@@ -74,12 +74,12 @@ namespace RoboContainer.Core
 		/// Это может быть полезно, если по типам плагинов нужно всего лишь узнать некоторую метаинформацию.
 		/// </para>
 		/// </summary>
-		IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts);
+		IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params string[] requiredContracts);
 
 		/// <summary>
 		/// Нетипизированная версия метода <see cref="GetPluggableTypesFor{TPlugin}"/>.
 		/// </summary>
-		IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts);
+		IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params string[] requiredContracts);
 
 		/// <summary>
 		/// Инициализирует объект <paramref name="plugin"/> применяя все зарегистрированные инициализаторы.

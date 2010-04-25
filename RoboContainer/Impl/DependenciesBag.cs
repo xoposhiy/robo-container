@@ -28,7 +28,7 @@ namespace RoboContainer.Impl
 		}
 
 		[CanBeNull]
-		public bool TryGetValue(IContainerImpl container, string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider, ContractRequirement[] requirements, out object actualArg)
+		public bool TryGetValue(IContainerImpl container, string dependencyName, Type dependencyType, ICustomAttributeProvider attributeProvider, string[] requirements, out object actualArg)
 		{
 			var dep = DependencyConfigurator.FromAttributes(dependencyName, dependencyType, attributeProvider);
 			dep.RequireContracts(requirements);

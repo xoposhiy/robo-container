@@ -13,8 +13,8 @@ namespace RoboContainer.Infection
 	/// Список поддерживаемых контрактов может быть расширен с помощью других способов конфигурирования.
 	/// </para>
 	/// </summary>
-	/// <seealso cref="IDependencyConfigurator.RequireContracts(ContractRequirement[])"/>
-	/// <seealso cref="IGenericPluginConfigurator{TPlugin,TSelf}.RequireContracts(ContractRequirement[])"/>
+	/// <seealso cref="IDependencyConfigurator.RequireContracts(string[])"/>
+	/// <seealso cref="IGenericPluginConfigurator{TPlugin,TSelf}.RequireContracts(string[])"/>
 	/// <seealso cref="RequireContractAttribute"/>
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false)]
 	public class NameIsContractAttribute : Attribute

@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 	public interface IConfiguredPlugin : IDisposable
 	{
 		Type PluginType { get; }
-		IEnumerable<ContractRequirement> RequiredContracts { get; }
+		IEnumerable<string> RequiredContracts { get; }
 		bool? AutoSearch { get; }
 		bool ReuseSpecified { get; }
 		IReusePolicy ReusePolicy { get; }

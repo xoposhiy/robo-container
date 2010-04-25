@@ -10,9 +10,9 @@ namespace RoboContainer.Impl
 		public void Configure(IContainerConfiguration configuration)
 		{
 			//TODO Lazy<> - плохо работают с контрактами :(
-			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>), ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>), ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
-			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc, ContractDeclaration.Any).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Lazy<>)).UsePluggable(typeof(Lazy<>), Contract.Any).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Lazy<,>)).UsePluggable(typeof(Lazy<,>), Contract.Any).ReusePluggable(ReusePolicy.Never);
+			configuration.Configurator.ForPlugin(typeof(Func<>)).UseInstanceCreatedBy(CreateFunc, Contract.Any).ReusePluggable(ReusePolicy.Never);
 		}
 
 		private static readonly MethodInfo StronglyTypeGetterOfT = typeof(LazyConfigurationModule).GetMethod("MakeStronglyTyped", BindingFlags.NonPublic | BindingFlags.Static);
@@ -28,7 +28,7 @@ namespace RoboContainer.Impl
 			return StronglyTypeGetterOfT.MakeGenericMethod(resultType).Invoke(null, new object[] { weaklyTypedFunc });
 		}
 
-		private static object CreateFunc(Container container, Type Func_Of_TResultType, ContractRequirement[] requiredContracts)
+		private static object CreateFunc(Container container, Type Func_Of_TResultType, string[] requiredContracts)
 		{
 			Type resultType = Func_Of_TResultType.GetGenericArguments().Last();
 			return CreateStronglyTypedFuncOfT(resultType, () => container.Get(resultType, requiredContracts));

@@ -22,7 +22,7 @@
   public interface IPluggableInitializer{
 	object Initialize(object o);
 	[Pure] // кэшируется контейнером для производительности
-	bool WantToRun(Type pluggableType, ContractDeclaration[] decls); 
+	bool WantToRun(Type pluggableType, string[] decls); 
   }
 + setter-injection на основе инициализаторов
 + container.BuildUp(obj); — setter / field / method injection / ... Применение всех инициализаторов.

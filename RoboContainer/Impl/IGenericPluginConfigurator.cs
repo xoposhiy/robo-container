@@ -20,42 +20,42 @@ namespace RoboContainer.Impl
 	{
 		/// <summary>
 		/// Использовать в качестве реализации тип <typeparamref name="TPluggable"/>, считая, что он поддерживает указанный список контрактов.
-		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="ContractDeclaration.Default"/>.
+		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="Contract.Default"/>.
 		/// При повторном вызове список pluggable пополняется новым значением.
 		/// </summary>
 		[Additive]
-		TSelf UsePluggable<TPluggable>(params ContractDeclaration[] declaredContracts) where TPluggable : TPlugin;
+		TSelf UsePluggable<TPluggable>(params string[] declaredContracts) where TPluggable : TPlugin;
 
 		/// <summary>
 		/// Использовать в качестве реализации тип <paramref name="pluggableType"/>, считая, что он поддерживает указанный список контрактов.
-		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="ContractDeclaration.Default"/>.
+		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="Contract.Default"/>.
 		/// При повторном вызове список pluggable пополняется новым значением.
 		/// </summary>
 		[Additive]
-		TSelf UsePluggable(Type pluggableType, params ContractDeclaration[] declaredContracts);
+		TSelf UsePluggable(Type pluggableType, params string[] declaredContracts);
 
 		/// <summary>
 		/// Использовать в качестве реализации объект <paramref name="instance"/>, считая, что он поддерживает указанный список контрактов.
-		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="ContractDeclaration.Default"/>.
+		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="Contract.Default"/>.
 		/// При повторном вызове список pluggable пополняется новым значением.
 		/// </summary>
 		[Additive]
-		TSelf UseInstance(TPlugin instance, params ContractDeclaration[] declaredContracts);
+		TSelf UseInstance(TPlugin instance, params string[] declaredContracts);
 
 		/// <summary>
 		/// Использовать в качестве реализации результат работы делегата <paramref name="createPluggable"/>, считая, что он поддерживает указанный список контрактов.
-		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="ContractDeclaration.Default"/>.
+		/// Если список контрактов пуст, считается, что тип поддерживает один контракт <see cref="Contract.Default"/>.
 		/// При повторном вызове список pluggable пополняется новым значением.
 		/// </summary>
 		[Additive]
-		TSelf UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, params ContractDeclaration[] declaredContracts);
+		TSelf UseInstanceCreatedBy(CreatePluggableDelegate<TPlugin> createPluggable, params string[] declaredContracts);
 
 		/// <summary>
 		/// Для данного сервиса использовать только те реализации, список декларируемых контрактов которых удовлетворяет заданному списку требований.
 		/// При повторном вызове список требуемых контрактов пополняется новыми значениями.
 		/// </summary>
 		[Additive]
-		TSelf RequireContracts(params ContractRequirement[] requiredContracts);
+		TSelf RequireContracts(params string[] requiredContracts);
 
 		/// <summary>
 		/// При работе автоматики не использовать реализацию <typeparam name="TPluggable"/>.

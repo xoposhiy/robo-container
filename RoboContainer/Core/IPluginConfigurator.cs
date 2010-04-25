@@ -3,7 +3,7 @@ using RoboContainer.Impl;
 
 namespace RoboContainer.Core
 {
-	public delegate TPlugin CreatePluggableDelegate<TPlugin>(Container container, Type pluginType, ContractRequirement[] requiredContracts);
+	public delegate TPlugin CreatePluggableDelegate<TPlugin>(Container container, Type pluginType, string[] requiredContracts);
 
 	public interface IPluginConfigurator : IGenericPluginConfigurator<object, IPluginConfigurator>
 	{

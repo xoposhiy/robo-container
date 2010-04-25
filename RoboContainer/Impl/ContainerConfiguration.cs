@@ -77,7 +77,7 @@ namespace RoboContainer.Impl
 			initializers.AddRange(pluggableInitializers);
 		}
 
-		public void ForceInjectionOf(Type dependencyType, ContractRequirement[] requiredContracts)
+		public void ForceInjectionOf(Type dependencyType, string[] requiredContracts)
 		{
 			var setterInjections = initializers.OfType<SetterInjection>();
 			if (setterInjections.Count() != 1)
@@ -124,7 +124,7 @@ namespace RoboContainer.Impl
 
 		public virtual bool WasAssembliesExplicitlyConfigured { get; private set; }
 
-		public IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts)
+		public IDisposable DependencyCycleCheck(Type t, string[] contracts)
 		{
 			var request = new ResolutionRequest(t, contracts);
 			if(resolutionStack.Contains(request))

@@ -9,12 +9,12 @@ namespace RoboContainer.Impl
 	[DebuggerDisplay("ByType {PluggableType}")]
 	public class ConfiguredTypePluggable : IConfiguredPluggable
 	{
-		private readonly ContractDeclaration[] additionalDeclaredContracts;
+		private readonly string[] additionalDeclaredContracts;
 		private readonly Func<IConfiguredPluggable> configuredPluggableProvider;
 		private IConfiguredPluggable configuredPluggable;
-		private IEnumerable<ContractDeclaration> allDeclaredContracts;
+		private IEnumerable<string> allDeclaredContracts;
 
-		public ConfiguredTypePluggable(Func<IConfiguredPluggable> configuredPluggableProvider, ContractDeclaration[] additionalDeclaredContracts)
+		public ConfiguredTypePluggable(Func<IConfiguredPluggable> configuredPluggableProvider, string[] additionalDeclaredContracts)
 		{
 			this.configuredPluggableProvider = configuredPluggableProvider;
 			this.additionalDeclaredContracts = additionalDeclaredContracts;
@@ -50,7 +50,7 @@ namespace RoboContainer.Impl
 			get { return ConfiguredPluggable.InitializePluggable; }
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return allDeclaredContracts ?? (allDeclaredContracts = ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts)); }
 		}

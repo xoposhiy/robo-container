@@ -46,27 +46,27 @@ namespace RoboContainer.Core
 		#region Typed overloads
 
 		[DebuggerStepThrough]
-		public TPlugin Get<TPlugin>(params ContractRequirement[] requiredContracts)
+		public TPlugin Get<TPlugin>(params string[] requiredContracts)
 		{
 			return (TPlugin) Get(typeof(TPlugin), requiredContracts);
 		}
 
 		[DebuggerStepThrough]
 		[CanBeNull]
-		public TPlugin TryGet<TPlugin>(params ContractRequirement[] requiredContracts)
+		public TPlugin TryGet<TPlugin>(params string[] requiredContracts)
 		{
 			object tryGet = TryGet(typeof(TPlugin), requiredContracts);
 			return (TPlugin) (tryGet ?? default(TPlugin)); // may be default(TPlugin) != null
 		}
 
 		[DebuggerStepThrough]
-		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params ContractRequirement[] requiredContracts)
+		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params string[] requiredContracts)
 		{
 			return GetPluggableTypesFor(typeof(TPlugin), requiredContracts);
 		}
 
 		[DebuggerStepThrough]
-		public IEnumerable<TPlugin> GetAll<TPlugin>(params ContractRequirement[] requiredContracts)
+		public IEnumerable<TPlugin> GetAll<TPlugin>(params string[] requiredContracts)
 		{
 			return GetAll(typeof(TPlugin), requiredContracts).Cast<TPlugin>().ToList();
 		}
@@ -83,7 +83,7 @@ namespace RoboContainer.Core
 			get { return configuration.GetConfiguredLogging().GetLogger(); }
 		}
 
-		public object Get(Type pluginType, params ContractRequirement[] requiredContracts)
+		public object Get(Type pluginType, params string[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
 			if(!items.Any()) throw NoPluggablesException(pluginType);
@@ -92,7 +92,7 @@ namespace RoboContainer.Core
 		}
 
 		[CanBeNull]
-		public object TryGet(Type pluginType, params ContractRequirement[] requiredContracts)
+		public object TryGet(Type pluginType, params string[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
 			if(!items.Any()) return null;
@@ -100,7 +100,7 @@ namespace RoboContainer.Core
 			return items.Single();
 		}
 
-		public IEnumerable<object> GetAll(Type pluginType, params ContractRequirement[] requiredContracts)
+		public IEnumerable<object> GetAll(Type pluginType, params string[] requiredContracts)
 		{
 			try
 			{
@@ -115,7 +115,7 @@ namespace RoboContainer.Core
 			}
 		}
 
-		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params ContractRequirement[] requiredContracts)
+		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params string[] requiredContracts)
 		{
 			lock(configuration.Lock)
 				return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
@@ -167,7 +167,7 @@ namespace RoboContainer.Core
 				items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
 		}
 
-		private IEnumerable<object> PlainGetAll(Type pluginType, ContractRequirement[] requiredContracts)
+		private IEnumerable<object> PlainGetAll(Type pluginType, string[] requiredContracts)
 		{
 			IEnumerable<object> pluggables = TryGetCollections(pluginType, requiredContracts);
 			if(pluggables == null)
@@ -183,7 +183,7 @@ namespace RoboContainer.Core
 
 
 		[CanBeNull]
-		private IEnumerable<object> TryGetCollections(Type pluginType, ContractRequirement[] requiredContracts)
+		private IEnumerable<object> TryGetCollections(Type pluginType, string[] requiredContracts)
 		{
 			Type elementType;
 			if(IsCollection(pluginType, out elementType))
@@ -215,12 +215,12 @@ namespace RoboContainer.Core
 			return elementType != null;
 		}
 
-		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params ContractRequirement[] requiredContracts)
+		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params string[] requiredContracts)
 		{
 			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
-			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {ContractRequirement.Default};
+			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {Contract.Default};
 			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger);
-			if(pluginType == typeof(IContainer)) configuredPluggables = configuredPluggables.Concat(new IConfiguredPluggable[] { new ConfiguredInstancePluggable(this, new[]{ContractDeclaration.Default}) });
+			if(pluginType == typeof(IContainer)) configuredPluggables = configuredPluggables.Concat(new IConfiguredPluggable[] { new ConfiguredInstancePluggable(this, new[]{Contract.Default}) });
 			return configuredPluggables
 				.Where(
 					p => p.ByContractsFilterWithLogging(requiredContracts, ConstructionLogger)

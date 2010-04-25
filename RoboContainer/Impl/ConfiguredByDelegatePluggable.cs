@@ -6,7 +6,7 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredByDelegatePluggable : IConfiguredPluggable
 	{
-		private readonly ContractDeclaration[] declaredContracts;
+		private readonly string[] declaredContracts;
 		private readonly IContainerConfiguration configuration;
 		private readonly CreatePluggableDelegate<object> createPluggable;
 		private readonly PluginConfigurator pluginConfigurator;
@@ -14,8 +14,8 @@ namespace RoboContainer.Impl
 
 		public ConfiguredByDelegatePluggable(
 			PluginConfigurator pluginConfigurator, 
-			CreatePluggableDelegate<object> createPluggable, 
-			ContractDeclaration[] declaredContracts, 
+			CreatePluggableDelegate<object> createPluggable,
+			string[] declaredContracts, 
 			IContainerConfiguration configuration)
 		{
 			this.pluginConfigurator = pluginConfigurator;
@@ -69,7 +69,7 @@ namespace RoboContainer.Impl
 			this.DumpMainInfo(writeLine);
 		}
 
-		public IEnumerable<ContractDeclaration> ExplicitlyDeclaredContracts
+		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
 			get { return declaredContracts; }
 		}

@@ -7,7 +7,7 @@ namespace RoboContainer.Impl
 {
 	public interface IContainerConfiguration : IDisposable
 	{
-		IDisposable DependencyCycleCheck(Type t, ContractRequirement[] contracts);
+		IDisposable DependencyCycleCheck(Type t, string[] contracts);
 		IContainerConfigurator Configurator { get; }
 		bool WasAssembliesExplicitlyConfigured { get; }
 		object Lock { get; }
@@ -28,7 +28,7 @@ namespace RoboContainer.Impl
 		IPluginConfigurator GetPluginConfigurator(Type pluginType);
 		ILoggingConfigurator GetLoggingConfigurator();
 		void RegisterInitializer(params IPluggableInitializer[] initializers);
-		void ForceInjectionOf(Type dependencyType, ContractRequirement[] requiredContracts);
+		void ForceInjectionOf(Type dependencyType, string[] requiredContracts);
 		void AddScanner(ScannerDelegate scanner);
 	}
 

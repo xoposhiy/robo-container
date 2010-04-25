@@ -20,7 +20,7 @@ namespace RoboContainer.Core
 		/// Использовать в качестве значения для этой зависимости только те реализации, 
 		/// которые удовлетворяют указанному списку требований <paramref name="requiredContracts"/>.
 		/// </summary>
-		IDependencyConfigurator RequireContracts(params ContractRequirement[] requiredContracts);
+		IDependencyConfigurator RequireContracts(params string[] requiredContracts);
 
 		/// <summary>
 		/// Использовать в качестве значения для этой зависимости объект <paramref name="o"/>
