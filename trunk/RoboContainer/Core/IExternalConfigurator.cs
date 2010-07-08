@@ -29,7 +29,7 @@
 
 		/// <summary>
 		/// Конфигурирует контейнер на основе секции 'robocontainer' из app.config-файла.
-		/// Аналог вызова <c>AppConfigSection("roboconfig")</c>
+        /// Аналог вызова <c>AppConfigSection("robocontainer")</c>
 		/// </summary>
 		/// <seealso cref="AppConfigSection"/>
 		/// <seealso cref="XmlFile"/>
