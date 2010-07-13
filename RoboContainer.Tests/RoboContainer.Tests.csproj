@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{75FB4AD8-34C6-45DC-8408-22FECA516630}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="Arrays\Arrays_Test.cs" />
     <Compile Include="CommonFunctionality\Container_Test.cs" />
+    <Compile Include="Common\ConstructorInvokerTest.cs" />
+    <Compile Include="Common\MultiSetTest.cs" />
     <Compile Include="Configuration\ExternalConfiguration_Test.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -69,6 +71,7 @@
     <Compile Include="Laziness\Lazy_Test.cs" />
     <Compile Include="Logging\Logging_Test.cs" />
     <Compile Include="Multithreading\Multithreading_Test.cs" />
+    <Compile Include="Multithreading\MultithreadingPerformance_Test.cs" />
     <Compile Include="Parts\Parts_Test.cs" />
     <Compile Include="Performance\Performance_Tests.cs" />
     <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />

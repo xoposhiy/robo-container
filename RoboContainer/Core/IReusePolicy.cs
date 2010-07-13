@@ -7,16 +7,28 @@ namespace RoboContainer.Core
 	/// </summary>
 	public interface IReusePolicy
 	{
-		IReuseSlot CreateSlot();
 		bool Overridable { get; }
+		IReuseSlot CreateSlot();
 	}
 
 	public interface IReuseSlot : IDisposable
 	{
 		/// <summary>
-		/// Возвращает значение отличное от null, если в текущем контексте нужно повторно использовать объект.
-		/// Если свойство вернуло null, то предполагается, что будет создан новый объект, после чего присвоен этому свойству.
+		/// Возвращает значение, если оно есть. Если нет, то вызывает <paramref name="creator"/> для создания.
+		/// В последнем случае устанавливает <paramref name="createdNew"/>.
 		/// </summary>
-		object Value { get; set; }
+		object GetOrCreate(Func<object> creator, out bool createdNew);
+	}
+
+	public static class ReuseSlotExtensions
+	{
+		/// <summary>
+		/// Возвращает значение, если оно есть. Если нет, то вызывает <paramref name="creator"/> для создания.
+		/// </summary>
+		public static object GetOrCreate(this IReuseSlot reuseSlot, Func<object> creator)
+		{
+			bool createdNew;
+			return reuseSlot.GetOrCreate(creator, out createdNew);
+		}
 	}
 }

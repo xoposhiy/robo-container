@@ -6,23 +6,26 @@ namespace RoboContainer.Impl
 {
 	public class ConfiguredByDelegatePluggable : IConfiguredPluggable
 	{
-		private readonly string[] declaredContracts;
 		private readonly IContainerConfiguration configuration;
 		private readonly CreatePluggableDelegate<object> createPluggable;
+		private readonly string[] declaredContracts;
+		private readonly Deferred<ByDelegateInstanceFactory> factory;
 		private readonly PluginConfigurator pluginConfigurator;
-		private ByDelegateInstanceFactory factory;
 
 		public ConfiguredByDelegatePluggable(
-			PluginConfigurator pluginConfigurator, 
+			PluginConfigurator pluginConfigurator,
 			CreatePluggableDelegate<object> createPluggable,
-			string[] declaredContracts, 
+			string[] declaredContracts,
 			IContainerConfiguration configuration)
 		{
 			this.pluginConfigurator = pluginConfigurator;
 			this.createPluggable = createPluggable;
 			this.declaredContracts = declaredContracts;
 			this.configuration = configuration;
+			factory = new Deferred<ByDelegateInstanceFactory>(InstanceFactoryCreator, InstanceFactoryFinalizer);
 		}
+
+		#region IConfiguredPluggable Members
 
 		public Type PluggableType
 		{
@@ -56,7 +59,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable, configuration));
+			return factory.Get();
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
@@ -81,7 +84,19 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			DisposeUtils.Dispose(ref factory);
+			factory.Dispose();
+		}
+
+		#endregion
+
+		private ByDelegateInstanceFactory InstanceFactoryCreator()
+		{
+			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, createPluggable, configuration);
+		}
+
+		private static void InstanceFactoryFinalizer(ByDelegateInstanceFactory instanceFactory)
+		{
+			DisposeUtils.Dispose(ref instanceFactory);
 		}
 	}
 }

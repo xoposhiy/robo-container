@@ -9,13 +9,13 @@ namespace RoboContainer.Core
 	/// <summary>Контейнер. Главный класс библиотеки, с которого нужно начинать ее использование.</summary>
 	public class Container : IContainerImpl
 	{
-		private readonly IContainerConfiguration configuration;
+		private static readonly IEnumerable<IConfigurationModule> postModules =
+			new IConfigurationModule[] {new ScannedAssembliesConfigurationModule()};
 
 		private static readonly IEnumerable<IConfigurationModule> preModules =
-			new IConfigurationModule[] { new LazyConfigurationModule(), new SetterInjectionModule() };
+			new IConfigurationModule[] {new LazyConfigurationModule(), new SetterInjectionModule()};
 
-		private static readonly IEnumerable<IConfigurationModule> postModules =
-			new IConfigurationModule[] {new ScannedAssembliesConfigurationModule() };
+		private readonly IContainerConfiguration configuration;
 
 		/// <summary>
 		/// Если контейнер не нуждается в конфигурировании, подойдет этот конструктор. Иначе, используйте одну из его перегрузок.
@@ -48,30 +48,32 @@ namespace RoboContainer.Core
 		[DebuggerStepThrough]
 		public TPlugin Get<TPlugin>(params string[] requiredContracts)
 		{
-			return (TPlugin) Get(typeof(TPlugin), requiredContracts);
+			return (TPlugin) Get(typeof (TPlugin), requiredContracts);
 		}
 
 		[DebuggerStepThrough]
 		[CanBeNull]
 		public TPlugin TryGet<TPlugin>(params string[] requiredContracts)
 		{
-			object tryGet = TryGet(typeof(TPlugin), requiredContracts);
+			object tryGet = TryGet(typeof (TPlugin), requiredContracts);
 			return (TPlugin) (tryGet ?? default(TPlugin)); // may be default(TPlugin) != null
 		}
 
 		[DebuggerStepThrough]
 		public IEnumerable<Type> GetPluggableTypesFor<TPlugin>(params string[] requiredContracts)
 		{
-			return GetPluggableTypesFor(typeof(TPlugin), requiredContracts);
+			return GetPluggableTypesFor(typeof (TPlugin), requiredContracts);
 		}
 
 		[DebuggerStepThrough]
 		public IEnumerable<TPlugin> GetAll<TPlugin>(params string[] requiredContracts)
 		{
-			return GetAll(typeof(TPlugin), requiredContracts).Cast<TPlugin>().ToList();
+			return GetAll(typeof (TPlugin), requiredContracts).Cast<TPlugin>().ToList();
 		}
 
 		#endregion
+
+		#region IContainerImpl Members
 
 		/// <summary>
 		/// Позволяет получить доступ к подсистеме логгирования контейнера. 
@@ -86,8 +88,8 @@ namespace RoboContainer.Core
 		public object Get(Type pluginType, params string[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
-			if(!items.Any()) throw NoPluggablesException(pluginType);
-			if(items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
+			if (!items.Any()) throw NoPluggablesException(pluginType);
+			if (items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
 			return items.Single();
 		}
 
@@ -95,21 +97,24 @@ namespace RoboContainer.Core
 		public object TryGet(Type pluginType, params string[] requiredContracts)
 		{
 			IEnumerable<object> items = GetAll(pluginType, requiredContracts);
-			if(!items.Any()) return null;
-			if(items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
+			if (!items.Any()) return null;
+			if (items.Count() > 1) throw HasManyPluggablesException(pluginType, items);
 			return items.Single();
 		}
 
+		private readonly object lockObject = new object();
 		public IEnumerable<object> GetAll(Type pluginType, params string[] requiredContracts)
 		{
 			try
 			{
-				lock(configuration.Lock)
-				using(ConstructionLogger.StartResolving(pluginType))
-				using(configuration.DependencyCycleCheck(pluginType, requiredContracts))
-					return PlainGetAll(pluginType, requiredContracts);
+				//lock (lockObject)
+				{
+					using (ConstructionLogger.StartResolving(pluginType))
+					using (configuration.DependencyCycleCheck(pluginType, requiredContracts))
+						return PlainGetAll(pluginType, requiredContracts);
+				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				throw ContainerException.WithLog(LastConstructionLog, e);
 			}
@@ -117,13 +122,12 @@ namespace RoboContainer.Core
 
 		public IEnumerable<Type> GetPluggableTypesFor(Type pluginType, params string[] requiredContracts)
 		{
-			lock(configuration.Lock)
-				return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
+			return GetConfiguredPluggables(pluginType, requiredContracts).Select(c => c.PluggableType).Where(t => t != null);
 		}
 
 		public TPlugin BuildUp<TPlugin>(TPlugin plugin)
 		{
-			var configuredPluggable = configuration.TryGetConfiguredPluggable(typeof(TPlugin));
+			IConfiguredPluggable configuredPluggable = configuration.TryGetConfiguredPluggable(typeof (TPlugin));
 			return (TPlugin) configuration.Initialize(plugin, configuredPluggable);
 		}
 
@@ -154,6 +158,8 @@ namespace RoboContainer.Core
 			configuration.Dispose();
 		}
 
+		#endregion
+
 		private ContainerException NoPluggablesException(Type pluginType)
 		{
 			return ContainerException.WithLog(LastConstructionLog, "Plugguble for {0} not found.", pluginType.Name);
@@ -161,18 +167,18 @@ namespace RoboContainer.Core
 
 		private ContainerException HasManyPluggablesException(Type pluginType, IEnumerable<object> items)
 		{
-			return ContainerException.WithLog(LastConstructionLog, 
-				"Plugin {0} has many pluggables:{1}",
-				pluginType.Name,
-				items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
+			return ContainerException.WithLog(LastConstructionLog,
+			                                  "Plugin {0} has many pluggables:{1}",
+			                                  pluginType.Name,
+			                                  items.Aggregate("", (s, plugin) => s + "\n" + plugin.GetType().Name));
 		}
 
 		private IEnumerable<object> PlainGetAll(Type pluginType, string[] requiredContracts)
 		{
 			IEnumerable<object> pluggables = TryGetCollections(pluginType, requiredContracts);
-			if(pluggables == null)
+			if (pluggables == null)
 			{
-				var configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
+				IEnumerable<IConfiguredPluggable> configuredPluggables = GetConfiguredPluggables(pluginType, requiredContracts);
 				//				configuredPluggables.ForEach(p => Console.WriteLine(p.DumpDebugInfo()));
 				pluggables = configuredPluggables.Select(
 					c => c.TryGetOrCreate(ConstructionLogger, pluginType, requiredContracts, configuration)
@@ -186,7 +192,7 @@ namespace RoboContainer.Core
 		private IEnumerable<object> TryGetCollections(Type pluginType, string[] requiredContracts)
 		{
 			Type elementType;
-			if(IsCollection(pluginType, out elementType))
+			if (IsCollection(pluginType, out elementType))
 				return CreateArray(elementType, GetAll(elementType, requiredContracts));
 			return null;
 		}
@@ -194,9 +200,9 @@ namespace RoboContainer.Core
 		private static IContainerConfiguration CreateConfiguration(params Action<IContainerConfigurator>[] configures)
 		{
 			var configuration = new ContainerConfiguration();
-			foreach(var module in preModules) module.Configure(configuration);
-			foreach(var configure in configures) configure(configuration.Configurator);
-			foreach(var module in postModules) module.Configure(configuration);
+			foreach (IConfigurationModule module in preModules) module.Configure(configuration);
+			foreach (var configure in configures) configure(configuration.Configurator);
+			foreach (IConfigurationModule module in postModules) module.Configure(configuration);
 			configuration.AfterConfiguration();
 			return configuration;
 		}
@@ -204,12 +210,13 @@ namespace RoboContainer.Core
 		private static bool IsCollection(Type pluginType, out Type elementType)
 		{
 			elementType = null;
-			if(pluginType.IsArray && pluginType.GetArrayRank() == 1)
+			if (pluginType.IsArray && pluginType.GetArrayRank() == 1)
 				elementType = pluginType.GetElementType();
 			else
 			{
 				Type[] typeArgs = pluginType.GetGenericArguments();
-				if(pluginType.IsGenericType && typeArgs.Length == 1 && pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
+				if (pluginType.IsGenericType && typeArgs.Length == 1 &&
+				    pluginType.IsAssignableFrom(typeArgs.Single().MakeArrayType()))
 					elementType = typeArgs.Single();
 			}
 			return elementType != null;
@@ -218,12 +225,16 @@ namespace RoboContainer.Core
 		private IEnumerable<IConfiguredPluggable> GetConfiguredPluggables(Type pluginType, params string[] requiredContracts)
 		{
 			IConfiguredPlugin configuredPlugin = configuration.GetConfiguredPlugin(pluginType);
-			if(!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any()) requiredContracts = new[] {Contract.Default};
-			var configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger);
-			if(pluginType == typeof(IContainer)) configuredPluggables = configuredPluggables.Concat(new IConfiguredPluggable[] { new ConfiguredInstancePluggable(this, new[]{Contract.Default}) });
+			if (!requiredContracts.Any() && !configuredPlugin.RequiredContracts.Any())
+				requiredContracts = new[] {Contract.Default};
+			IEnumerable<IConfiguredPluggable> configuredPluggables = configuredPlugin.GetPluggables(ConstructionLogger);
+			if (pluginType == typeof (IContainer))
+				configuredPluggables =
+					configuredPluggables.Concat(new IConfiguredPluggable[]
+					                            	{new ConfiguredInstancePluggable(this, new[] {Contract.Default})});
 			return configuredPluggables
 				.Where(
-					p => p.ByContractsFilterWithLogging(requiredContracts, ConstructionLogger)
+				p => p.ByContractsFilterWithLogging(requiredContracts, ConstructionLogger)
 				).ToList();
 		}
 
@@ -231,7 +242,7 @@ namespace RoboContainer.Core
 		{
 			object[] elementsArray = elements.ToArray();
 			Array castedArray = Array.CreateInstance(elementType, elementsArray.Length);
-			for(int i = 0; i < elementsArray.Length; i++)
+			for (int i = 0; i < elementsArray.Length; i++)
 				castedArray.SetValue(elementsArray[i], i);
 			yield return castedArray;
 		}

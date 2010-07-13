@@ -1,17 +1,22 @@
-﻿using RoboContainer.Core;
+﻿using System;
+using RoboContainer.Core;
 
 namespace RoboContainer.Impl
 {
 	public class TransientSlot : IReuseSlot
 	{
-		public object Value
-		{
-			get { return null; }
-			set { }
-		}
+		#region IReuseSlot Members
 
 		public void Dispose()
 		{
 		}
+
+		public object GetOrCreate(Func<object> creator, out bool createdNew)
+		{
+			createdNew = true;
+			return creator();
+		}
+
+		#endregion
 	}
 }

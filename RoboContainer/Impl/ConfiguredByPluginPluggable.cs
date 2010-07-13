@@ -8,17 +8,21 @@ namespace RoboContainer.Impl
 	[DebuggerDisplay("ByPlugin {PluggableType}")]
 	public class ConfiguredByPluginPluggable : IConfiguredPluggable
 	{
-		private readonly IConfiguredPluggable configuredPluggable;
 		private readonly IContainerConfiguration configuration;
+		private readonly IConfiguredPluggable configuredPluggable;
 		private readonly IConfiguredPlugin configuredPlugin;
-		private IInstanceFactory factory;
+		private readonly Deferred<IInstanceFactory> factory;
 
-		public ConfiguredByPluginPluggable(IConfiguredPlugin configuredPlugin, IConfiguredPluggable configuredPluggable, IContainerConfiguration configuration)
+		public ConfiguredByPluginPluggable(IConfiguredPlugin configuredPlugin, IConfiguredPluggable configuredPluggable,
+		                                   IContainerConfiguration configuration)
 		{
 			this.configuredPlugin = configuredPlugin;
 			this.configuredPluggable = configuredPluggable;
 			this.configuration = configuration;
+			factory = new Deferred<IInstanceFactory>(FactoryCreator, FactoryFinalizer);
 		}
+
+		#region IConfiguredPluggable Members
 
 		public Type PluggableType
 		{
@@ -52,12 +56,14 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = CreateFactory());
+			return factory.Get();
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredByPluginPluggable(configuredPlugin, configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), configuration);
+			return new ConfiguredByPluginPluggable(configuredPlugin,
+			                                       configuredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType),
+			                                       configuration);
 		}
 
 		public void DumpDebugInfo(Action<string> writeLine)
@@ -79,15 +85,23 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			if(factory == configuredPluggable.GetFactory()) factory = null; // Не трогаем чужие фабрики.
-			else DisposeUtils.Dispose(ref factory);
+			factory.Dispose();
 		}
 
-		private IInstanceFactory CreateFactory()
+		#endregion
+
+		private IInstanceFactory FactoryCreator()
 		{
-			if(configuredPlugin.ReuseSpecified || configuredPlugin.InitializePluggable != null)
-				return configuredPluggable.GetFactory().CreateByPrototype(this, configuredPlugin.ReusePolicy, InitializePluggable, configuration);
+			if (configuredPlugin.ReuseSpecified || configuredPlugin.InitializePluggable != null)
+				return configuredPluggable.GetFactory().CreateByPrototype(this, configuredPlugin.ReusePolicy, InitializePluggable,
+				                                                          configuration);
 			return configuredPluggable.GetFactory();
+		}
+
+		private void FactoryFinalizer(IInstanceFactory instanceFactory)
+		{
+			if (instanceFactory != configuredPluggable.GetFactory())
+				DisposeUtils.Dispose(ref instanceFactory);
 		}
 	}
 }

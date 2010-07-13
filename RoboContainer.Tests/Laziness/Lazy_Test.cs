@@ -48,8 +48,6 @@ namespace RoboContainer.Tests.Laziness
 			var funcMillis = sw.ElapsedMilliseconds;
 			Console.WriteLine("container.Get<Func<T>>()()    \t—  " + funcMillis);
 			Assert.IsTrue(funcMillis < 2*lazyMillis);
-			
-			
 		}
 
 		[Test]

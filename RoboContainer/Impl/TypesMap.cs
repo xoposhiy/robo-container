@@ -6,11 +6,11 @@ namespace RoboContainer.Impl
 {
 	public class TypesMap
 	{
-		private readonly IDictionary<Type, HashSet<Type>> dic;
+		private readonly Hashtable<Type, HashSet<Type>> dic;
 
 		public TypesMap(IEnumerable<Type> types)
 		{
-			dic = new Dictionary<Type, HashSet<Type>>();
+			dic = new Hashtable<Type, HashSet<Type>>();
 			types.ForEach(type => ProcessType(NormalizeGenericType(type)));
 		}
 
@@ -21,8 +21,8 @@ namespace RoboContainer.Impl
 
 		private void ProcessType(Type normalizedType)
 		{
-			if(!normalizedType.Constructable()) return;
-			foreach(Type baseTypeOrInterface in normalizedType.GetBaseTypes().Concat(normalizedType.GetInterfaces()))
+			if (!normalizedType.Constructable()) return;
+			foreach (Type baseTypeOrInterface in normalizedType.GetBaseTypes().Concat(normalizedType.GetInterfaces()))
 				Inheritors(NormalizeGenericType(baseTypeOrInterface)).Add(normalizedType);
 		}
 
@@ -35,7 +35,8 @@ namespace RoboContainer.Impl
 		{
 			return
 				dic.GetOrCreate(baseTypeOrInterface,
-					() => baseTypeOrInterface.Constructable() ? new HashSet<Type> {baseTypeOrInterface} : new HashSet<Type>()
+				                () =>
+				                baseTypeOrInterface.Constructable() ? new HashSet<Type> {baseTypeOrInterface} : new HashSet<Type>()
 					);
 		}
 	}

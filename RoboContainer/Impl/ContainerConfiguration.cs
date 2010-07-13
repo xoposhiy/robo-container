@@ -8,18 +8,25 @@ namespace RoboContainer.Impl
 {
 	public class ContainerConfiguration : IContainerConfiguration
 	{
-		private readonly IList<ScannerDelegate> scanners = new List<ScannerDelegate>();
-		private readonly List<IPluggableInitializer> initializers = new List<IPluggableInitializer>();
-		private readonly MultiSet<ResolutionRequest> resolutionStack = new MultiSet<ResolutionRequest>();
+		[ThreadStatic] private static MultiSet<ResolutionRequest> resolutionStack;
 		private readonly List<Assembly> assemblies = new List<Assembly>();
+		private readonly List<IPluggableInitializer> initializers = new List<IPluggableInitializer>();
 		private readonly LoggingConfigurator loggerConfigurator = new LoggingConfigurator();
 
-		private readonly IDictionary<Type, PluggableConfigurator> pluggableConfigs =
-			new Dictionary<Type, PluggableConfigurator>();
+		private readonly Hashtable<Type, PluggableConfigurator> pluggableConfigs =
+			new Hashtable<Type, PluggableConfigurator>();
 
-		private readonly IDictionary<Type, PluginConfigurator> pluginConfigs = new Dictionary<Type, PluginConfigurator>();
-		private TypesMap typesMap;
-		private readonly object lockObject = new object();
+		private readonly Hashtable<Type, PluginConfigurator> pluginConfigs = new Hashtable<Type, PluginConfigurator>();
+
+		private readonly IList<ScannerDelegate> scanners = new List<ScannerDelegate>();
+		private readonly Deferred<TypesMap> typesMap;
+
+		public ContainerConfiguration()
+		{
+			typesMap = new Deferred<TypesMap>(() => new TypesMap(GetScannableTypes()));
+		}
+
+		#region IContainerConfiguration Members
 
 		public virtual IConfiguredLogging GetConfiguredLogging()
 		{
@@ -32,17 +39,12 @@ namespace RoboContainer.Impl
 			WasAssembliesExplicitlyConfigured = true;
 		}
 
-		public virtual object Lock
-		{
-			get { return lockObject; }
-		}
-
 		public object Initialize(object justCreatedObject, IConfiguredPluggable pluggable)
 		{
 			if (justCreatedObject != null)
-				foreach(var initializer in initializers)
+				foreach (IPluggableInitializer initializer in initializers)
 				{
-					if(initializer.WantToRun(justCreatedObject.GetType(), pluggable.AllDeclaredContracts().ToArray()))
+					if (initializer.WantToRun(justCreatedObject.GetType(), pluggable.AllDeclaredContracts().ToArray()))
 						justCreatedObject = initializer.Initialize(justCreatedObject, new Container(this), pluggable);
 				}
 			return justCreatedObject;
@@ -55,11 +57,9 @@ namespace RoboContainer.Impl
 
 		public virtual IEnumerable<Type> GetScannableTypes(Type pluginType)
 		{
-			if(pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
+			if (pluginType.IsGenericType && !pluginType.IsGenericTypeDefinition)
 				return GetScannableTypes(pluginType.GetGenericTypeDefinition());
-			return
-				(typesMap ?? (typesMap = new TypesMap(GetScannableTypes())))
-					.GetInheritors(pluginType);
+			return typesMap.Get().GetInheritors(pluginType);
 		}
 
 		public virtual IPluginConfigurator GetPluginConfigurator(Type pluginType)
@@ -79,7 +79,7 @@ namespace RoboContainer.Impl
 
 		public void ForceInjectionOf(Type dependencyType, string[] requiredContracts)
 		{
-			var setterInjections = initializers.OfType<SetterInjection>();
+			IEnumerable<SetterInjection> setterInjections = initializers.OfType<SetterInjection>();
 			if (setterInjections.Count() != 1)
 				throw ContainerException.NoLog("Container does not support setter/field injection");
 			setterInjections.First().ForceInjectionOf(dependencyType, requiredContracts);
@@ -95,7 +95,7 @@ namespace RoboContainer.Impl
 		public IConfiguredPluggable TryGetConfiguredPluggable(Type pluginType, Type pluggableType)
 		{
 			pluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(pluggableType, pluginType);
-			if(pluggableType == null) return null;
+			if (pluggableType == null) return null;
 			return TryGetConfiguredPluggable(pluggableType);
 		}
 
@@ -118,7 +118,7 @@ namespace RoboContainer.Impl
 		[CanBeNull]
 		public virtual IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
-			if(pluggableType == null || !pluggableType.Constructable()) return null;
+			if (pluggableType == null || !pluggableType.Constructable()) return null;
 			return pluggableConfigs.GetOrCreate(pluggableType, () => GetPluggableConfiguratorWithoutCache(pluggableType));
 		}
 
@@ -127,7 +127,8 @@ namespace RoboContainer.Impl
 		public IDisposable DependencyCycleCheck(Type t, string[] contracts)
 		{
 			var request = new ResolutionRequest(t, contracts);
-			if(resolutionStack.Contains(request))
+			if (resolutionStack == null) resolutionStack = new MultiSet<ResolutionRequest>();
+			if (resolutionStack.Contains(request))
 				throw ContainerException.NoLog("Type {0} has cyclic dependencies.", t);
 			resolutionStack.Add(request);
 			return new Disposable(() => resolutionStack.Remove(request));
@@ -146,17 +147,17 @@ namespace RoboContainer.Impl
 
 		public virtual void Dispose()
 		{
-			pluggableConfigs.Values.ForEach(c => c.Dispose());
-			pluggableConfigs.Clear();
-			pluginConfigs.Values.ForEach(c => c.Dispose());
-			pluginConfigs.Clear();
+			pluggableConfigs.Dispose();
+			pluginConfigs.Dispose();
 		}
+
+		#endregion
 
 		private PluggableConfigurator GetPluggableConfiguratorWithoutCache(Type pluggableType)
 		{
 			PluggableConfigurator configuredPluggable;
-			if(pluggableType.IsGenericType &&
-				pluggableConfigs.TryGetValue(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
+			if (pluggableType.IsGenericType &&
+			    pluggableConfigs.TryGet(pluggableType.GetGenericTypeDefinition(), out configuredPluggable))
 				return new PluggableConfigurator(pluggableType, configuredPluggable, this);
 			return PluggableConfigurator.FromAttributes(pluggableType, this);
 		}
@@ -164,22 +165,10 @@ namespace RoboContainer.Impl
 		private PluginConfigurator GetPluginConfiguratorWithoutCache(Type pluginType)
 		{
 			PluginConfigurator configuredPlugin;
-			if(pluginType.IsGenericType &&
-				pluginConfigs.TryGetValue(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
+			if (pluginType.IsGenericType &&
+			    pluginConfigs.TryGet(pluginType.GetGenericTypeDefinition(), out configuredPlugin))
 				return PluginConfigurator.FromGenericDefinition(configuredPlugin, this, pluginType);
 			return PluginConfigurator.FromAttributes(this, pluginType);
-		}
-
-		public class Part
-		{
-			public readonly object[] Pluggables;
-			public readonly Type PluginType;
-
-			public Part(Type pluginType, params object[] pluggables)
-			{
-				PluginType = pluginType;
-				Pluggables = pluggables;
-			}
 		}
 
 		public void AfterConfiguration()

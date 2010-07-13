@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -44,6 +44,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -56,8 +57,15 @@
     <Compile Include="Core\IPluggableInitializer.cs" />
     <Compile Include="Impl\Annotations.cs" />
     <Compile Include="Impl\AssembliesUtils.cs" />
+    <Compile Include="Impl\ConstructorInvoker.cs" />
+    <Compile Include="Impl\Hashtable.cs" />
+    <Compile Include="Impl\HttpContextCache.cs" />
     <Compile Include="Impl\IConfigurationModule.cs" />
     <Compile Include="Impl\IContainerImpl.cs" />
+    <Compile Include="Impl\Deferred.cs" />
+    <Compile Include="Impl\IKeyValueCache.cs" />
+    <Compile Include="Impl\InvalidArgumentCountException.cs" />
+    <Compile Include="Impl\PerWebRequestSlot.cs" />
     <Compile Include="Infection\InjectAttribute.cs" />
     <Compile Include="Impl\LazyConfigurationModule.cs" />
     <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />
@@ -121,7 +129,6 @@
     <Compile Include="Impl\IContainerConfiguration.cs" />
     <Compile Include="Impl\ByConstructorInstanceFactory.cs" />
     <Compile Include="Impl\ContainerConfiguration.cs" />
-    <Compile Include="Impl\DictionaryExtensions.cs" />
     <Compile Include="Core\ContainerException.cs" />
     <Compile Include="Core\IContainer.cs" />
     <Compile Include="Core\IContainerConfigurator.cs" />

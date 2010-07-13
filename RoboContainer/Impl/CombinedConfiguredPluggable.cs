@@ -9,18 +9,22 @@ namespace RoboContainer.Impl
 	[DebuggerDisplay("CombPluggable {PluggableType}")]
 	public class CombinedConfiguredPluggable : IConfiguredPluggable
 	{
-		private readonly IConfiguredPluggable parent;
 		private readonly IConfiguredPluggable child;
 		private readonly IContainerConfiguration childConfiguration;
-		private IInstanceFactory factory;
+		private readonly Deferred<IInstanceFactory> factory;
+		private readonly IConfiguredPluggable parent;
 
-		public CombinedConfiguredPluggable(IConfiguredPluggable parent, IConfiguredPluggable child, IContainerConfiguration childConfiguration)
+		public CombinedConfiguredPluggable(IConfiguredPluggable parent, IConfiguredPluggable child,
+		                                   IContainerConfiguration childConfiguration)
 		{
 			this.parent = parent;
 			this.child = child;
 			this.childConfiguration = childConfiguration;
+			factory = new Deferred<IInstanceFactory>(FactoryCreator, FactoryFinalizer);
 			Debug.Assert(parent.PluggableType == child.PluggableType);
 		}
+
+		#region IConfiguredPluggable Members
 
 		public void DumpDebugInfo(Action<string> writeLine)
 		{
@@ -33,10 +37,7 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			if(factory == parent.GetFactory())
-				factory = null;
-			else
-				DisposeUtils.Dispose(ref factory);
+			factory.Dispose();
 		}
 
 		public Type PluggableType
@@ -81,20 +82,7 @@ namespace RoboContainer.Impl
 
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = CreateFactory());
-		}
-
-		private IInstanceFactory CreateFactory()
-		{
-			if(!parent.ReusePolicy.Overridable)
-			{
-				if(child.ReuseSpecified && parent.ReusePolicy != child.ReusePolicy)
-					throw ContainerException.NoLog("Нельзя переопределить политику переиспользования для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
-				if(child.InitializePluggable != null)
-					throw ContainerException.NoLog("Нельзя переопределить инициализатор для типа {0}, с унаследованной политикой переиспользования {1}.", parent.PluggableType, parent.ReusePolicy);
-				return parent.GetFactory();
-			}
-			return parent.GetFactory().CreateByPrototype(this, child.ReusePolicy, child.InitializePluggable, childConfiguration);
+			return factory.Get();
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
@@ -102,6 +90,31 @@ namespace RoboContainer.Impl
 			IConfiguredPluggable closedParent = parent.TryGetClosedGenericPluggable(closedGenericPluginType);
 			IConfiguredPluggable closedChild = child.TryGetClosedGenericPluggable(closedGenericPluginType);
 			return new CombinedConfiguredPluggable(closedParent, closedChild, childConfiguration);
+		}
+
+		#endregion
+
+		private IInstanceFactory FactoryCreator()
+		{
+			if (!parent.ReusePolicy.Overridable)
+			{
+				if (child.ReuseSpecified && parent.ReusePolicy != child.ReusePolicy)
+					throw ContainerException.NoLog(
+						"Нельзя переопределить политику переиспользования для типа {0}, с унаследованной политикой переиспользования {1}.",
+						parent.PluggableType, parent.ReusePolicy);
+				if (child.InitializePluggable != null)
+					throw ContainerException.NoLog(
+						"Нельзя переопределить инициализатор для типа {0}, с унаследованной политикой переиспользования {1}.",
+						parent.PluggableType, parent.ReusePolicy);
+				return parent.GetFactory();
+			}
+			return parent.GetFactory().CreateByPrototype(this, child.ReusePolicy, child.InitializePluggable, childConfiguration);
+		}
+
+		private void FactoryFinalizer(IInstanceFactory instance)
+		{
+			if (instance != parent.GetFactory())
+				DisposeUtils.Dispose(ref instance);
 		}
 	}
 }

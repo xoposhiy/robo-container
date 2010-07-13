@@ -13,7 +13,7 @@ namespace RoboContainer.Impl
 		private readonly List<IConfiguredPluggable> explicitlySpecifiedPluggables = new List<IConfiguredPluggable>();
 		private readonly HashSet<Type> ignoredPluggables = new HashSet<Type>();
 		private readonly List<string> requiredContracts = new List<string>();
-		private IConfiguredPluggable[] pluggables;
+		private readonly Deferred<IConstructionLogger, IConfiguredPluggable[]> pluggables;
 		private bool? autoSearch;
 
 		public PluginConfigurator(IContainerConfiguration configuration, Type pluginType)
@@ -21,6 +21,9 @@ namespace RoboContainer.Impl
 			this.configuration = configuration;
 			PluginType = pluginType;
 			ReusePolicy = new Reuse.InSameContainer();
+			pluggables = new Deferred<IConstructionLogger, IConfiguredPluggable[]>(
+				constructionLogger => this.CreatePluggables(constructionLogger, this.configuration),
+				configuredPluggables => configuredPluggables.ForEach(p => p.Dispose()));
 		}
 
 		public Type PluginType { get; private set; }
@@ -31,7 +34,7 @@ namespace RoboContainer.Impl
 		//use
 		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
 		{
-			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger, configuration));
+			return pluggables.Get(constructionLogger);
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
@@ -56,8 +59,7 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			if(pluggables != null) pluggables.ForEach(p => p.Dispose());
-			pluggables = null;
+			pluggables.Dispose();
 		}
 
 		public IPluginConfigurator UsePluggablesAutosearch(bool useAutosearch)

@@ -12,7 +12,7 @@ namespace RoboContainer.Impl
 	{
 		private readonly List<string> contracts = new List<string>();
 		private readonly DependenciesBag dependencies = new DependenciesBag();
-		private IInstanceFactory factory;
+		private Deferred<IInstanceFactory> factory;
 
 		private PluggableConfigurator(Type pluggableType, IContainerConfiguration configuration)
 		{
@@ -20,9 +20,11 @@ namespace RoboContainer.Impl
 			Configuration = configuration;
 			ReusePolicy = new Reuse.InSameContainer();
 			ReuseSpecified = false;
+			factory = new Deferred<IInstanceFactory>(CreateFactory, instance => DisposeUtils.Dispose(ref instance));
 		}
 
-		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable, IContainerConfiguration configuration)
+		public PluggableConfigurator(Type closedGenericType, PluggableConfigurator genericDefinitionPluggable,
+		                             IContainerConfiguration configuration)
 			: this(closedGenericType, configuration)
 		{
 			contracts.AddRange(genericDefinitionPluggable.ExplicitlyDeclaredContracts);
@@ -34,6 +36,11 @@ namespace RoboContainer.Impl
 			Ignored = genericDefinitionPluggable.Ignored;
 			InitializePluggable = genericDefinitionPluggable.InitializePluggable;
 		}
+
+		private IContainerConfiguration Configuration { get; set; }
+		public CreatePluggableDelegate<object> CreateDelegate { get; private set; }
+
+		#region IConfiguredPluggable Members
 
 		public Type[] InjectableConstructorArgsTypes { get; private set; }
 
@@ -49,7 +56,6 @@ namespace RoboContainer.Impl
 
 		[NotNull]
 		public Type PluggableType { get; private set; }
-		private IContainerConfiguration Configuration { get; set; }
 
 		public bool Ignored { get; private set; }
 
@@ -59,22 +65,15 @@ namespace RoboContainer.Impl
 
 		public InitializePluggableDelegate<object> InitializePluggable { get; private set; }
 
-		public CreatePluggableDelegate<object> CreateDelegate { get; private set; }
-
 		public IInstanceFactory GetFactory()
 		{
-			return factory ?? (factory = CreateFactory());
-		}
-
-		private IInstanceFactory CreateFactory()
-		{
-			if(CreateDelegate == null) return new ByConstructorInstanceFactory(this, Configuration);
-			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, CreateDelegate, Configuration);
+			return factory.Get();
 		}
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType, closedGenericPluginType);
+			Type closedPluggableType = GenericTypes.TryCloseGenericTypeToMakeItAssignableTo(PluggableType,
+			                                                                                closedGenericPluginType);
 			return closedPluggableType == null ? null : new PluggableConfigurator(closedPluggableType, this, Configuration);
 		}
 
@@ -86,8 +85,12 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			DisposeUtils.Dispose(ref factory);
+			factory.Dispose();
 		}
+
+		#endregion
+
+		#region IPluggableConfigurator Members
 
 		public IPluggableConfigurator ReuseIt(ReusePolicy reusePolicy)
 		{
@@ -134,7 +137,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator DependencyOfType<TDependencyType>()
 		{
-			return DependencyOfType(typeof(TDependencyType));
+			return DependencyOfType(typeof (TDependencyType));
 		}
 
 		public IDependencyConfigurator DependencyOfType(Type dependencyType)
@@ -169,14 +172,22 @@ namespace RoboContainer.Impl
 			return this;
 		}
 
-		private Type[] CloseTypeParameters([CanBeNull]IEnumerable<Type> types)
+		#endregion
+
+		private IInstanceFactory CreateFactory()
 		{
-			if(types == null) return null;
+			if (CreateDelegate == null) return new ByConstructorInstanceFactory(this, Configuration);
+			return new ByDelegateInstanceFactory(ReusePolicy, InitializePluggable, CreateDelegate, Configuration);
+		}
+
+		private Type[] CloseTypeParameters([CanBeNull] IEnumerable<Type> types)
+		{
+			if (types == null) return null;
 			return
 				types.Select(
 					type =>
 						{
-							if(type.DeclaringType != typeof(TypeParameters)) return type;
+							if (type.DeclaringType != typeof (TypeParameters)) return type;
 							string typeParameterSuffix = type.Name.Substring(1);
 							int typeParameterIndex = int.Parse(typeParameterSuffix) - 1;
 							return PluggableType.GetGenericArguments()[typeParameterIndex];
@@ -193,10 +204,10 @@ namespace RoboContainer.Impl
 
 		private void FillFromAttributes()
 		{
-			bool ignored = PluggableType.GetCustomAttributes(typeof(IgnoredPluggableAttribute), false).Length > 0;
-			if(ignored) DontUseIt();
+			bool ignored = PluggableType.GetCustomAttributes(typeof (IgnoredPluggableAttribute), false).Length > 0;
+			if (ignored) DontUseIt();
 			var pluggableAttribute = PluggableType.FindAttribute<PluggableAttribute>();
-			if(pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
+			if (pluggableAttribute != null) ReuseIt(pluggableAttribute.Reuse);
 			DeclareContracts(
 				PluggableType.GetAttributes<DeclareContractAttribute>()
 					.SelectMany(a => a.Contracts)
@@ -219,6 +230,8 @@ namespace RoboContainer.Impl
 		{
 			this.pluggableConfigurator = pluggableConfigurator;
 		}
+
+		#region IPluggableConfigurator<TPluggable> Members
 
 		public IPluggableConfigurator<TPluggable> ReuseIt(ReusePolicy reusePolicy)
 		{
@@ -292,5 +305,7 @@ namespace RoboContainer.Impl
 			pluggableConfigurator.DeclareContracts(contractsDeclaration);
 			return this;
 		}
+
+		#endregion
 	}
 }

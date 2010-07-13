@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using RoboContainer.Core;
@@ -12,26 +9,9 @@ namespace RoboContainer.Tests.Multithreading
 	public class Multithreading_Test
 	{
 		private Exception exception;
-		public class Foo{}
-		[Test]
-		public void TestCase()
+
+		public class Foo
 		{
-			var container = new Container(
-				c => c.ForPlugin<Foo>().ReusePluggable(ReusePolicy.Never)
-					);
-			var t1 = StartThread(container);
-			var t2 = StartThread(container.With(c => { }));
-			var t3 = StartThread(container);
-			var t4 = StartThread(container.With(c => { }));
-			var t5 = StartThread(container);
-			var t6 = StartThread(container.With(c => { }));
-			t1.Join();
-			t2.Join();
-			t3.Join();
-			t4.Join();
-			t5.Join();
-			t6.Join();
-			Assert.IsNull(exception);
 		}
 
 		private Thread StartThread(IContainer container)
@@ -46,16 +26,37 @@ namespace RoboContainer.Tests.Multithreading
 			try
 			{
 				var func = (Func<Foo>) f;
-				for(int i = 0; i < 10000; i++)
+				for (int i = 0; i < 10000; i++)
 				{
-					if(exception != null) return;
+					if (exception != null) return;
 					func();
 				}
-			}catch(Exception e)
+			}
+			catch (Exception e)
 			{
 				exception = e;
 			}
 		}
-		
+
+		[Test]
+		public void TestCase()
+		{
+			var container = new Container(
+				c => c.ForPlugin<Foo>().ReusePluggable(ReusePolicy.Never)
+				);
+			Thread t1 = StartThread(container);
+			Thread t2 = StartThread(container.With(c => { }));
+			Thread t3 = StartThread(container);
+			Thread t4 = StartThread(container.With(c => { }));
+			Thread t5 = StartThread(container);
+			Thread t6 = StartThread(container.With(c => { }));
+			t1.Join();
+			t2.Join();
+			t3.Join();
+			t4.Join();
+			t5.Join();
+			t6.Join();
+			Assert.IsNull(exception);
+		}
 	}
 }

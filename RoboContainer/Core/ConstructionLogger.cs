@@ -1,19 +1,18 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using RoboContainer.Impl;
-using System.Linq;
 
 namespace RoboContainer.Core
 {
 	public class ConstructionLogger : IConstructionLogger
 	{
-		private readonly bool showTime;
+		[ThreadStatic] private static string ident;
+		[CanBeNull, ThreadStatic] private static Type pluginType;
+		[CanBeNull, ThreadStatic] private static StringBuilder text;
+
 		private readonly bool echoToConsole;
-		private string ident = "";
-		[CanBeNull]
-		private Type pluginType;
-		[CanBeNull]
-		private StringBuilder text;
+		private readonly bool showTime;
 
 		public ConstructionLogger(bool showTime, bool echoToConsole)
 		{
@@ -26,36 +25,29 @@ namespace RoboContainer.Core
 		{
 		}
 
+		#region IConstructionLogger Members
+
 		public IDisposable StartConstruction(Type pluggableType)
 		{
-			try
-			{
-				return new SessionFinisher(this, pluginType, ident);
-			}
-			finally
-			{
-				if(pluginType == null) text = new StringBuilder();
-				Write("Constructing {0}", Format(pluggableType));
-				pluginType = pluggableType;
-				ident += "\t";
-			}
-		}
-		
-		public IDisposable StartResolving(Type newPluginType)
-		{
-			try
-			{
-				return new SessionFinisher(this, pluginType, ident);
-			}
-			finally
-			{
-				if(pluginType == null) text = new StringBuilder();
-				Write("Get {0}", Format(newPluginType));
-				pluginType = newPluginType;
-				ident += "\t";
-			}
+			if (ident == null) ident = "";
+			var result = new SessionFinisher(this, pluginType, ident);
+			if (pluginType == null) text = new StringBuilder();
+			Write("Constructing {0}", Format(pluggableType));
+			pluginType = pluggableType;
+			ident += "\t";
+			return result;
 		}
 
+		public IDisposable StartResolving(Type newPluginType)
+		{
+			if (ident == null) ident = "";
+			var result = new SessionFinisher(this, pluginType, ident);
+			if (pluginType == null) text = new StringBuilder();
+			Write("Get {0}", Format(newPluginType));
+			pluginType = newPluginType;
+			ident += "\t";
+			return result;
+		}
 
 		public void Constructed(Type pluggableType)
 		{
@@ -64,8 +56,8 @@ namespace RoboContainer.Core
 
 		public void Reused(object value)
 		{
-			var type = value.GetType();
-			if (type.IsPrimitive || type.IsEnum || type == typeof(string))
+			Type type = value.GetType();
+			if (type.IsPrimitive || type.IsEnum || type == typeof (string))
 				Write("Reused {0}: {1}", Format(type), value);
 			else
 				Write("Reused {0}", Format(type));
@@ -101,12 +93,14 @@ namespace RoboContainer.Core
 			Write("Can't construct {0}", Format(pluggableType));
 		}
 
+		#endregion
+
 		private static string Format(Type type)
 		{
-			if(type == null) return "?";
+			if (type == null) return "?";
 			if (type.IsGenericType)
 			{
-				var name = type.Name.Substring(0, type.Name.IndexOf('`'));
+				string name = type.Name.Substring(0, type.Name.IndexOf('`'));
 				return name + "<" + string.Join(", ", type.GetGenericArguments().Select(t => Format(t)).ToArray()) + ">";
 			}
 			return type.Name;
@@ -114,12 +108,14 @@ namespace RoboContainer.Core
 
 		private void Write(string message, params object[] args)
 		{
-			if(text == null)
+			if (text == null)
 				throw new InvalidOperationException("You should call StartConstruction first");
 			string time = showTime ? (DateTime.Now.ToString("HH:mm:ss.fff") + "  ") : "";
 			text.AppendFormat(time + ident + message, args).AppendLine();
 			if (echoToConsole) Console.WriteLine(time + ident + message, args);
 		}
+
+		#region Nested type: SessionFinisher
 
 		public class SessionFinisher : IDisposable
 		{
@@ -134,11 +130,17 @@ namespace RoboContainer.Core
 				this.ident = ident;
 			}
 
+			#region IDisposable Members
+
 			public void Dispose()
 			{
-				parent.ident = ident;
-				parent.pluginType = pluginType;
+				ConstructionLogger.ident = ident;
+				ConstructionLogger.pluginType = pluginType;
 			}
+
+			#endregion
 		}
+
+		#endregion
 	}
 }

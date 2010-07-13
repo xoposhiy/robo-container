@@ -10,20 +10,26 @@ namespace RoboContainer.Impl
 	public class ConfiguredTypePluggable : IConfiguredPluggable
 	{
 		private readonly string[] additionalDeclaredContracts;
-		private readonly Func<IConfiguredPluggable> configuredPluggableProvider;
-		private IConfiguredPluggable configuredPluggable;
-		private IEnumerable<string> allDeclaredContracts;
+		private readonly Deferred<IEnumerable<string>> allDeclaredContracts;
+		private readonly Deferred<IConfiguredPluggable> configuredPluggable;
 
-		public ConfiguredTypePluggable(Func<IConfiguredPluggable> configuredPluggableProvider, string[] additionalDeclaredContracts)
+		public ConfiguredTypePluggable(Func<IConfiguredPluggable> configuredPluggableProvider,
+		                               string[] additionalDeclaredContracts)
 		{
-			this.configuredPluggableProvider = configuredPluggableProvider;
 			this.additionalDeclaredContracts = additionalDeclaredContracts;
+			configuredPluggable = new Deferred<IConfiguredPluggable>(configuredPluggableProvider,
+			                                                         ConfiguredPluggableFinalizer);
+			allDeclaredContracts =
+				new Deferred<IEnumerable<string>>(
+					() => ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts));
 		}
 
 		private IConfiguredPluggable ConfiguredPluggable
 		{
-			get { return configuredPluggable ?? (configuredPluggable = configuredPluggableProvider()); }
+			get { return configuredPluggable.Get(); }
 		}
+
+		#region IConfiguredPluggable Members
 
 		public Type PluggableType
 		{
@@ -52,7 +58,7 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<string> ExplicitlyDeclaredContracts
 		{
-			get { return allDeclaredContracts ?? (allDeclaredContracts = ConfiguredPluggable.ExplicitlyDeclaredContracts.Concat(additionalDeclaredContracts)); }
+			get { return allDeclaredContracts.Get(); }
 		}
 
 		public DependenciesBag Dependencies
@@ -72,19 +78,26 @@ namespace RoboContainer.Impl
 
 		public IConfiguredPluggable TryGetClosedGenericPluggable(Type closedGenericPluginType)
 		{
-			return new ConfiguredTypePluggable(() => ConfiguredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType), additionalDeclaredContracts);
+			return new ConfiguredTypePluggable(() => ConfiguredPluggable.TryGetClosedGenericPluggable(closedGenericPluginType),
+			                                   additionalDeclaredContracts);
 		}
 
 		public void DumpDebugInfo(Action<string> writeLine)
 		{
 			this.DumpMainInfo(writeLine);
-			if(configuredPluggable != null)
-				configuredPluggable.DumpDebugInfo(l => writeLine("\t" + l));
+			configuredPluggable.IfCreated(p => p.DumpDebugInfo(l => writeLine("\t" + l)));
 		}
 
 		public void Dispose()
 		{
-			DisposeUtils.Dispose(ref configuredPluggable);
+			configuredPluggable.Dispose();
+		}
+
+		#endregion
+
+		private static void ConfiguredPluggableFinalizer(IConfiguredPluggable instance)
+		{
+			DisposeUtils.Dispose(ref instance);
 		}
 	}
 }

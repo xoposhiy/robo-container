@@ -20,15 +20,23 @@ namespace RoboContainer.Core
 		private readonly IReuseSlot reuseSlot = new TReuse().CreateSlot();
 		private IContainer container;
 
+		#region IDisposable Members
+
 		public void Dispose()
 		{
 			reuseSlot.Dispose();
 		}
 
+		#endregion
+
+		#region IInitializablePluggable Members
+
 		void IInitializablePluggable.Initialize(IContainer aContainer)
 		{
 			container = aContainer;
 		}
+
+		#endregion
 
 		public static explicit operator TPlugin(Lazy<TPlugin, TReuse> lazy)
 		{
@@ -37,7 +45,7 @@ namespace RoboContainer.Core
 
 		public TPlugin Get()
 		{
-			return (TPlugin) (reuseSlot.Value ?? (reuseSlot.Value = container.Get<TPlugin>()));
+			return (TPlugin) (reuseSlot.GetOrCreate(() => container.Get<TPlugin>()));
 		}
 	}
 }

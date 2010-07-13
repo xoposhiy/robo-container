@@ -8,22 +8,22 @@ namespace RoboContainer.Impl
 	public class ChildConfiguration : ContainerConfiguration
 	{
 		private readonly IContainerConfiguration parent;
-		private readonly IDictionary<Type, IConfiguredPluggable> pluggables = new Dictionary<Type, IConfiguredPluggable>();
-		private readonly IDictionary<Type, IConfiguredPlugin> plugins = new Dictionary<Type, IConfiguredPlugin>();
+		private readonly Hashtable<Type, IConfiguredPluggable> pluggables = new Hashtable<Type, IConfiguredPluggable>();
+		private readonly Hashtable<Type, IConfiguredPlugin> plugins = new Hashtable<Type, IConfiguredPlugin>();
 
 		public ChildConfiguration(IContainerConfiguration parent)
 		{
 			this.parent = parent;
 		}
 
+		public override bool WasAssembliesExplicitlyConfigured
+		{
+			get { return base.WasAssembliesExplicitlyConfigured || parent.WasAssembliesExplicitlyConfigured; }
+		}
+
 		public override IConfiguredLogging GetConfiguredLogging()
 		{
 			return parent.GetConfiguredLogging();
-		}
-
-		public override object Lock
-		{
-			get { return parent.Lock; }
 		}
 
 		public override ILoggingConfigurator GetLoggingConfigurator()
@@ -34,15 +34,8 @@ namespace RoboContainer.Impl
 		public override void Dispose()
 		{
 			base.Dispose();
-			pluggables.Values.ForEach(c => c.Dispose());
-			pluggables.Clear();
-			plugins.Values.ForEach(c => c.Dispose());
-			plugins.Clear();
-		}
-
-		public override bool WasAssembliesExplicitlyConfigured
-		{
-			get { return base.WasAssembliesExplicitlyConfigured || parent.WasAssembliesExplicitlyConfigured; }
+			pluggables.Dispose();
+			plugins.Dispose();
 		}
 
 		public override IEnumerable<Type> GetScannableTypes()
@@ -57,30 +50,27 @@ namespace RoboContainer.Impl
 
 		public override IConfiguredPluggable TryGetConfiguredPluggable(Type pluggableType)
 		{
-			IConfiguredPluggable result;
-			if(!pluggables.TryGetValue(pluggableType, out result))
-			{
-				result = new CombinedConfiguredPluggable(
-					parent.TryGetConfiguredPluggable(pluggableType),
-					base.TryGetConfiguredPluggable(pluggableType),
-					this);
-				pluggables.Add(pluggableType, result);
-			}
-			return result;
+			return pluggables.GetOrCreate(pluggableType, CreateCombinedConfiguredPluggable);
+		}
+
+		private IConfiguredPluggable CreateCombinedConfiguredPluggable(Type pluggableType)
+		{
+			return new CombinedConfiguredPluggable(
+				parent.TryGetConfiguredPluggable(pluggableType),
+				base.TryGetConfiguredPluggable(pluggableType),
+				this);
+		}
+
+		private IConfiguredPlugin CreateCombinedConfiguredPlugin(Type pluginType)
+		{
+			return new CombinedConfiguredPlugin(parent.GetConfiguredPlugin(pluginType),
+			                                    base.GetConfiguredPlugin(pluginType),
+			                                    this);
 		}
 
 		public override IConfiguredPlugin GetConfiguredPlugin(Type pluginType)
 		{
-			IConfiguredPlugin result;
-			if(!plugins.TryGetValue(pluginType, out result))
-			{
-				result = new CombinedConfiguredPlugin(
-					parent.GetConfiguredPlugin(pluginType),
-					base.GetConfiguredPlugin(pluginType),
-					this);
-				plugins.Add(pluginType, result);
-			}
-			return result;
+			return plugins.GetOrCreate(pluginType, CreateCombinedConfiguredPlugin);
 		}
 
 		public IConfiguredPluggable GetChildConfiguredPluggable(IConfiguredPluggable pluggable)

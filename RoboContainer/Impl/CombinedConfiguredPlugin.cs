@@ -8,17 +8,21 @@ namespace RoboContainer.Impl
 {
 	public class CombinedConfiguredPlugin : IConfiguredPlugin
 	{
-		private readonly IConfiguredPlugin parent;
 		private readonly IConfiguredPlugin child;
 		private readonly ChildConfiguration childConfiguration;
-		private IConfiguredPluggable[] pluggables;
+		private readonly IConfiguredPlugin parent;
+		private readonly Deferred<IConstructionLogger, IConfiguredPluggable[]> pluggables;
 
-		public CombinedConfiguredPlugin(IConfiguredPlugin parent, IConfiguredPlugin child, ChildConfiguration childConfiguration)
+		public CombinedConfiguredPlugin(IConfiguredPlugin parent, IConfiguredPlugin child,
+		                                ChildConfiguration childConfiguration)
 		{
 			this.parent = parent;
 			this.child = child;
 			this.childConfiguration = childConfiguration;
+			pluggables = new Deferred<IConstructionLogger, IConfiguredPluggable[]>(PluggablesCreator, PluggablesFinalizer);
 		}
+
+		#region IConfiguredPlugin Members
 
 		public Type PluginType
 		{
@@ -46,16 +50,17 @@ namespace RoboContainer.Impl
 
 		public IEnumerable<IConfiguredPluggable> GetPluggables(IConstructionLogger constructionLogger)
 		{
-			return pluggables ?? (pluggables = this.CreatePluggables(constructionLogger, childConfiguration));
+			return pluggables.Get(constructionLogger);
 		}
 
 		public IEnumerable<IConfiguredPluggable> GetExplicitlySpecifiedPluggables(IConstructionLogger logger)
 		{
-			return 
+			return
 				parent.GetExplicitlySpecifiedPluggables(logger)
-				.Select(p => new CombinedConfiguredPluggable(p, childConfiguration.GetChildConfiguredPluggable(p), childConfiguration))
-				.Cast<IConfiguredPluggable>()
-				.Concat(child.GetExplicitlySpecifiedPluggables(logger));
+					.Select(
+					p => new CombinedConfiguredPluggable(p, childConfiguration.GetChildConfiguredPluggable(p), childConfiguration))
+					.Cast<IConfiguredPluggable>()
+					.Concat(child.GetExplicitlySpecifiedPluggables(logger));
 		}
 
 		public bool? AutoSearch
@@ -80,8 +85,19 @@ namespace RoboContainer.Impl
 
 		public void Dispose()
 		{
-			if(pluggables != null) pluggables.ForEach(p => p.Dispose());
-			pluggables = null;
+			pluggables.Dispose();
+		}
+
+		#endregion
+
+		private IConfiguredPluggable[] PluggablesCreator(IConstructionLogger constructionLogger)
+		{
+			return this.CreatePluggables(constructionLogger, childConfiguration);
+		}
+
+		private static void PluggablesFinalizer(IConfiguredPluggable[] configuredPluggables)
+		{
+			configuredPluggables.ForEach(p => p.Dispose());
 		}
 	}
 }
