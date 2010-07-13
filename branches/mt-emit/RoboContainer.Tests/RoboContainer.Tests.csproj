@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{75FB4AD8-34C6-45DC-8408-22FECA516630}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RoboContainer.Tests</RootNamespace>
+    <AssemblyName>RoboContainer.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.0.8332, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\externals\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Arrays\Arrays_Test.cs" />
+    <Compile Include="CommonFunctionality\Container_Test.cs" />
+    <Compile Include="Common\ConstructorInvokerTest.cs" />
+    <Compile Include="Common\MultiSetTest.cs" />
+    <Compile Include="Configuration\ExternalConfiguration_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Configuration\RoboConfig_Test.cs" />
+    <Compile Include="ContainerTestingExtensions.cs" />
+    <Compile Include="Contracts\Contracts_Test.cs" />
+    <Compile Include="Dependencies\Dependencies_Test.cs" />
+    <Compile Include="Disposing\Disposing_Test.cs" />
+    <Compile Include="Exceptions\DependencyCycle_Test.cs" />
+    <Compile Include="Generics\Generics_Test.cs" />
+    <Compile Include="Generics\GenericTypes_Test.cs" />
+    <Compile Include="Generics\TestClasses.cs" />
+    <Compile Include="Initializers\BuildUp_Test.cs" />
+    <Compile Include="Initializers\Initializers_Test.cs" />
+    <Compile Include="Laziness\Lazy_Test.cs" />
+    <Compile Include="Logging\Logging_Test.cs" />
+    <Compile Include="Multithreading\Multithreading_Test.cs" />
+    <Compile Include="Multithreading\MultithreadingPerformance_Test.cs" />
+    <Compile Include="Parts\Parts_Test.cs" />
+    <Compile Include="Performance\Performance_Tests.cs" />
+    <Compile Include="PluggableConfiguration\PluggableConfiguration_Test.cs" />
+    <Compile Include="PluginConfiguration\PluginConfiguration_Test.cs" />
+    <Compile Include="SamplesForWiki\CollectionSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\ConfigurationSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\DescribeConfiguratorInterfaces.cs" />
+    <Compile Include="SamplesForWiki\GenericsSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\IncludeSamplesIntoWikiPages_Test.cs" />
+    <Compile Include="SamplesForWiki\LazySamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\LoggingSamples_Test.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SamplesForWiki\QuickStart\QuickStart_Tests.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="SetterInjection\SetterInjection_Test.cs" />
+    <Compile Include="TestingExtensions.cs" />
+    <Compile Include="Threading\Threading_Test.cs" />
+    <Compile Include="With\PluggableConfig_Test.cs" />
+    <Compile Include="With\PluginConfig_Test.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RoboContainer\RoboContainer.csproj">
+      <Project>{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}</Project>
+      <Name>RoboContainer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Configuration\ConfigSample.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="XmlConfigurator\configuration.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

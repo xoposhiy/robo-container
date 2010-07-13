@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F6F305FB-6149-4B07-B4DE-B5BF7FE1DB2B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RoboContainer</RootNamespace>
+    <AssemblyName>RoboContainer</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>robocontainer.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\RoboContainer.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <NoWarn>1591,1712</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Contract.cs" />
+    <Compile Include="Core\IExternalConfigurator.cs" />
+    <Compile Include="Core\InjectionContracts.cs" />
+    <Compile Include="Core\IPluggableInitializer.cs" />
+    <Compile Include="Impl\Annotations.cs" />
+    <Compile Include="Impl\AssembliesUtils.cs" />
+    <Compile Include="Impl\ConstructorInvoker.cs" />
+    <Compile Include="Impl\Hashtable.cs" />
+    <Compile Include="Impl\HttpContextCache.cs" />
+    <Compile Include="Impl\IConfigurationModule.cs" />
+    <Compile Include="Impl\IContainerImpl.cs" />
+    <Compile Include="Impl\Deferred.cs" />
+    <Compile Include="Impl\IKeyValueCache.cs" />
+    <Compile Include="Impl\InvalidArgumentCountException.cs" />
+    <Compile Include="Impl\PerWebRequestSlot.cs" />
+    <Compile Include="Infection\InjectAttribute.cs" />
+    <Compile Include="Impl\LazyConfigurationModule.cs" />
+    <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />
+    <Compile Include="Impl\DependenciesBag.cs" />
+    <Compile Include="Impl\Disposable.cs" />
+    <Compile Include="Impl\ExternalConfigurator.cs" />
+    <Compile Include="Impl\MultiSet.cs" />
+    <Compile Include="Impl\ResolutionRequest.cs" />
+    <Compile Include="Impl\SetterInjection.cs" />
+    <Compile Include="Infection\NameIsContractAttribute.cs" />
+    <Compile Include="Infection\UsePluggableAttribute.cs" />
+    <Compile Include="RoboConfig\ArrayDeserializer.cs" />
+    <Compile Include="RoboConfig\Configuration.cs" />
+    <Compile Include="Core\ConstructionLogger.cs" />
+    <Compile Include="Core\IConstructionLogger.cs" />
+    <Compile Include="Core\ILoggingConfigurator.cs" />
+    <Compile Include="Core\IReusePolicy.cs" />
+    <Compile Include="Core\Reuse.cs" />
+    <Compile Include="Core\TypeParameters.cs" />
+    <Compile Include="Impl\AbstractInstanceFactory.cs" />
+    <Compile Include="Impl\CombinedConfiguredPluggable.cs" />
+    <Compile Include="Impl\CombinedConfiguredPlugin.cs" />
+    <Compile Include="Impl\CommonReusePolicy.cs" />
+    <Compile Include="Impl\ConfiguredInstancePluggable.cs" />
+    <Compile Include="Impl\ConfiguredTypePluggable.cs" />
+    <Compile Include="Impl\ConstantInstanceFactory.cs" />
+    <Compile Include="Impl\DisposeUtils.cs" />
+    <Compile Include="Impl\EnumerableExtensions.cs" />
+    <Compile Include="Impl\IConfiguredLogging.cs" />
+    <Compile Include="Impl\IGenericPluggableConfigurator.cs" />
+    <Compile Include="Impl\IGenericPluginConfigurator.cs" />
+    <Compile Include="Impl\LoggingConfigurator.cs" />
+    <Compile Include="Impl\NullConstructionLogger.cs" />
+    <Compile Include="Impl\PartDescription.cs" />
+    <Compile Include="Impl\PerThreadSlot.cs" />
+    <Compile Include="Impl\SingleValueSlot.cs" />
+    <Compile Include="Impl\StringExtensions.cs" />
+    <Compile Include="Impl\TransientSlot.cs" />
+    <Compile Include="Impl\TypesMap.cs" />
+    <Compile Include="Infection\ContainerConstructorAttribute.cs" />
+    <Compile Include="Infection\DeclareContractAttribute.cs" />
+    <Compile Include="Infection\DontUsePluggableAttribute.cs" />
+    <Compile Include="Infection\ProvidePartAttribute.cs" />
+    <Compile Include="Infection\IgnoredPluggableAttribute.cs" />
+    <Compile Include="Infection\PluggableAttribute.cs" />
+    <Compile Include="Infection\PluginAttribute.cs" />
+    <Compile Include="Infection\RequireContractAttribute.cs" />
+    <Compile Include="Core\Container.cs" />
+    <Compile Include="Core\IDependencyConfigurator.cs" />
+    <Compile Include="Infection\IInitializablePluggable.cs" />
+    <Compile Include="Impl\ConfiguredByDelegatePluggable.cs" />
+    <Compile Include="Impl\ConfiguredByPluginPluggable.cs" />
+    <Compile Include="Impl\ContainerConfigurator.cs" />
+    <Compile Include="Impl\ByDelegateInstanceFactory.cs" />
+    <Compile Include="Impl\DependencyConfigurator.cs" />
+    <Compile Include="Impl\DeveloperMistake.cs" />
+    <Compile Include="Impl\GenericTypes.cs" />
+    <Compile Include="Impl\IConfiguredDependency.cs" />
+    <Compile Include="Impl\IConfiguredPluggable.cs" />
+    <Compile Include="Impl\IConfiguredPlugin.cs" />
+    <Compile Include="Impl\IContainerConfiguration.cs" />
+    <Compile Include="Impl\ByConstructorInstanceFactory.cs" />
+    <Compile Include="Impl\ContainerConfiguration.cs" />
+    <Compile Include="Core\ContainerException.cs" />
+    <Compile Include="Core\IContainer.cs" />
+    <Compile Include="Core\IContainerConfigurator.cs" />
+    <Compile Include="Impl\IInstanceFactory.cs" />
+    <Compile Include="Impl\PluggableConfigurator.cs" />
+    <Compile Include="Impl\PluginConfigurator.cs" />
+    <Compile Include="Impl\ChildConfiguration.cs" />
+    <Compile Include="Impl\TypeExtensions.cs" />
+    <Compile Include="Core\ReusePolicy.cs" />
+    <Compile Include="Core\IPluggableConfigurator.cs" />
+    <Compile Include="Core\IPluginConfigurator.cs" />
+    <Compile Include="Core\Lazy.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoboConfig\ConvertableFromStringDeserializer.cs" />
+    <Compile Include="RoboConfig\DeserializerOf.cs" />
+    <Compile Include="RoboConfig\EnumDeserializer.cs" />
+    <Compile Include="RoboConfig\IActionsReader.cs" />
+    <Compile Include="RoboConfig\IDeserializer.cs" />
+    <Compile Include="RoboConfig\ObjectDeserializer.cs" />
+    <Compile Include="RoboConfig\Settings.cs" />
+    <Compile Include="RoboConfig\XmlActionsReader.cs" />
+    <Compile Include="RoboConfig\XmlConfiguration.cs" />
+    <Compile Include="RoboConfig\CompositeXmlDeserializer.cs" />
+    <Compile Include="RoboConfig\XsdBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RoboConfig\RoboConfig.png" />
+    <Content Include="todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="robocontainer.snk" />
+    <None Include="robocontainer.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

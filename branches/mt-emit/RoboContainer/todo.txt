@@ -1,0 +1,68 @@
+﻿+ Низкоуровневое конфигурирование — сканер, который может создать для каждого типа PluginConfiguration и PluggableConfiguration.
++ ScanAllLoadedAssemblies(Func<Assembly, bool> predicate)
++ Поддержка Lazy<T>
++ IEnumerable<T>, IList<T> и прочие должны резолвиться как массивы.
++ Экспорт частей. Если кому-то нужен I, а у одной из зарегистрированных частей такое свойство, помеченное спец-атрибутом, то можно взять I из этого свойства.
++ Контракты
++ Человечный Initialize
++ Отладочная информация: по каким правилам разрешается заданный pluginType.
++ TryGet
++ Primitive arguments
++ Управление журналированием
++ Расширяемый Reuse policy
++ Переработка Lazy. Reuse policy
++ Переработка AddPart и экспорта частей.
++ IDisposable
++ Xml-конфигурирование.
++ Доработка With подчистить TODO-шки.
++ DependencyOfType<IService>().UseInstance(service)
++ Container Reuse Scope
++ Самоинжектирующийся контейнер. container.Get<IContainer>() == container
++ Прокаченные инициализаторы. 
+  public interface IPluggableInitializer{
+	object Initialize(object o);
+	[Pure] // кэшируется контейнером для производительности
+	bool WantToRun(Type pluggableType, string[] decls); 
+  }
++ setter-injection на основе инициализаторов
++ container.BuildUp(obj); — setter / field / method injection / ... Применение всех инициализаторов.
++ field по аналогии с setter-injection.
++ InjectEverywhere
++ Многопотоковое использование + Lazy. Написать мегатест и выловить проблемы.
++ ForPluggable<T>().UseInstanceCreatedBy(delegate);
++ ForPluggable<T>().UseInstance(i);
+
+Infectionless Atributed configuration. см. InjectionContracts
+
+Получение инстансов из фабрик.
+	class AFactory{
+		[ProvidePart]X TheX{ get{...}}
+	}
+	class Consumer{
+		Consumer(X someX){...}
+	}
+	container.Get<Consumer>() приводит к созданию фабрики, для того, чтобы получить из нее X.
+
+Структурированный лог. Больше информации в логе.
+
+Документация
+
+Доработать идею с модулями.
+
+container.AssertConfigurationIsValid(); ?!?!?!
+
+клевый интерфейс для получения generic-а если значения его параметров типа известны только в рантайме.
+IGenericInterface gi = container.GetGeneric(typeof(IGeneric<,>), object1.GetType(), object2.GetType()) as IGenericInterface;
+вместо:
+IGenericInterface gi = (IGenericInterface)container.Get(typeof(IGeneric<,>).GetGenericTypeDefinition().MakeGeneric(object1.GetType(), object2.GetType());
+
+IgnoreNamespace
+IgnoreTypes
+
+Если IA : IB и конфигурация для IB есть, а для IA нет, то при получении IA применяется конфигурация IB ?!? Подумать, правильно ли это.
+
+Оптимизация создания PerRequest-ов.
+
+Оптимизация — построение всех вспомогательных структур данных на этапе конфигурирования.
+
+Разделение этапов конфигурирования и использования. Даст возможность однажды сконфигурировав, быстро создавать чистенький контейнер. Разумно только с Оптимизацией.

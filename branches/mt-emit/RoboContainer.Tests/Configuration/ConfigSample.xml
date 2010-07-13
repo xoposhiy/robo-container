@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<roboconfig xmlns="http://robo-container.googlecode.com/roboconfig">
+	
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests">
+		<DontUseIt/>
+		<ReuseIt reusePolicy="Never" />
+	</ForPluggable>
+
+	<ForPluggable pluggableType="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests">
+		<ReuseIt reusePolicy="Never"/>
+		<UseConstructor>
+			<argsTypes item="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests"/>
+		</UseConstructor>
+		<Dependency dependencyName="comp">
+			<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
+		</Dependency>
+	</ForPluggable>
+
+	<ForPlugin pluginType="RoboContainer.Tests.Configuration.IComponent, RoboContainer.Tests">
+		<UsePluggable pluggableType="RoboContainer.Tests.Configuration.Component1, RoboContainer.Tests"/>
+		<UsePluggablesAutosearch useAutosearch="true"/>
+		<DontUse>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component2, RoboContainer.Tests"/>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component3, RoboContainer.Tests"/>
+			<pluggableTypes item="RoboContainer.Tests.Configuration.Component4, RoboContainer.Tests"/>
+		</DontUse>
+		<ReusePluggable reusePolicy="Never"/>
+	</ForPlugin>
+
+</roboconfig>
