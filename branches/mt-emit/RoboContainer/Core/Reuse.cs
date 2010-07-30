@@ -53,18 +53,6 @@ namespace RoboContainer.Core
 			}
 		}
 
-		/// <summary>
-		/// Политика повторного использования объектов. 
-		/// Повторно использовать значение в рамках одного Web-запроса.
-		/// </summary>
-		public class PerWebRequest : CommonReusePolicy
-		{
-			public PerWebRequest()
-				: base(false, () => new PerWebRequestSlot())
-			{
-			}
-		}
-
 		public static IReusePolicy FromEnum(ReusePolicy reuse)
 		{
 			switch(reuse)

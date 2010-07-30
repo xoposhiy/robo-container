@@ -59,13 +59,13 @@
     <Compile Include="Impl\AssembliesUtils.cs" />
     <Compile Include="Impl\ConstructorInvoker.cs" />
     <Compile Include="Impl\Hashtable.cs" />
+    <Compile Include="Impl\HashtableExtensions.cs" />
     <Compile Include="Impl\HttpContextCache.cs" />
     <Compile Include="Impl\IConfigurationModule.cs" />
     <Compile Include="Impl\IContainerImpl.cs" />
     <Compile Include="Impl\Deferred.cs" />
     <Compile Include="Impl\IKeyValueCache.cs" />
     <Compile Include="Impl\InvalidArgumentCountException.cs" />
-    <Compile Include="Impl\PerWebRequestSlot.cs" />
     <Compile Include="Infection\InjectAttribute.cs" />
     <Compile Include="Impl\LazyConfigurationModule.cs" />
     <Compile Include="Impl\ScannedAssembliesConfigurationModule.cs" />

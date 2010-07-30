@@ -132,7 +132,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator Dependency(string dependencyName)
 		{
-			return dependencies.Get(dependencyName, null);
+			return dependencies.GetDependencyConfigurator(dependencyName, null);
 		}
 
 		public IDependencyConfigurator DependencyOfType<TDependencyType>()
@@ -142,7 +142,7 @@ namespace RoboContainer.Impl
 
 		public IDependencyConfigurator DependencyOfType(Type dependencyType)
 		{
-			return dependencies.Get(null, dependencyType);
+            return dependencies.GetDependencyConfigurator(null, dependencyType);
 		}
 
 		public IPluggableConfigurator SetInitializer(InitializePluggableDelegate<object> initializePluggable)
