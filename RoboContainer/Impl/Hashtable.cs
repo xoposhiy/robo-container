@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace RoboContainer.Impl
 {
-	public class Hashtable<TKey, TValue> : IDisposable
+    public class Hashtable<TKey, TValue> : IDisposable
 	{
 		private readonly Hashtable items = new Hashtable();
 		private readonly object itemsLock = new object();
@@ -40,21 +40,23 @@ namespace RoboContainer.Impl
 				accessor(items);
 		}
 
-		public TValue GetOrCreate(TKey key, Func<TKey, TValue> creator)
+        public TValue GetOrCreate(TKey key, Func<TKey, TValue> creator, out bool createdNew)
 		{
-			return GetOrCreate(key, () => creator(key));
+			return GetOrCreate(key, () => creator(key), out createdNew);
 		}
 
-		public TValue GetOrCreate(TKey key, Func<TValue> creator)
+		public TValue GetOrCreate(TKey key, Func<TValue> creator, out bool createdNew)
 		{
-			TValue result;
+            createdNew = false;
+            TValue result;
 			if (TryGet(key, out result))
-				return result;
+			    return result;
 			lock (itemsLock)
 			{
 				if (TryGet(key, out result))
 					return result;
 				items[key] = result = creator();
+			    createdNew = true;
 				return result;
 			}
 		}
